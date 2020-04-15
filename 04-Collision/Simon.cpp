@@ -1,11 +1,18 @@
 #include <algorithm>
-#include "debug.h"
+#include "Utils.h"
 
 #include "Game.h"
 
 #include "Ground.h"
 #include "Simon.h"
 
+
+CSimon::CSimon()
+{
+	this->SetAnimationSet(CAnimationSets::GetInstance()->Get(0));
+	untouchable = 0;
+	whip = new Whip();
+}
 
 void CSimon::WalkLeft()
 {
@@ -37,18 +44,11 @@ void CSimon::Jump()
 		ani = SIMON_JUMP;
 		CSimon::SetState(SIMON_JUMP);
 	}
+	
 }
 
 void CSimon::Hit()
 {
-	if (state != SIMON_SIT)
-	{
-		whip->SetPosition(x - 85, y);
-	}
-	else
-	{
-		whip->SetPosition(x - 85, y + 15);
-	}
 	whip->SetNx(nx);
 	if (isHitting == true)
 		return;
@@ -58,23 +58,23 @@ void CSimon::Hit()
 	{
 		CSimon::SetState(SIMON_STAND_HIT);
 		ani = SIMON_STAND_HIT;
-		animations[state]->SetCurrentFrame();
-		animations[state]->StartAni();
+		animation_set->at(ani)->SetCurrentFrame();
+		animation_set->at(ani)->StartAni();
 	}
 	else if(state == SIMON_SIT)
 	{
 		CSimon::SetState(SIMON_SIT_HIT);
 		ani = SIMON_SIT_HIT;
-		animations[state]->SetCurrentFrame();
-		animations[state]->StartAni();
+		animation_set->at(ani)->SetCurrentFrame();
+		animation_set->at(ani)->StartAni();
 	}
 	else
 	{
 		CSimon::SetState(SIMON_STAND_HIT);
 		ani = SIMON_STAND_HIT;
 		vx = 0;
-		animations[state]->SetCurrentFrame();
-		animations[state]->StartAni();
+		animation_set->at(ani)->SetCurrentFrame();
+		animation_set->at(ani)->StartAni();
 	}
 }
 
@@ -89,12 +89,21 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
-	//whip
-	
-	//
+
 	coEvents.clear();
 
+	//whip
+	if (ani != SIMON_SIT_HIT)
+	{
+		whip->SetPosition(x - 90, y);
+	}
+	else
+	{
+		whip->SetPosition(x - 90, y + 15);
+	}
+	//
 	// turn off collision when die 
+	
 		CalcPotentialCollisions(coObjects, coEvents);
 
 	// reset untouchable timer if untouchable time has passed
@@ -146,16 +155,16 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 void CSimon::Render()
 {
-	animations[ani]->Render(nx, x, y);
-	if (CSimon::GetState() == SIMON_STAND_HIT || CSimon::GetState() == SIMON_SIT_HIT)
-		whip->Render(CSimon::animations[CSimon::GetState()]->GetCurrentFrame());
-	RenderBoundingBox();
+	animation_set->at(ani)->Render(nx, x, y);
+	if (ani == SIMON_STAND_HIT || ani == SIMON_SIT_HIT)
+		whip->Render(animation_set->at(ani)->GetCurrentFrame());
+
+	//RenderBoundingBox();
 }
 
 void CSimon::SetState(int state)
 {
 	CGameObject::SetState(state);
-	
 	switch (state)
 	{
 	case SIMON_WALKING:

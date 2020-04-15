@@ -21,7 +21,7 @@ class CAnimation
 	DWORD startFrameTime;
 	vector<LPANIMATION_FRAME> frames;
 public:
-	CAnimation(int defaultTime) { this->defaultTime = defaultTime; lastFrameTime = -1; currentFrame = -1; }
+	CAnimation(int defaultTime = 100) { this->defaultTime = defaultTime; lastFrameTime = -1; currentFrame = -1; }
 	void Add(int spriteId, DWORD time = 0);
 	void Render(int nx, float x, float y, int alpha = 255);
 	void RenderWhip(int currentID, int nx, float x, float y, int alpha = 255);
@@ -42,6 +42,7 @@ class CAnimations
 public:
 	void Add(int id, LPANIMATION ani);
 	LPANIMATION Get(int id);
+	void Clear();
 
 	static CAnimations * GetInstance();
 };

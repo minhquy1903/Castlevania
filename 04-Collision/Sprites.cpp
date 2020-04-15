@@ -1,6 +1,6 @@
 #include "Sprites.h"
 #include "Game.h"
-#include "debug.h"
+#include "Utils.h"
 
 CSprite::CSprite(int id, int left, int top, int right, int bottom, LPDIRECT3DTEXTURE9 tex)
 {
@@ -35,6 +35,17 @@ void CSprites::Add(int id, int left, int top, int right, int bottom, LPDIRECT3DT
 LPSPRITE CSprites::Get(int id)
 {
 	return sprites[id];
+}
+
+void CSprites::Clear()
+{
+	for (auto x : sprites)
+	{
+		LPSPRITE s = x.second;
+		delete s;
+	}
+
+	sprites.clear();
 }
 
 

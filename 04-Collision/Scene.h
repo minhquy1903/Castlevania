@@ -1,5 +1,4 @@
 #pragma once
-
 #include <d3dx9.h>
 #include "CKeyEventHandler.h"
 
@@ -19,6 +18,7 @@ public:
 	virtual void Update(DWORD dt) = 0;
 	virtual void Render() = 0;
 };
+
 typedef CScene * LPSCENE;
 
 

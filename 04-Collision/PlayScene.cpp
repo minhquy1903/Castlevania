@@ -1,10 +1,7 @@
-#include "PlayScence.h"
-
-
 #include <iostream>
 #include <fstream>
 
-#include "PlayScence.h"
+#include "PlayScene.h"
 #include "Utils.h"
 #include "Textures.h"
 #include "Sprites.h"
@@ -16,6 +13,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 {
 	key_handler = new CPlayScenceKeyHandler(this);
 }
+
 
 /*
 	Load scene resources from scene file (textures, sprites, animations and objects)
@@ -29,10 +27,9 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define SCENE_SECTION_ANIMATION_SETS	5
 #define SCENE_SECTION_OBJECTS	6
 
-#define OBJECT_TYPE_MARIO	0
-#define OBJECT_TYPE_BRICK	1
-#define OBJECT_TYPE_GOOMBA	2
-#define OBJECT_TYPE_KOOPAS	3
+#define OBJECT_TYPE_SIMON	0
+#define OBJECT_TYPE_GROUND	1
+#define OBJECT_TYPE_CANDLE	2
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -144,27 +141,34 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	switch (object_type)
 	{
-	case OBJECT_TYPE_MARIO:
+	case OBJECT_TYPE_SIMON:
 		if (player != NULL)
 		{
-			DebugOut(L"[ERROR] MARIO object was created before!\n");
+			DebugOut(L"[ERROR] SIMON object was created before!\n");
 			return;
 		}
-		obj = new CSimon(x, y);
+		obj = new CSimon();
 		player = (CSimon*)obj;
-
+		objects.push_back(obj);
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(); break;
-	case OBJECT_TYPE_BRICK: obj = new CGround(); break;
-	case OBJECT_TYPE_KOOPAS: obj = new CKoopas(); break;
-	case OBJECT_TYPE_PORTAL:
+	case OBJECT_TYPE_GROUND: 
+		obj = new CGround();
+		objects.push_back(obj);
+		break;
+	case OBJECT_TYPE_CANDLE: 
+		
+		obj = new  Candle();
+		staticObjects.push_back(obj);
+		break;
+	
+	/*case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
 		float b = atof(tokens[5].c_str());
 		int scene_id = atoi(tokens[6].c_str());
 		obj = new CPortal(x, y, r, b, scene_id);
-	}
+	}*/
 	break;
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
@@ -173,11 +177,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	// General object setup
 	obj->SetPosition(x, y);
-
 	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 
 	obj->SetAnimationSet(ani_set);
-	objects.push_back(obj);
+	
 }
 
 void CPlayScene::Load()
@@ -227,7 +230,7 @@ void CPlayScene::Load()
 
 	f.close();
 
-	CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
+	//CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
@@ -243,11 +246,20 @@ void CPlayScene::Update(DWORD dt)
 		coObjects.push_back(objects[i]);
 	}
 
+	for (size_t i = 0; i < staticObjects.size(); i++)
+	{
+		staticObjects[i]->Update(dt, &coObjects);
+	}
+	
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
 	}
+	if ((player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2 &&  player->GetState() == SIMON_STAND_HIT) || (player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2 && player->GetState() == SIMON_SIT_HIT))
+		player->GetWhip()->Update(dt, &staticObjects);
 
+	/*if ((player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2 ) || (player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2 ))
+		player->GetWhip()->Update(dt, &staticObjects);*/
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
 
@@ -256,14 +268,25 @@ void CPlayScene::Update(DWORD dt)
 	player->GetPosition(cx, cy);
 
 	CGame *game = CGame::GetInstance();
-	cx -= game->GetScreenWidth() / 2;
+	cx += game->GetScreenWidth() / 2;
 	cy -= game->GetScreenHeight() / 2;
 
+	cx = cx - (SCREEN_WIDTH / 2) + 50;
 	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+
+	//if (player->GetPositionX() > (SCREEN_WIDTH / 2) && player->GetPositionX() + (SCREEN_WIDTH / 2) < 1536)
+	//{
+	//	cx = simon->GetPositionX() - (SCREEN_WIDTH / 2);
+	//	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	//}
 }
 
 void CPlayScene::Render()
 {
+	for (size_t i = 0; i < staticObjects.size(); i++)
+	{
+		staticObjects[i]->Render();
+	}
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
 }
@@ -286,14 +309,15 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 
-	CSimon *mario = ((CPlayScene*)scence)->GetPlayer();
+	CSimon *simon = ((CPlayScene*)scence)->GetPlayer();
+	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
-		mario->SetState(SIMON_STATE_JUMP);
+		simon->Jump();
 		break;
-	case DIK_A:
-		mario->Reset();
+	case DIK_A: // reset
+		simon->Hit();
 		break;
 	}
 }
@@ -301,14 +325,39 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 void CPlayScenceKeyHandler::KeyState(BYTE *states)
 {
 	CGame *game = CGame::GetInstance();
-	CSimon *mario = ((CPlayScene*)scence)->GetPlayer();
+	CSimon *simon = ((CPlayScene*)scence)->GetPlayer();
 
-	// disable control key when Mario die 
-	if (mario->GetState() == SIMON_STATE_DIE) return;
-	if (game->IsKeyDown(DIK_RIGHT))
-		mario->SetState(SIMON_STATE_WALKING);
+	if (simon->isHitting && (!simon->animation_set->at(SIMON_STAND_HIT)->RenderOver(300)|| !simon->animation_set->at(SIMON_SIT_HIT)->RenderOver(300)))
+		return;
+	if (simon->isHitting && (simon->animation_set->at(SIMON_STAND_HIT)->RenderOver(300) || simon->animation_set->at(SIMON_SIT_HIT)->RenderOver(300)))
+		simon->isHitting = false;
+
+	if (game->IsKeyDown(DIK_DOWN))
+	{
+		simon->SetState(SIMON_SIT);
+		if (game->IsKeyDown(DIK_RIGHT))
+			simon->SetNx(1);
+		else if (game->IsKeyDown(DIK_LEFT))
+			simon->SetNx(-1);
+	}
+	else if (game->IsKeyDown(DIK_RIGHT))
+	{
+		simon->WalkRight();
+	}
 	else if (game->IsKeyDown(DIK_LEFT))
-		mario->SetState(MARIO_STATE_WALKING_LEFT);
+	{
+		simon->WalkLeft();
+	}
+
 	else
-		mario->SetState(SIMON_STATE_IDLE);
+	{
+		if (simon->isGrounded && !simon->isHitting)
+		{
+			simon->SetState(SIMON_IDLE);
+			//DebugOut(L"[ERR] ani: %d\n", 0);
+		}
+			
+		/*DebugOut(L"[ERR] is hitting: %d\n", simon->isHitting);
+		DebugOut(L"[ERR] is ground: %d\n", simon->isGrounded);*/
+	}
 }

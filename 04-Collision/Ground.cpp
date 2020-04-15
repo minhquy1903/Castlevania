@@ -1,9 +1,14 @@
 #include "Ground.h"
 
+CGround::CGround()
+{
+	this->SetAnimationSet(CAnimationSets::GetInstance()->Get(GROUND_ID));
+}
+
 void CGround::Render()
 {
-	animations[0]->Render(0, x, y);
-	//RenderBoundingBox();
+	animation_set->at(0)->Render(0, x, y);
+	RenderBoundingBox();
 }
 
 void CGround::GetBoundingBox(float &l, float &t, float &r, float &b)

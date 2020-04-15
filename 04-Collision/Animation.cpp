@@ -1,4 +1,7 @@
 #include "Animation.h"
+#include "Utils.h"
+
+CAnimationSets * CAnimationSets::__instance = NULL;
 
 void CAnimation::Add(int spriteId, DWORD time)
 {
@@ -66,6 +69,17 @@ void CAnimations::Add(int id, LPANIMATION ani)
 LPANIMATION CAnimations::Get(int id)
 {
 	return animations[id];
+}
+
+void CAnimations::Clear()
+{
+	for (auto x : animations)
+	{
+		LPANIMATION ani = x.second;
+		delete ani;
+	}
+
+	animations.clear();
 }
 
 

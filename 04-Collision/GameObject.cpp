@@ -2,7 +2,7 @@
 #include <algorithm>
 
 
-#include "debug.h"
+#include "Utils.h"
 #include "Textures.h"
 #include "Game.h"
 #include "GameObject.h"
@@ -131,11 +131,12 @@ void CGameObject::RenderBoundingBox()
 	CGame::GetInstance()->Draw(nx, x, y, bbox, rect.left, rect.top, rect.right, rect.bottom, 32);
 }
 
-void CGameObject::AddAnimation(int aniId)
+bool CGameObject::AABBCheck(float l_a, float t_a, float r_a, float b_a, float l_b, float t_b, float r_b, float b_b)
 {
-	LPANIMATION ani = CAnimations::GetInstance()->Get(aniId);
-	animations.push_back(ani);
+	return (l_a < r_b && r_a > l_b && t_a < b_b && b_a > t_b);
+	return false;
 }
+
 
 
 CGameObject::~CGameObject()

@@ -1,6 +1,6 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
-
+#include "Portal.h"
 #include "PlayScene.h"
 #include "Utils.h"
 #include "Textures.h"
@@ -30,6 +30,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define OBJECT_TYPE_SIMON	0
 #define OBJECT_TYPE_GROUND	1
 #define OBJECT_TYPE_CANDLE	2
+#define OBJECT_TYPE_ITEM	3
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -157,19 +158,21 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		objects.push_back(obj);
 		break;
 	case OBJECT_TYPE_CANDLE: 
-		
+	{
+		int iditem = atof(tokens[4].c_str());
 		obj = new  Candle();
-		staticObjects.push_back(obj);
+		obj->idItem = iditem;
+		Candles.push_back(obj);
 		break;
-	
-	/*case OBJECT_TYPE_PORTAL:
+	}
+	case OBJECT_TYPE_PORTAL:
 	{
 		float r = atof(tokens[4].c_str());
 		float b = atof(tokens[5].c_str());
 		int scene_id = atoi(tokens[6].c_str());
 		obj = new CPortal(x, y, r, b, scene_id);
-	}*/
-	break;
+		objects.push_back(obj);
+	}
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -230,7 +233,9 @@ void CPlayScene::Load()
 
 	f.close();
 
-	//CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
+	CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
+
+	tilemaps->Add(2000, L"TileMap\\Scene1.png", L"TileMap\\Scene1_map.txt");
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
@@ -246,20 +251,72 @@ void CPlayScene::Update(DWORD dt)
 		coObjects.push_back(objects[i]);
 	}
 
-	for (size_t i = 0; i < staticObjects.size(); i++)
-	{
-		staticObjects[i]->Update(dt, &coObjects);
-	}
 	
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
 	}
-	if ((player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2 &&  player->GetState() == SIMON_STAND_HIT) || (player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2 && player->GetState() == SIMON_SIT_HIT))
+
+
+	if ((player->GetState() == SIMON_STAND_HIT && player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2) || (player->GetState() == SIMON_SIT_HIT && player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2))
+	{
+		if (player->GetWeapon()->isHittingSubWeapon) // simon đang thực hiên động tác đánh
+		{
+			player->GetWeapon()->isSubWeaponExist = true;//subweapon đc update và render
+			if (player->GetState() == SIMON_SIT_HIT)
+				player->GetWeapon()->SetPosSubWeapon(D3DXVECTOR3(player->x, player->y, 0), false);
+			else
+				player->GetWeapon()->SetPosSubWeapon(D3DXVECTOR3(player->x, player->y, 0), true);
+			
+		}
+		else
+		{
+			player->GetWhip()->WhipCollideWithCandle(&Candles);
+		}
+
+	}
+
+	if (player->GetWeapon()->isSubWeaponExist)
+	{
+		player->GetWeapon()->SubWeaponCollideWithCandle(&Candles);
+	}
+	
+	for (size_t i = 0; i < Candles.size(); i++)
+	{
+		Candles[i]->Update(dt);
+	}
+	
+
+	for (size_t i = 0; i < Candles.size(); i++)
+	{
+		LPGAMEOBJECT obj = Candles[i];
+		//float x, y;
+		
+		if (dynamic_cast<Candle*>(obj) && obj->isDone)
+		{
+			Candle* candle = dynamic_cast<Candle*>(obj);
+			listItem.push_back(candle->GetItem());
+			
+			vector<LPGAMEOBJECT>::iterator it;
+			it = Candles.begin();
+			it += i;
+			Candles.erase(it);
+		}
+	}
+
+	for (size_t i = 0; i < listItem.size(); i++)
+	{
+		listItem[i]->Update(dt, &coObjects);
+	}
+
+	player->CollisionWithItem(&listItem);
+
+	
+	/*if ((player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2 && player->GetState() == SIMON_STAND_HIT) || (player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2 && player->GetState() == SIMON_SIT_HIT))
+	{
 		player->GetWhip()->Update(dt, &staticObjects);
 
-	/*if ((player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2 ) || (player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2 ))
-		player->GetWhip()->Update(dt, &staticObjects);*/
+	}*/
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
 
@@ -271,24 +328,26 @@ void CPlayScene::Update(DWORD dt)
 	cx += game->GetScreenWidth() / 2;
 	cy -= game->GetScreenHeight() / 2;
 
-	cx = cx - (SCREEN_WIDTH / 2) + 50;
-	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	
 
-	//if (player->GetPositionX() > (SCREEN_WIDTH / 2) && player->GetPositionX() + (SCREEN_WIDTH / 2) < 1536)
-	//{
-	//	cx = simon->GetPositionX() - (SCREEN_WIDTH / 2);
-	//	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
-	//}
+	if (player->x > (SCREEN_WIDTH / 2) && player->x + (SCREEN_WIDTH / 2) < 1536)
+	{
+		cx = player->x - (SCREEN_WIDTH / 2);
+		CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	}
 }
 
 void CPlayScene::Render()
 {
-	for (size_t i = 0; i < staticObjects.size(); i++)
-	{
-		staticObjects[i]->Render();
-	}
+	tilemaps->Get(2000)->Draw();
+	for (size_t i = 0; i < Candles.size(); i++)
+		Candles[i]->Render();
+
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
+
+	for (int i = 0; i < listItem.size(); i++)
+		listItem[i]->Render();
 }
 
 /*
@@ -316,8 +375,11 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_SPACE:
 		simon->Jump();
 		break;
-	case DIK_A: // reset
-		simon->Hit();
+	case DIK_A: 
+		if (CGame::GetInstance()->IsKeyDown(DIK_UP))
+			simon->HitWeapon();
+		else 
+			simon->Hit();
 		break;
 	}
 }
@@ -327,10 +389,25 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	CGame *game = CGame::GetInstance();
 	CSimon *simon = ((CPlayScene*)scence)->GetPlayer();
 
-	if (simon->isHitting && (!simon->animation_set->at(SIMON_STAND_HIT)->RenderOver(300)|| !simon->animation_set->at(SIMON_SIT_HIT)->RenderOver(300)))
+	if (simon->GetState() == SIMON_SHOCK && !(simon->animation_set->at(SIMON_SHOCK)->RenderOver(600)))
 		return;
+
+	if (!(simon->isGrounded))
+		return;
+
+	if ((simon->GetState() == SIMON_STAND_HIT && !(simon->animation_set->at(SIMON_STAND_HIT)->RenderOver(300))) || (simon->GetState() == SIMON_SIT_HIT && !simon->animation_set->at(SIMON_SIT_HIT)->RenderOver(300)))
+		return;
+		
 	if (simon->isHitting && (simon->animation_set->at(SIMON_STAND_HIT)->RenderOver(300) || simon->animation_set->at(SIMON_SIT_HIT)->RenderOver(300)))
+	{
 		simon->isHitting = false;
+		simon->GetWeapon()->isHittingSubWeapon = false;
+		return;
+	}
+		
+	/*if (game->IsKeyDown(DIK_UP))
+		if (game->IsKeyDown(DIK_A))
+			simon->HitWeapon();*/
 
 	if (game->IsKeyDown(DIK_DOWN))
 	{
@@ -354,10 +431,6 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		if (simon->isGrounded && !simon->isHitting)
 		{
 			simon->SetState(SIMON_IDLE);
-			//DebugOut(L"[ERR] ani: %d\n", 0);
 		}
-			
-		/*DebugOut(L"[ERR] is hitting: %d\n", simon->isHitting);
-		DebugOut(L"[ERR] is ground: %d\n", simon->isGrounded);*/
 	}
 }

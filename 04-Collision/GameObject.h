@@ -40,11 +40,10 @@ public:
 
 	float vx;
 	float vy;
-
 	int nx;	 
-
+	bool isDone;
 	int state;
-
+	int idItem;
 	DWORD dt; 
 
 	LPANIMATION_SET animation_set;
@@ -59,7 +58,7 @@ public:
 	int GetState() { return this->state; }
 
 	void RenderBoundingBox();
-	bool AABBCheck(float l_a, float t_a, float r_a, float b_a, float l_b, float t_b, float r_b, float b_b);
+	bool AABBCollision(float l_a, float t_a, float r_a, float b_a, float l_b, float t_b, float r_b, float b_b);
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
 	void FilterCollision(
@@ -69,7 +68,6 @@ public:
 		float &min_ty, 
 		float &nx, 
 		float &ny);
-
 	void SetAnimationSet(LPANIMATION_SET ani_set) { animation_set = ani_set; }
 	CGameObject();
 

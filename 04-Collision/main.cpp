@@ -33,7 +33,7 @@
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"Castlevania"
 
-#define BACKGROUND_COLOR D3DCOLOR_XRGB(255, 255, 200)
+#define BACKGROUND_COLOR D3DCOLOR_XRGB(0, 0, 0)
 #define SCREEN_WIDTH 512
 #define SCREEN_HEIGHT 480
 
@@ -44,70 +44,7 @@
 #define ID_TEX_GROUND 20
 #define ID_TEX_WHIP  30
 CGame *game;
-//
-//CSimon *simon;
-//Whip * whip;
-//vector<LPGAMEOBJECT> objects;
-//
-//class CSampleKeyHander: public CKeyEventHandler
-//{
-//	virtual void KeyState(BYTE *states);
-//	virtual void OnKeyDown(int KeyCode);
-//	virtual void OnKeyUp(int KeyCode);
-//};
-//
-//CSampleKeyHander * keyHandler; 
-//
-//void CSampleKeyHander::OnKeyDown(int KeyCode)
-//{
-//	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
-//	switch (KeyCode)
-//	{
-//	case DIK_SPACE:
-//		simon->Jump(); 
-//		break;
-//	case DIK_A: // reset
-//		simon->Hit();
-//		break;
-//	}
-//}
-//
-//void CSampleKeyHander::OnKeyUp(int KeyCode)
-//{
-//	DebugOut(L"[INFO] KeyUp: %d\n", KeyCode);
-//}
-//
-//void CSampleKeyHander::KeyState(BYTE *states)
-//{
-//	if(simon->isHitting && (!simon->animation_set->at(SIMON_STAND_HIT)->RenderOver(400) || !simon->animation_set->at(SIMON_SIT_HIT]->RenderOver(400)))
-//		return;
-//	if (simon->isHitting && (simon->animation_set->at(SIMON_STAND_HIT)->RenderOver(400) || simon->animation_set->at[SIMON_SIT_HIT]->RenderOver(400)))
-//		simon->isHitting = false;
-//	
-//	if (game->IsKeyDown(DIK_DOWN))
-//	{
-//		simon->SetState(SIMON_SIT);
-//		if (game->IsKeyDown(DIK_RIGHT))
-//			simon->SetNx(1);
-//		else if (game->IsKeyDown(DIK_LEFT))
-//			simon->SetNx(-1);
-//	}
-//	else if (game->IsKeyDown(DIK_RIGHT))
-//	{
-//		simon->WalkRight();
-//	}
-//	else if (game->IsKeyDown(DIK_LEFT))
-//	{
-//		simon->WalkLeft();
-//	}
-//	
-//	else
-//	{
-//		if(simon->isGrounded && !simon->isHitting)
-//			simon->SetState(SIMON_IDLE);
-//	}
-//		
-//}
+
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -130,129 +67,7 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 */
 void LoadResources()
 {
-//	CTextures * textures = CTextures::GetInstance();
-//
-//	textures->Add(ID_TEX_SIMON, L"textures\\simon.png",D3DCOLOR_XRGB(255, 0, 255));
-//	textures->Add(ID_TEX_GROUND, L"textures\\ground.png", D3DCOLOR_XRGB(255, 0, 255));
-//	textures->Add(ID_TEX_WHIP, L"textures\\whip.png", D3DCOLOR_XRGB(255, 0, 255));
-//
-//
-//	//textures->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
-//
-//
-//	CSprites * sprites = CSprites::GetInstance();
-//	CAnimations * animations = CAnimations::GetInstance();
-//	
-//	LPDIRECT3DTEXTURE9 texSimon = textures->Get(ID_TEX_SIMON);
-//
-//	LPDIRECT3DTEXTURE9 texTexWhip = textures->Get(ID_TEX_WHIP);
-//	// big
-//	
-//
-//
-//
-//	LPDIRECT3DTEXTURE9 texGround = textures->Get(ID_TEX_GROUND);
-//
-//	sprites->Add(GROUND_ID, 0, 0, 64, 32, texGround);
-//
-//
-//	
-//	
-//
-//	LPANIMATION ani;
-//	//WHIP
-//	sprites->Add(100, 0, 0, 240, 66, texTexWhip);
-//	sprites->Add(101, 240, 0, 480, 66, texTexWhip);
-//	sprites->Add(102, 480, 0, 720, 66, texTexWhip);
-//
-//	ani = new CAnimation(100);
-//	ani->Add(100);
-//	ani->Add(101);
-//	ani->Add(102);
-//	
-//	animations->Add(200, ani);
-//	whip = new Whip();
-//	whip->AddAnimation(200);
-//	//whip
-//
-//
-//	ani = new CAnimation(100);		// ground
-//	ani->Add(GROUND_ID);
-//	animations->Add(GROUND_ANI, ani);
-//#pragma region Simon
-//	//sprite
-//	sprites->Add(SIMON_SPRITE_IDLE, 0, 0, 60, 64, texSimon);
-//
-//	sprites->Add(SIMON_SPRITE_WALK1, 60, 0, 120, 64, texSimon);//walk
-//	sprites->Add(SIMON_SPRITE_WALK2, 120, 0, 180, 64, texSimon);
-//	sprites->Add(SIMON_SPRITE_WALK3, 180, 0, 240, 64, texSimon);
-//	
-//	sprites->Add(SIMON_SPRITE_JUMP, 240,	0,	300,	64, texSimon);//jump
-//
-//	sprites->Add(SIMON_SPRITE_SIT, 300,	198,	360,	262, texSimon);//sit
-//
-//	sprites->Add(SIMON_SPRITE_STAND_HIT1, 300, 0, 360, 64, texSimon);//hit stand
-//	sprites->Add(SIMON_SPRITE_STAND_HIT2, 360, 0, 420, 64, texSimon);
-//	sprites->Add(SIMON_SPRITE_STAND_HIT3, 420, 0, 480, 64, texSimon);
-//
-//	sprites->Add(SIMON_SPRITE_SIT_HIT1, 420	,66	,480, 130, texSimon);// hit sit
-//	sprites->Add(SIMON_SPRITE_SIT_HIT2, 0, 132, 60, 196, texSimon);
-//	sprites->Add(SIMON_SPRITE_SIT_HIT3, 60,	132, 120, 196, texSimon);
-//	//sprite
-//	//ANI
-//	ani = new CAnimation(80);//IDLE
-//	ani->Add(SIMON_SPRITE_IDLE);
-//	animations->Add(SIMON_IDLE, ani);
-//
-//	ani = new CAnimation(80);//WALK
-//	ani->Add(SIMON_SPRITE_IDLE);
-//	ani->Add(SIMON_SPRITE_WALK1);
-//	ani->Add(SIMON_SPRITE_WALK2);
-//	ani->Add(SIMON_SPRITE_WALK3);
-//	animations->Add(SIMON_WALKING, ani);
-//
-//	ani = new CAnimation(80);//JUMP
-//	ani->Add(SIMON_SPRITE_JUMP);
-//	animations->Add(SIMON_JUMP, ani);
-//
-//	ani = new CAnimation(80);//SIT
-//	ani->Add(SIMON_SPRITE_SIT);
-//	animations->Add(SIMON_SIT, ani);
-//
-//	ani = new CAnimation(100);//stand hit
-//	ani->Add(SIMON_SPRITE_STAND_HIT1);
-//	ani->Add(SIMON_SPRITE_STAND_HIT2);	
-//	ani->Add(SIMON_SPRITE_STAND_HIT3);
-//	animations->Add(SIMON_STAND_HIT, ani);
-//
-//	ani = new CAnimation(100);//SIT hit
-//	ani->Add(SIMON_SPRITE_SIT_HIT1);
-//	ani->Add(SIMON_SPRITE_SIT_HIT2);
-//	ani->Add(SIMON_SPRITE_SIT_HIT3);
-//	animations->Add(SIMON_SIT_HIT, ani);
-//
-//	simon = new CSimon();
-//	simon->AddAnimation(SIMON_IDLE);		
-//	simon->AddAnimation(SIMON_WALKING);		
-//	simon->AddAnimation(SIMON_JUMP);		
-//	simon->AddAnimation(SIMON_SIT);
-//	simon->AddAnimation(SIMON_STAND_HIT);
-//	simon->AddAnimation(SIMON_SIT_HIT);
-//
-//
-//	simon->SetPosition(50.0f, 0);
-//	objects.push_back(simon);
-//#pragma endregion
-//
-//
-//	for (int i = 0; i < 30; i++)
-//	{
-//		CGround *ground = new CGround();
-//		ground->AddAnimation(GROUND_ANI);
-//		ground->SetPosition(0 + i*16.0f, 180);
-//		objects.push_back(ground);
-//	}
-//
+
 }
 
 /*

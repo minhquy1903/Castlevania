@@ -1,17 +1,21 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include "Utils.h"
 
 #include "Game.h"
-
+#include "Portal.h"
 #include "Ground.h"
 #include "Simon.h"
-
+#include "Item.h"
 
 CSimon::CSimon()
 {
 	this->SetAnimationSet(CAnimationSets::GetInstance()->Get(0));
 	untouchable = 0;
 	whip = new Whip();
+	weapon = new Knife();
+	subWeaponIsON = false;
+	isHitting = false;
+	isDone = false;
 }
 
 void CSimon::WalkLeft()
@@ -38,6 +42,8 @@ void CSimon::WalkRight()
 
 void CSimon::Jump()
 {
+	if (GetState() == SIMON_STAND_HIT || GetState() == SIMON_SIT_HIT || GetState() == SIMON_SHOCK)
+		return;
 	if (isGrounded && !(state == SIMON_SIT)) 
 	{
 		isGrounded = false;
@@ -53,34 +59,44 @@ void CSimon::Hit()
 	if (isHitting == true)
 		return;
 	isHitting = true;
+	if (GetState() == SIMON_SHOCK)
+		return;
+	if ((GetState() == SIMON_IDLE || GetState() == SIMON_JUMP || GetState() == SIMON_WALKING))
+	{
+		if (isGrounded)
+		{
+			SetState(SIMON_STAND_HIT);
+			vx = 0;
+		}
+		else
+			SetState(SIMON_STAND_HIT);
+	}
+	else if (GetState() == SIMON_SIT)
+		SetState(SIMON_SIT_HIT);
 
-	if (state == SIMON_JUMP) 
-	{
-		CSimon::SetState(SIMON_STAND_HIT);
-		ani = SIMON_STAND_HIT;
-		animation_set->at(ani)->SetCurrentFrame();
-		animation_set->at(ani)->StartAni();
-	}
-	else if(state == SIMON_SIT)
-	{
-		CSimon::SetState(SIMON_SIT_HIT);
-		ani = SIMON_SIT_HIT;
-		animation_set->at(ani)->SetCurrentFrame();
-		animation_set->at(ani)->StartAni();
-	}
-	else
-	{
-		CSimon::SetState(SIMON_STAND_HIT);
-		ani = SIMON_STAND_HIT;
-		vx = 0;
-		animation_set->at(ani)->SetCurrentFrame();
-		animation_set->at(ani)->StartAni();
-	}
 }
+
+void CSimon::HitWeapon()
+{
+	if (GetState() == SIMON_SHOCK)
+		return;
+	if (!subWeaponIsON)
+	{
+		Hit();
+		return;
+	}
+	if (weapon->isSubWeaponExist)
+		return;
+	Hit();
+	weapon->SetNx(nx);
+	weapon->isHittingSubWeapon = true;
+	weapon->SetDirectionKnife(nx);
+}
+
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-
+	
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 
@@ -93,6 +109,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	coEvents.clear();
 
 	//whip
+	whip->SetHit(isHitting);
 	if (ani != SIMON_SIT_HIT)
 	{
 		whip->SetPosition(x - 90, y);
@@ -102,6 +119,15 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		whip->SetPosition(x - 90, y + 15);
 	}
 	//
+	if (weapon->isSubWeaponExist && subWeaponIsON)
+	{
+		weapon->Update(dt);
+	}
+
+	
+	
+		
+	
 	// turn off collision when die 
 	
 		CalcPotentialCollisions(coObjects, coEvents);
@@ -143,8 +169,11 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 				{
 					isGrounded = true;
 				}
-			/*	else
-					isGrounded = false;*/
+			}
+			else if (dynamic_cast<CPortal *>(e->obj))
+			{
+				CPortal *p = dynamic_cast<CPortal *>(e->obj);
+				CGame::GetInstance()->SwitchScene(p->GetSceneId());
 			}
 		}
 	}
@@ -156,8 +185,15 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 void CSimon::Render()
 {
 	animation_set->at(ani)->Render(nx, x, y);
-	if (ani == SIMON_STAND_HIT || ani == SIMON_SIT_HIT)
+	if ((ani == SIMON_STAND_HIT || ani == SIMON_SIT_HIT) && !weapon->isHittingSubWeapon || (weapon->isHittingSubWeapon && !subWeaponIsON))
+	{
 		whip->Render(animation_set->at(ani)->GetCurrentFrame());
+	}
+
+	if (subWeaponIsON)
+		weapon->Render();
+	
+	
 
 	//RenderBoundingBox();
 }
@@ -185,8 +221,61 @@ void CSimon::SetState(int state)
 		vx = 0;
 		ani = SIMON_IDLE;
 		break;
-	/*case SIMON_SIT_HIT:*/
+	case SIMON_SHOCK:
+		vx = 0;
+		ani = SIMON_SHOCK;
+		animation_set->at(state)->StartAni();
+		break;
+	case SIMON_SIT_HIT:
+		vx = 0;
+		ani = SIMON_SIT_HIT;
+		animation_set->at(ani)->SetCurrentFrame();
+		animation_set->at(ani)->StartAni();
+		break;
+	case SIMON_STAND_HIT:
+		ani = SIMON_STAND_HIT;
+		animation_set->at(ani)->SetCurrentFrame();
+		animation_set->at(ani)->StartAni();
+		break;
+	}
+}
 
+void CSimon::CollisionWithItem(vector<LPGAMEOBJECT> *listItems)
+{
+	if (listItems->size() == 0)
+		return;
+	float left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b;
+	GetBoundingBox(left_a, top_a, right_a, bottom_a);
+	for (int i = 0; i < listItems->size(); i++)
+	{
+		LPGAMEOBJECT obj = listItems->at(i);
+		Item* e = dynamic_cast<Item*>(obj);
+		e->GetBoundingBox(left_b, top_b, right_b, bottom_b);
+		if (AABBCollision(left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b))
+		{
+			if (e->GetState() == ITEM_UPGRADE_WHIP)
+			{
+				SetState(SIMON_SHOCK);
+				e->isDone = true;
+				if (whip->GetState() == WHIP_LVL_1)
+					whip->SetState(WHIP_LVL_2);
+				else if (whip->GetState() == WHIP_LVL_2)
+					whip->SetState(WHIP_LVL_3);
+			}
+			else if (e->GetState() == ITEM_HEART)
+			{
+				e->isDone = true;
+			}
+			else if (e->GetState() == ITEM_KNIFE)
+			{
+				subWeaponIsON = true;
+				e->isDone = true;
+				//e->SetState(knife_ani);
+				vector<LPGAMEOBJECT>::iterator it;
+				it = listItems->begin();
+				listItems->erase(it);
+			}
+		}
 	}
 }
 

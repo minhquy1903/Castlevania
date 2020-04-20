@@ -7,15 +7,17 @@
 #include "Ground.h"
 #include "Whip.h"
 #include "Candle.h"
-
+#include "Item.h"
+#include "TileMap.h"
 class CPlayScene : public CScene
 {
 protected:
 	CSimon *player;					// A play scene has to have player, right? 
-
+	TileMaps *tilemaps = TileMaps::GetInstance();
 	vector<LPGAMEOBJECT> objects;
-	vector<LPGAMEOBJECT> staticObjects;
-
+	vector<LPGAMEOBJECT> Candles;
+	vector<LPGAMEOBJECT> listItem;
+	
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);

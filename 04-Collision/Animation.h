@@ -25,10 +25,10 @@ public:
 	void Add(int spriteId, DWORD time = 0);
 	void Render(int nx, float x, float y, int alpha = 255);
 	void RenderWhip(int currentID, int nx, float x, float y, int alpha = 255);
-	void StartAni() { startFrameTime = GetTickCount(); }
+	void StartRenderAnimation() { startFrameTime = GetTickCount(); }
 	void SetCurrentFrame(int currentFrame = -1) { this->currentFrame = currentFrame; }
 	int GetCurrentFrame() { return currentFrame; };
-	bool RenderOver(DWORD a);
+	bool IsRenderOver(DWORD a);
 };
 
 typedef CAnimation *LPANIMATION;

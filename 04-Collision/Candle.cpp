@@ -12,7 +12,7 @@ void Candle::GetBoundingBox(float & left, float & top, float & right, float & bo
 
 void Candle::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)	
 {
-	if (state == BREAK_CANDLE && animation_set->at(state)->RenderOver(400)) 
+	if (state == BREAK_CANDLE && animation_set->at(state)->IsRenderOver(400)) 
 	{
 		DropItem();
 		isDone = true;
@@ -33,7 +33,7 @@ void Candle::SetState(int state)
 	switch (state)
 	{
 	case BREAK_CANDLE:
-		animation_set->at(state)->StartAni();
+		animation_set->at(state)->StartRenderAnimation();
 		break;
 	}
 }

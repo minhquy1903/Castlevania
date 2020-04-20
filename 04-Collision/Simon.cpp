@@ -14,7 +14,7 @@ CSimon::CSimon()
 	whip = new Whip();
 	weapon = new Knife();
 	subWeaponIsON = false;
-	isHitting = false;
+	isHittingWhip = false;
 	isDone = false;
 }
 
@@ -23,7 +23,6 @@ void CSimon::WalkLeft()
 	if (isGrounded)
 	{
 	nx = -1;
-	ani = SIMON_WALKING;
 	CSimon::SetState(SIMON_WALKING);
 	}
 
@@ -34,7 +33,6 @@ void CSimon::WalkRight()
 	if (isGrounded)
 	{
 	nx = 1;
-	ani = SIMON_WALKING;
 	CSimon::SetState(SIMON_WALKING);
 	}
 	
@@ -56,9 +54,9 @@ void CSimon::Jump()
 void CSimon::Hit()
 {
 	whip->SetNx(nx);
-	if (isHitting == true)
+	if (isHittingWhip == true)
 		return;
-	isHitting = true;
+	isHittingWhip = true;
 	if (GetState() == SIMON_SHOCK)
 		return;
 	if ((GetState() == SIMON_IDLE || GetState() == SIMON_JUMP || GetState() == SIMON_WALKING))
@@ -90,7 +88,7 @@ void CSimon::HitWeapon()
 	Hit();
 	weapon->SetNx(nx);
 	weapon->isHittingSubWeapon = true;
-	weapon->SetDirectionKnife(nx);
+	weapon->SetDirectionSubWeapon(nx);
 }
 
 
@@ -109,7 +107,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	coEvents.clear();
 
 	//whip
-	whip->SetHit(isHitting);
+	whip->SetHit(isHittingWhip);
 	if (ani != SIMON_SIT_HIT)
 	{
 		whip->SetPosition(x - 90, y);
@@ -163,7 +161,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<CGround *>(e->obj)) // if e->obj is Goomba 
+			if (dynamic_cast<Brick *>(e->obj)) // if e->obj is Goomba 
 			{
 				if (e->ny < 0)
 				{
@@ -208,6 +206,7 @@ void CSimon::SetState(int state)
 			vx = SIMON_WALKING_SPEED;
 		else
 			vx = -SIMON_WALKING_SPEED;
+		ani = SIMON_WALKING;
 		break;
 	case SIMON_JUMP:
 		isGrounded = false;
@@ -224,18 +223,18 @@ void CSimon::SetState(int state)
 	case SIMON_SHOCK:
 		vx = 0;
 		ani = SIMON_SHOCK;
-		animation_set->at(state)->StartAni();
+		animation_set->at(state)->StartRenderAnimation();
 		break;
 	case SIMON_SIT_HIT:
 		vx = 0;
 		ani = SIMON_SIT_HIT;
 		animation_set->at(ani)->SetCurrentFrame();
-		animation_set->at(ani)->StartAni();
+		animation_set->at(ani)->StartRenderAnimation();
 		break;
 	case SIMON_STAND_HIT:
 		ani = SIMON_STAND_HIT;
 		animation_set->at(ani)->SetCurrentFrame();
-		animation_set->at(ani)->StartAni();
+		animation_set->at(ani)->StartRenderAnimation();
 		break;
 	}
 }

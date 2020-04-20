@@ -42,7 +42,7 @@ void CAnimation::RenderWhip(int currentID, int nx, float x, float y, int alpha)
 }
 
 
-bool CAnimation::RenderOver(DWORD a)
+bool CAnimation::IsRenderOver(DWORD a)
 {
 	if (GetTickCount() - startFrameTime >= a)
 	{

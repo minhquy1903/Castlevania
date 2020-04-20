@@ -5,10 +5,10 @@
 #define BRICK_BBOX_WIDTH  64
 #define BRICK_BBOX_HEIGHT 32
 
-class CGround : public CGameObject
+class Brick : public CGameObject
 {
 public:
-	CGround();
+	Brick();
 	void Render();
 	void GetBoundingBox(float &l, float &t, float &r, float &b);
 };

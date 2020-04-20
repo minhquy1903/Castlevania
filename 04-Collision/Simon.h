@@ -36,7 +36,7 @@ class CSimon : public CGameObject
 
 public: 
 	CSimon();
-	bool isHitting = false;
+	bool isHittingWhip = false;
 	bool isGrounded;
 	void WalkLeft();
 	void WalkRight();

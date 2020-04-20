@@ -13,28 +13,23 @@ void SubWeapon::Render()
 	
 }
 
-void SubWeapon::SetPosSubWeapon(D3DXVECTOR3 pos, bool isstanding)
+void SubWeapon::SetPosSubWeapon(D3DXVECTOR3 pos, bool isStanding)
 {
-	if (isstanding)
+	if (isStanding)
 		pos.y += 10;
 	else
 		pos.y += 35;
 	SetPosition(pos.x, pos.y);
+	posX = pos.x;
 }
+
+
+
 
 void SubWeapon::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 }
 
-void SubWeapon::SetDirectionKnife(int nx)
-{
-	if (nx > 0)
-		vx = 0.5;
-	else
-		vx = -0.5;
-	vy = 0;
-
-}
 
 void SubWeapon::SubWeaponCollideWithCandle(vector<LPGAMEOBJECT>* coObjects)
 {

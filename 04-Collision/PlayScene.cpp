@@ -154,7 +154,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
 	case OBJECT_TYPE_GROUND: 
-		obj = new CGround();
+		obj = new Brick();
 		objects.push_back(obj);
 		break;
 	case OBJECT_TYPE_CANDLE: 
@@ -251,12 +251,10 @@ void CPlayScene::Update(DWORD dt)
 		coObjects.push_back(objects[i]);
 	}
 
-	
-	for (size_t i = 0; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++) // simon và ground update
 	{
 		objects[i]->Update(dt, &coObjects);
 	}
-
 
 	if ((player->GetState() == SIMON_STAND_HIT && player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2) || (player->GetState() == SIMON_SIT_HIT && player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2))
 	{
@@ -276,6 +274,8 @@ void CPlayScene::Update(DWORD dt)
 
 	}
 
+	
+
 	if (player->GetWeapon()->isSubWeaponExist)
 	{
 		player->GetWeapon()->SubWeaponCollideWithCandle(&Candles);
@@ -287,7 +287,7 @@ void CPlayScene::Update(DWORD dt)
 	}
 	
 
-	for (size_t i = 0; i < Candles.size(); i++)
+	for (size_t i = 0; i < Candles.size(); i++)//kt nến có bị đánh trúng k
 	{
 		LPGAMEOBJECT obj = Candles[i];
 		//float x, y;
@@ -309,14 +309,9 @@ void CPlayScene::Update(DWORD dt)
 		listItem[i]->Update(dt, &coObjects);
 	}
 
-	player->CollisionWithItem(&listItem);
+	player->CollisionWithItem(&listItem); // simon nhặt item
 
-	
-	/*if ((player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2 && player->GetState() == SIMON_STAND_HIT) || (player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2 && player->GetState() == SIMON_SIT_HIT))
-	{
-		player->GetWhip()->Update(dt, &staticObjects);
 
-	}*/
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
 
@@ -389,25 +384,21 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	CGame *game = CGame::GetInstance();
 	CSimon *simon = ((CPlayScene*)scence)->GetPlayer();
 
-	if (simon->GetState() == SIMON_SHOCK && !(simon->animation_set->at(SIMON_SHOCK)->RenderOver(600)))
+	if (simon->GetState() == SIMON_SHOCK && !(simon->animation_set->at(SIMON_SHOCK)->IsRenderOver(600)))
 		return;
 
 	if (!(simon->isGrounded))
 		return;
 
-	if ((simon->GetState() == SIMON_STAND_HIT && !(simon->animation_set->at(SIMON_STAND_HIT)->RenderOver(300))) || (simon->GetState() == SIMON_SIT_HIT && !simon->animation_set->at(SIMON_SIT_HIT)->RenderOver(300)))
+	if ((simon->GetState() == SIMON_STAND_HIT && !(simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(300))) || (simon->GetState() == SIMON_SIT_HIT && !simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(300)))
 		return;
 		
-	if (simon->isHitting && (simon->animation_set->at(SIMON_STAND_HIT)->RenderOver(300) || simon->animation_set->at(SIMON_SIT_HIT)->RenderOver(300)))
+	if (simon->isHittingWhip && (simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(300) || simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(300)))
 	{
-		simon->isHitting = false;
+		simon->isHittingWhip = false;
 		simon->GetWeapon()->isHittingSubWeapon = false;
 		return;
 	}
-		
-	/*if (game->IsKeyDown(DIK_UP))
-		if (game->IsKeyDown(DIK_A))
-			simon->HitWeapon();*/
 
 	if (game->IsKeyDown(DIK_DOWN))
 	{
@@ -428,7 +419,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 
 	else
 	{
-		if (simon->isGrounded && !simon->isHitting)
+		if (simon->isGrounded && !simon->isHittingWhip)
 		{
 			simon->SetState(SIMON_IDLE);
 		}

@@ -7,7 +7,7 @@ Knife::Knife()
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(KNIFE_ANIMATION_SET));
 	isSubWeaponExist = false;
 	isHittingSubWeapon = false;
-	vx = 0.5f;
+	vx = VX_KNIFE;
 }
 
 
@@ -17,7 +17,7 @@ Knife::~Knife()
 
 void Knife::Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects)
 {
-	if (CheckPosKnife(POSX))
+	if (CheckPosKnife(posX))
 	{
 		isSubWeaponExist = false;
 		
@@ -31,29 +31,28 @@ void Knife::Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects)
 
 void Knife::Render()
 {
-	if (isSubWeaponExist && !CheckPosKnife(POSX))
-		this->animation_set->at(0)->Render(nx, x, y);
+	if (isSubWeaponExist && !CheckPosKnife(posX))
+		this->animation_set->at(KNIFE_ANI)->Render(nx, x, y);
 }
 
-
-
-
-void Knife::SetPosSubWeapon(D3DXVECTOR3 pos, bool isstanding)
+void Knife::SetDirectionSubWeapon(int nx)
 {
-	SubWeapon::SetPosSubWeapon(D3DXVECTOR3(pos.x, pos.y, 0), isstanding);
-	POSX = pos.x;
+	if (nx > 0)
+		vx = VX_KNIFE;
+	else
+		vx = -VX_KNIFE;
 }
 
 bool Knife::CheckPosKnife(float a)
 {
 	if (vx > 0)
 	{
-		if (x - a >= ((SCREEN_WIDTH/2)+ 100))
+		if (x - a >= ((SCREEN_WIDTH/2)+ 70))
 			return true;
 	}
 	else if (vx < 0)
 	{
-		if (a - x >= ((SCREEN_WIDTH/2) + 100))
+		if (a - x >= ((SCREEN_WIDTH/2) + 70))
 			return true;
 	}
 	

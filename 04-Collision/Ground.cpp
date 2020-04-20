@@ -1,17 +1,17 @@
 #include "Ground.h"
 
-CGround::CGround()
+Brick::Brick()
 {
 	this->SetAnimationSet(CAnimationSets::GetInstance()->Get(GROUND_ID));
 }
 
-void CGround::Render()
+void Brick::Render()
 {
 	animation_set->at(0)->Render(0, x, y);
 	RenderBoundingBox();
 }
 
-void CGround::GetBoundingBox(float &l, float &t, float &r, float &b)
+void Brick::GetBoundingBox(float &l, float &t, float &r, float &b)
 {
 	l = x;
 	t = y;

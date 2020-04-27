@@ -76,6 +76,7 @@
 
 #SPARK	350-400
 350	0	0	16	20	7
+
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 
@@ -207,7 +208,6 @@
 1	1472	368	1
 1	1504	368	1
 
-
 # CANDLE
 2	200	304	3	0
 2	400	304	3	1
@@ -217,5 +217,10 @@
 2	1200	304	3	1
 
 # --- SCENE PORTAL ----
-# type	l	t	ani_set_id	r	b	scene_id
-50	300	98	0	316	150	2	
+# type	x	y	ani_set_id	r	b	scene_id
+50	1376	300	0	1408	400	2	
+
+[TILEMAP]
+#tile id	file_texture	file_path	tile_width	tile_height
+1	TileMap\\tilesets_scene1.png	TileMap\\tilemap_scene1.txt	4	17	10	32	32
+	

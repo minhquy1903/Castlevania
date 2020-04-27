@@ -11,35 +11,20 @@
 class TileMap
 {
 	CSprites * sprites = CSprites::GetInstance();
-	LPCWSTR mapFilePath;
-	LPCWSTR mappic;
-	//int map_width, map_height;
-	int num_row, num_col;
-	int tile_width, tile_height;
-	int id;
+	LPCWSTR filePath_data;
+	LPCWSTR filePath_texture;
 
+	int id;
+	int num_row_on_tilemap;
+	int num_row_on_texture, num_col_on_textture;
+	int tileset_width, tileset_height;
 	vector<vector<LPSPRITE>> tilemap;
 
 public:
-	TileMap(int ID, LPCWSTR filePath_tex, LPCWSTR filePath_data, int tile_width = 32, int tile_height = 32);
+	TileMap(int ID, LPCWSTR pathFileTexture, LPCWSTR pathFileData, int num_row_read_on_texture, int num_col_read_on_textture, int num_row_on_tilemap, int tileset_width = 32, int tileset_height = 32);
 	~TileMap();
 
 	void Load();
 	void LoadMap();
 	void Draw();
-};
-
-typedef TileMap *LPTILEMAP;
-
-class TileMaps
-{
-	static TileMaps * _instance;
-	unordered_map<int, LPTILEMAP> tilemaps;
-
-public:
-	void Add(int ID, LPCWSTR filePath_tex, LPCWSTR filePath_data, int tile_width = 32, int tile_height = 32);
-	LPTILEMAP Get(int ID) { return tilemaps[ID]; }
-
-
-	static TileMaps * GetInstance();
 };

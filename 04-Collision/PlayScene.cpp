@@ -26,7 +26,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define SCENE_SECTION_ANIMATIONS 4
 #define SCENE_SECTION_ANIMATION_SETS	5
 #define SCENE_SECTION_OBJECTS	6
-
+#define SCENE_SECTION_TILEMAP 7
 #define OBJECT_TYPE_SIMON	0
 #define OBJECT_TYPE_GROUND	1
 #define OBJECT_TYPE_CANDLE	2
@@ -172,6 +172,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int scene_id = atoi(tokens[6].c_str());
 		obj = new CPortal(x, y, r, b, scene_id);
 		objects.push_back(obj);
+		break;
 	}
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
@@ -185,6 +186,25 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	obj->SetAnimationSet(ani_set);
 	
 }
+
+void CPlayScene::_ParseSection_TILEMAP(string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 6) return; // skip invalid lines
+
+	int ID = atoi(tokens[0].c_str());
+	wstring filePath_texture = ToWSTR(tokens[1]);
+	wstring filePath_data = ToWSTR(tokens[2]);
+	int num_row_on_texture = atoi(tokens[3].c_str());
+	int num_col_on_textture = atoi(tokens[4].c_str());
+	int num_row_on_tilemap = atoi(tokens[5].c_str());
+	int tileset_width = atoi(tokens[6].c_str());
+	int tileset_height = atoi(tokens[7].c_str());
+
+	tilemap = new TileMap(ID, filePath_texture.c_str(), filePath_data.c_str(), num_row_on_texture, num_col_on_textture, num_row_on_tilemap, tileset_width, tileset_height);
+}
+
 
 void CPlayScene::Load()
 {
@@ -203,31 +223,64 @@ void CPlayScene::Load()
 
 		if (line[0] == '#') continue;	// skip comment lines	
 
-		if (line == "[TEXTURES]") { section = SCENE_SECTION_TEXTURES; continue; }
-		if (line == "[SPRITES]") {
-			section = SCENE_SECTION_SPRITES; continue;
+		if (line == "[TEXTURES]") 
+		{ 
+			section = SCENE_SECTION_TEXTURES; 
+			continue; 
 		}
-		if (line == "[ANIMATIONS]") {
-			section = SCENE_SECTION_ANIMATIONS; continue;
+		if (line == "[SPRITES]") 
+		{
+			section = SCENE_SECTION_SPRITES; 
+			continue;
 		}
-		if (line == "[ANIMATION_SETS]") {
-			section = SCENE_SECTION_ANIMATION_SETS; continue;
+		if (line == "[ANIMATIONS]") 
+		{
+			section = SCENE_SECTION_ANIMATIONS; 
+			continue;
 		}
-		if (line == "[OBJECTS]") {
-			section = SCENE_SECTION_OBJECTS; continue;
+		if (line == "[ANIMATION_SETS]") 
+		{
+			section = SCENE_SECTION_ANIMATION_SETS; 
+			continue;
 		}
-		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }
+		if (line == "[OBJECTS]") 
+		{
+			section = SCENE_SECTION_OBJECTS; 
+			continue;
+		}
+		if (line == "[TILEMAP]")
+		{
+			section = SCENE_SECTION_TILEMAP;
+			continue;
+		}
+		if (line[0] == '[') 
+		{ 
+			section = SCENE_SECTION_UNKNOWN; 
+			continue; 
+		}
+		
 
 		//
 		// data section
 		//
 		switch (section)
 		{
-		case SCENE_SECTION_TEXTURES: _ParseSection_TEXTURES(line); break;
-		case SCENE_SECTION_SPRITES: _ParseSection_SPRITES(line); break;
-		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
-		case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
-		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
+		case SCENE_SECTION_TEXTURES: 
+			_ParseSection_TEXTURES(line); 
+			break;
+		case SCENE_SECTION_SPRITES: 
+			_ParseSection_SPRITES(line); break;
+		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); 
+			break;
+		case SCENE_SECTION_ANIMATION_SETS: 
+			_ParseSection_ANIMATION_SETS(line); 
+			break;
+		case SCENE_SECTION_OBJECTS: 
+			_ParseSection_OBJECTS(line); 
+			break;
+		case SCENE_SECTION_TILEMAP:
+			_ParseSection_TILEMAP(line);
+			break;
 		}
 	}
 
@@ -235,7 +288,7 @@ void CPlayScene::Load()
 
 	CTextures::GetInstance()->Add(ID_TEX_BBOX, L"textures\\bbox.png", D3DCOLOR_XRGB(255, 255, 255));
 
-	tilemaps->Add(2000, L"TileMap\\Scene1.png", L"TileMap\\Scene1_map.txt");
+	
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
@@ -334,7 +387,7 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
-	tilemaps->Get(2000)->Draw();
+	tilemap->Draw();
 	for (size_t i = 0; i < Candles.size(); i++)
 		Candles[i]->Render();
 
@@ -343,6 +396,7 @@ void CPlayScene::Render()
 
 	for (int i = 0; i < listItem.size(); i++)
 		listItem[i]->Render();
+	
 }
 
 /*

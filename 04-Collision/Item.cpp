@@ -74,7 +74,7 @@ void Item::Render()
 		return;
 	int alpha = 255;
 	if (isFlicker)
-		alpha = rand() % 100 + 1;
+		alpha = rand() % 255 + 100;
 
 
 	animation_set->at(state)->Render(0, x, y, alpha);

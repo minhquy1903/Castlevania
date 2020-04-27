@@ -94,7 +94,6 @@ void CSimon::HitWeapon()
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
 
@@ -122,10 +121,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		weapon->Update(dt);
 	}
 
-	
-	
-		
-	
 	// turn off collision when die 
 	
 		CalcPotentialCollisions(coObjects, coEvents);

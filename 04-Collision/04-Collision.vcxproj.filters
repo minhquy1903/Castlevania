@@ -54,9 +54,6 @@
     <ClInclude Include="Textures.h">
       <Filter>Header Files\Animation</Filter>
     </ClInclude>
-    <ClInclude Include="Ground.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="CKeyEventHandler.h">
       <Filter>Header Files\GameMachine</Filter>
     </ClInclude>
@@ -81,6 +78,9 @@
     <ClInclude Include="Portal.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Brick.h">
+      <Filter>Header Files\GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -93,9 +93,6 @@
       <Filter>Header Files\Animation</Filter>
     </ClCompile>
     <ClCompile Include="Candle.cpp">
-      <Filter>Header Files\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Ground.cpp">
       <Filter>Header Files\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Simon.cpp">
@@ -135,6 +132,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Portal.cpp">
+      <Filter>Header Files\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Brick.cpp">
       <Filter>Header Files\GameObject</Filter>
     </ClCompile>
   </ItemGroup>

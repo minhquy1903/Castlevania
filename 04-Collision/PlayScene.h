@@ -4,7 +4,7 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include "Simon.h"
-#include "Ground.h"
+#include "Brick.h"
 #include "Whip.h"
 #include "Candle.h"
 #include "Item.h"
@@ -14,9 +14,10 @@ class CPlayScene : public CScene
 protected:
 	CSimon *player;					// A play scene has to have player, right? 
 	TileMap *tilemap; 
-	vector<LPGAMEOBJECT> objects;
+	vector<LPGAMEOBJECT> bricks;
 	vector<LPGAMEOBJECT> Candles;
 	vector<LPGAMEOBJECT> listItem;
+	vector<LPGAMEOBJECT> portal;
 	
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);

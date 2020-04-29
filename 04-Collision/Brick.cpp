@@ -1,4 +1,4 @@
-#include "Ground.h"
+#include "Brick.h"
 
 Brick::Brick()
 {
@@ -8,7 +8,7 @@ Brick::Brick()
 void Brick::Render()
 {
 	animation_set->at(0)->Render(0, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Brick::GetBoundingBox(float &l, float &t, float &r, float &b)

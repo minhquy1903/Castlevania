@@ -1,6 +1,6 @@
 ﻿#include "TileMap.h"
 
-TileMap::TileMap(int ID, LPCWSTR filePath_texture, LPCWSTR filePath_data, int num_row_on_texture, int num_col_on_textture, int num_row_on_tilemap, int tileset_width, int tileset_height)
+TileMap::TileMap(int ID, LPCWSTR filePath_texture, LPCWSTR filePath_data, int num_row_on_texture, int num_col_on_textture, int num_row_on_tilemap, int num_col_on_tilemap, int tileset_width, int tileset_height)
 {
 	id = ID;
 
@@ -10,12 +10,14 @@ TileMap::TileMap(int ID, LPCWSTR filePath_texture, LPCWSTR filePath_data, int nu
 	this->num_row_on_texture = num_row_on_texture;
 	this->num_col_on_textture = num_col_on_textture;
 	this->num_row_on_tilemap = num_row_on_tilemap;
+	this->num_col_on_tilemap = num_col_on_tilemap;
 	this->tileset_width = tileset_width;
 	this->tileset_height = tileset_height;
 
 	LoadMap();
 	Load();
 }
+
 
 void TileMap::LoadMap()
 {
@@ -86,12 +88,14 @@ void TileMap::Draw()
 		for (UINT j = firstcol; j <= lastcol; j++)
 		{
 			float x = tileset_width * (j - firstcol) + CGame::GetInstance()->GetCamPosX() - (int)(CGame::GetInstance()->GetCamPosX()) % tileset_width;
-			float y = tileset_height * i + 80;
+			float y = tileset_height * i + 80; 
 
 			tilemap[i][j]->Draw(0, x, y);
 		}
 	}
 }
+
+
 
 TileMap::~TileMap()
 {

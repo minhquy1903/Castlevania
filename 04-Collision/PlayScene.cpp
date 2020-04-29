@@ -150,12 +150,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		obj = new CSimon();
 		player = (CSimon*)obj;
-		objects.push_back(obj);
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
 	case OBJECT_TYPE_GROUND: 
 		obj = new Brick();
-		objects.push_back(obj);
+		bricks.push_back(obj);
 		break;
 	case OBJECT_TYPE_CANDLE: 
 	{
@@ -171,7 +170,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		float b = atof(tokens[5].c_str());
 		int scene_id = atoi(tokens[6].c_str());
 		obj = new CPortal(x, y, r, b, scene_id);
-		objects.push_back(obj);
+		portal.push_back(obj);
 		break;
 	}
 	default:
@@ -191,7 +190,7 @@ void CPlayScene::_ParseSection_TILEMAP(string line)
 {
 	vector<string> tokens = split(line);
 
-	if (tokens.size() < 6) return; // skip invalid lines
+	if (tokens.size() < 7) return; // skip invalid lines
 
 	int ID = atoi(tokens[0].c_str());
 	wstring filePath_texture = ToWSTR(tokens[1]);
@@ -199,10 +198,11 @@ void CPlayScene::_ParseSection_TILEMAP(string line)
 	int num_row_on_texture = atoi(tokens[3].c_str());
 	int num_col_on_textture = atoi(tokens[4].c_str());
 	int num_row_on_tilemap = atoi(tokens[5].c_str());
-	int tileset_width = atoi(tokens[6].c_str());
-	int tileset_height = atoi(tokens[7].c_str());
+	int num_col_on_tilemap = atoi(tokens[6].c_str());
+	int tileset_width = atoi(tokens[7].c_str());
+	int tileset_height = atoi(tokens[8].c_str());
 
-	tilemap = new TileMap(ID, filePath_texture.c_str(), filePath_data.c_str(), num_row_on_texture, num_col_on_textture, num_row_on_tilemap, tileset_width, tileset_height);
+	tilemap = new TileMap(ID, filePath_texture.c_str(), filePath_data.c_str(), num_row_on_texture, num_col_on_textture, num_row_on_tilemap, num_col_on_tilemap, tileset_width, tileset_height);
 }
 
 
@@ -258,8 +258,6 @@ void CPlayScene::Load()
 			section = SCENE_SECTION_UNKNOWN; 
 			continue; 
 		}
-		
-
 		//
 		// data section
 		//
@@ -297,17 +295,15 @@ void CPlayScene::Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
+	
 
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 1; i < bricks.size(); i++)
 	{
-		coObjects.push_back(objects[i]);
+		coObjects.push_back(bricks[i]);
 	}
-
-	for (size_t i = 0; i < objects.size(); i++) // simon và ground update
-	{
-		objects[i]->Update(dt, &coObjects);
-	}
+	player->Update(dt, &coObjects);
+	
 
 	if ((player->GetState() == SIMON_STAND_HIT && player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2) || (player->GetState() == SIMON_SIT_HIT && player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2))
 	{
@@ -376,26 +372,29 @@ void CPlayScene::Update(DWORD dt)
 	cx += game->GetScreenWidth() / 2;
 	cy -= game->GetScreenHeight() / 2;
 
-	
-
-	if (player->x > (SCREEN_WIDTH / 2) && player->x + (SCREEN_WIDTH / 2) < 1536)
+	if (player->x > (SCREEN_WIDTH / 2) && player->x + (SCREEN_WIDTH / 2) < tilemap->GetWidthTileMap())
 	{
 		cx = player->x - (SCREEN_WIDTH / 2);
 		CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	}
+
+	if (player->CollisionWithPortal(&portal))
+	{
+		CGame::GetInstance()->SwitchScene(2);
+		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
 	}
 }
 
 void CPlayScene::Render()
 {
+	for (int i = 0; i < bricks.size(); i++)
+		bricks[i]->Render();
 	tilemap->Draw();
 	for (size_t i = 0; i < Candles.size(); i++)
 		Candles[i]->Render();
-
-	for (int i = 0; i < objects.size(); i++)
-		objects[i]->Render();
-
 	for (int i = 0; i < listItem.size(); i++)
 		listItem[i]->Render();
+	player->Render();
 	
 }
 
@@ -404,10 +403,10 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	for (int i = 0; i < objects.size(); i++)
-		delete objects[i];
+	for (int i = 0; i < bricks.size(); i++)
+		delete bricks[i];
 
-	objects.clear();
+	bricks.clear();
 	player = NULL;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);

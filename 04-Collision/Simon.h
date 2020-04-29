@@ -48,6 +48,7 @@ public:
 	void SetState(int state);
 	void CollisionWithItem(vector<LPGAMEOBJECT> *listItems);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
+	bool CollisionWithPortal(vector<LPGAMEOBJECT> *portal);
 	Whip* GetWhip() { return whip; }
 	SubWeapon * GetWeapon() { return weapon; }
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);

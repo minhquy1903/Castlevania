@@ -3,7 +3,7 @@
 
 #include "Game.h"
 #include "Portal.h"
-#include "Ground.h"
+#include "Brick.h"
 #include "Simon.h"
 #include "Item.h"
 
@@ -167,6 +167,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			{
 				CPortal *p = dynamic_cast<CPortal *>(e->obj);
 				CGame::GetInstance()->SwitchScene(p->GetSceneId());
+				return;
 			}
 		}
 	}
@@ -182,7 +183,7 @@ void CSimon::Render()
 	{
 		whip->Render(animation_set->at(ani)->GetCurrentFrame());
 	}
-
+	RenderBoundingBox();
 	if (subWeaponIsON)
 		weapon->Render();
 	
@@ -264,20 +265,35 @@ void CSimon::CollisionWithItem(vector<LPGAMEOBJECT> *listItems)
 			{
 				subWeaponIsON = true;
 				e->isDone = true;
-				//e->SetState(knife_ani);
-				vector<LPGAMEOBJECT>::iterator it;
-				it = listItems->begin();
-				listItems->erase(it);
 			}
+			vector<LPGAMEOBJECT>::iterator it;
+			it = listItems->begin();
+			listItems->erase(it);
 		}
 	}
 }
 
+bool CSimon::CollisionWithPortal(vector<LPGAMEOBJECT>* portal)
+{
+	if (portal->size() == 0)
+		return false;
+	LPGAMEOBJECT obj = portal->at(0);
+	CPortal* e = dynamic_cast<CPortal*>(obj);
+	float left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b;
+	GetBoundingBox(left_a, top_a, right_a, bottom_a);
+	e->GetBoundingBox(left_b, top_b, right_b, bottom_b);
+	if (AABBCollision(left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b))
+	{
+		return true;
+	}
+	return false;
+}
+
 void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	left = x;
+	left = x + 15;
 	top = y; 
-	right = x + SIMON_BOX_WIDTH;
+	right = x + SIMON_BOX_WIDTH + 15;
 	bottom = y + SIMON_BOX_HEIGHT;
 }
 

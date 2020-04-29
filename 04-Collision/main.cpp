@@ -24,11 +24,8 @@
 
 #include "Utils.h"
 #include "Game.h"
-#include "GameObject.h"
-#include "Textures.h"
-#include "Whip.h"
-#include "Simon.h"
-#include "Ground.h"
+
+
 
 #define WINDOW_CLASS_NAME L"SampleWindow"
 #define MAIN_WINDOW_TITLE L"Castlevania"

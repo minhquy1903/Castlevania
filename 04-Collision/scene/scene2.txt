@@ -35,6 +35,20 @@
 13	120	198	180	262	0
 14	60	198	120	262	0
 15	0	198	60	262	0
+#simon_stairup	
+16	240	66	300	130	0
+17	300	66	360	130	0
+#simon_stairdown		
+18	120	66	180	130	0
+19	180	66	240	130	0
+#simon_stairup_hit	
+20	300	132	360	196	0
+21	360	132	420	196	0
+22	420	132	480	196	0
+#simon_stairdown_hit	
+23	120	132	180	196	0
+24	180	132	240	196	0
+25	240	132	300	196	0
 
 #GROUND	50-100
 50	32	0	64	32	1
@@ -95,7 +109,14 @@
 5	10	100	11	100	12	100
 #simon_shock
 6	13	100	14	100	15	100
-
+#simon_stairup
+7	16	100	17	100
+#simon_stairdown
+8	18	100	19	100
+#simon_stairup_hit
+9	20	100	21	100	22	100
+#simon_stairdown	_hit
+10	23	100	24	100	25	100
 #====GROUND====
 50	50	100
 
@@ -132,7 +153,7 @@
 #
 [ANIMATION_SETS]
 # SIMON
-0	0	1	2	3	4	5	6
+0	0	1	2	3	4	5	6	7	8	9	10
 
 # GROUND 
 1	50
@@ -200,11 +221,11 @@
 1	448	336	1
 1	448	368	1
 1	448	400	1
-#top stair1
+#top ground 1
 1	352	304	1
 1	384	304	1
 1	416	304	1	
-#bottom stair1
+#top ground 2
 1	32	240	1
 1	32	208	1
 1	32	272	1
@@ -217,6 +238,11 @@
 1	224	240	1
 1	256	240	1
 1	288	240	1
+
+#stair
+4	224	400	1	-1	1
+#stair_bottom
+
 [TILEMAP]
 #tile id	file_texture	file_path	tile_width	tile_height
 2000	TileMap\\tilesets_scene2.png	TileMap\\tilemap_scene2.txt	4	7	12	17	32	32

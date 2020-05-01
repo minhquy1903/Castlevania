@@ -18,6 +18,7 @@ protected:
 	vector<LPGAMEOBJECT> Candles;
 	vector<LPGAMEOBJECT> listItem;
 	vector<LPGAMEOBJECT> portal;
+	vector<LPGAMEOBJECT> stairs;
 	
 	void _ParseSection_TEXTURES(string line);
 	void _ParseSection_SPRITES(string line);

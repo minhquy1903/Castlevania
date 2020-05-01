@@ -31,10 +31,11 @@
 10	420	66	480	130	0
 11	0	132	60	196	0
 12	60	132	120	196	0
-#shock
+#simon_shock
 13	120	198	180	262	0
 14	60	198	120	262	0
 15	0	198	60	262	0
+
 
 #GROUND	50-100
 50	0	0	64	32	1
@@ -132,7 +133,7 @@
 #
 [ANIMATION_SETS]
 # SIMON
-0	0	1	2	3	4	5	6
+0	0	1	2	3	4	5	6	
 
 # GROUND 
 1	50
@@ -156,7 +157,7 @@
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = SIMON , 1 = GROUND, 2 = CANDLE
 # SIMON
-0	0	0	0
+0	1376	0	0
 
 # GROUND
 1	0	368	1

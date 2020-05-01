@@ -25,17 +25,17 @@
     <Filter Include="Header Files\GameMachine">
       <UniqueIdentifier>{02708034-17dc-4582-8370-0c9d4f8456a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GameObject\StaticObject">
+      <UniqueIdentifier>{f57ebfb1-ab1c-431b-bdac-ed626844cecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameObject\Player">
+      <UniqueIdentifier>{5faf5177-6fc5-430c-8893-acfb49a5ece7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameObject\SubWeapon">
+      <UniqueIdentifier>{0609ba10-1a64-458c-ac73-3aa4beec2937}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Simon.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Candle.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Whip.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject.h">
       <Filter>Header Files\GameObject</Filter>
     </ClInclude>
@@ -63,23 +63,38 @@
     <ClInclude Include="Utils.h">
       <Filter>Header Files\GameMachine</Filter>
     </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="SubWeapon.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Knife.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="TileMap.h">
       <Filter>Header Files\GameMachine</Filter>
     </ClInclude>
-    <ClInclude Include="Portal.h">
-      <Filter>Header Files\GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="Brick.h">
-      <Filter>Header Files\GameObject</Filter>
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Candle.h">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="StairBottom.h">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="StairTop.h">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Simon.h">
+      <Filter>Header Files\GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Knife.h">
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="SubWeapon.h">
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Whip.h">
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -91,15 +106,6 @@
     </ClCompile>
     <ClCompile Include="Textures.cpp">
       <Filter>Header Files\Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="Candle.cpp">
-      <Filter>Header Files\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Simon.cpp">
-      <Filter>Header Files\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Whip.cpp">
-      <Filter>Header Files\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Header Files\GameMachine</Filter>
@@ -116,26 +122,41 @@
     <ClCompile Include="PlayScene.cpp">
       <Filter>Header Files\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>Header Files\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="SubWeapon.cpp">
-      <Filter>Header Files\GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Knife.cpp">
-      <Filter>Header Files\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="TileMap.cpp">
       <Filter>Header Files\GameMachine</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Portal.cpp">
-      <Filter>Header Files\GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Brick.cpp">
-      <Filter>Header Files\GameObject</Filter>
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Candle.cpp">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="StairBottom.cpp">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="StairTop.cpp">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Simon.cpp">
+      <Filter>Header Files\GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="SubWeapon.cpp">
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Knife.cpp">
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Whip.cpp">
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

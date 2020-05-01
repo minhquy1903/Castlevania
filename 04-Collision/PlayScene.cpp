@@ -5,7 +5,8 @@
 #include "Utils.h"
 #include "Textures.h"
 #include "Sprites.h"
-
+#include "StairTop.h"
+#include "StairBottom.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
@@ -28,9 +29,10 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define SCENE_SECTION_OBJECTS	6
 #define SCENE_SECTION_TILEMAP 7
 #define OBJECT_TYPE_SIMON	0
-#define OBJECT_TYPE_GROUND	1
+#define OBJECT_TYPE_BRICK	1
 #define OBJECT_TYPE_CANDLE	2
 #define OBJECT_TYPE_ITEM	3
+#define OBJECT_TYPE_STAIR	4
 
 #define OBJECT_TYPE_PORTAL	50
 
@@ -152,7 +154,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		player = (CSimon*)obj;
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
-	case OBJECT_TYPE_GROUND: 
+	case OBJECT_TYPE_BRICK: 
 		obj = new Brick();
 		bricks.push_back(obj);
 		break;
@@ -173,6 +175,19 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		portal.push_back(obj);
 		break;
 	}
+	case OBJECT_TYPE_STAIR:
+	{
+
+		int stateStair = atof(tokens[4].c_str());
+		int DirectionStair = atof(tokens[5].c_str());
+		if (stateStair == 1)
+			obj = new StairTop(DirectionStair, x, y);
+		else
+			obj = new StairBottom(DirectionStair, x, y);
+		stairs.push_back(obj);
+		break;
+	}
+		
 	default:
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
@@ -296,6 +311,7 @@ void CPlayScene::Update(DWORD dt)
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 	
+	
 
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 1; i < bricks.size(); i++)
@@ -304,6 +320,7 @@ void CPlayScene::Update(DWORD dt)
 	}
 	player->Update(dt, &coObjects);
 	
+	player->TouchStair(&stairs);
 
 	if ((player->GetState() == SIMON_STAND_HIT && player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2) || (player->GetState() == SIMON_SIT_HIT && player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2))
 	{
@@ -358,7 +375,7 @@ void CPlayScene::Update(DWORD dt)
 		listItem[i]->Update(dt, &coObjects);
 	}
 
-	player->CollisionWithItem(&listItem); // simon nhặt item
+	player->CollideWithItem(&listItem); // simon nhặt item
 
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
@@ -378,7 +395,7 @@ void CPlayScene::Update(DWORD dt)
 		CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
 	}
 
-	if (player->CollisionWithPortal(&portal))
+	if (player->CollideWithPortal(&portal))
 	{
 		CGame::GetInstance()->SwitchScene(2);
 		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
@@ -452,7 +469,11 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		simon->GetWeapon()->isHittingSubWeapon = false;
 		return;
 	}
-
+	if (simon->isTouchStair && game->IsKeyDown(DIK_UP))
+	{
+		simon->WalkUpOnStair();
+		return;
+	}
 	if (game->IsKeyDown(DIK_DOWN))
 	{
 		simon->SetState(SIMON_SIT);

@@ -6,6 +6,8 @@
 #include "Brick.h"
 #include "Simon.h"
 #include "Item.h"
+#include "StairBottom.h"
+#include "StairTop.h"
 
 CSimon::CSimon()
 {
@@ -16,6 +18,7 @@ CSimon::CSimon()
 	subWeaponIsON = false;
 	isHittingWhip = false;
 	isDone = false;
+	isTouchStair = false;
 }
 
 void CSimon::WalkLeft()
@@ -91,6 +94,17 @@ void CSimon::HitWeapon()
 	weapon->SetDirectionSubWeapon(nx);
 }
 
+void CSimon::WalkUpOnStair()
+{
+	nx = nxStair;
+	SetState(SIMON_STAIR_UP);
+}
+
+
+void CSimon::WalkDownOnStair()
+{
+
+}
 
 void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -135,8 +149,9 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	// No collision occured, proceed normally
 	if (coEvents.size()==0)
 	{
-		x += dx; 
-		y += dy;
+		x += dx;
+		if(!isTouchStair)
+			y += dy;
 	}
 	else
 	{
@@ -232,10 +247,15 @@ void CSimon::SetState(int state)
 		animation_set->at(ani)->SetCurrentFrame();
 		animation_set->at(ani)->StartRenderAnimation();
 		break;
+	case SIMON_STAIR_UP:
+		ani = SIMON_STAIR_UP;
+		vx = SIMON_WALKING_SPEED;
+		vy = SIMON_WALKING_UP;
+		break;
 	}
 }
 
-void CSimon::CollisionWithItem(vector<LPGAMEOBJECT> *listItems)
+void CSimon::CollideWithItem(vector<LPGAMEOBJECT> *listItems)
 {
 	if (listItems->size() == 0)
 		return;
@@ -273,7 +293,7 @@ void CSimon::CollisionWithItem(vector<LPGAMEOBJECT> *listItems)
 	}
 }
 
-bool CSimon::CollisionWithPortal(vector<LPGAMEOBJECT>* portal)
+bool CSimon::CollideWithPortal(vector<LPGAMEOBJECT>* portal)
 {
 	if (portal->size() == 0)
 		return false;
@@ -287,6 +307,34 @@ bool CSimon::CollisionWithPortal(vector<LPGAMEOBJECT>* portal)
 		return true;
 	}
 	return false;
+}
+
+void CSimon::TouchStair(vector<LPGAMEOBJECT>* stair)
+{
+	float left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b;
+	GetBoundingBox(left_a, top_a, right_a, bottom_a);
+	for (int i = 0; i < stair->size(); i++)
+	{
+		LPGAMEOBJECT obj = stair->at(i);
+		
+		obj->GetBoundingBox(left_b, top_b, right_b, bottom_b);
+		if(dynamic_cast<StairBottom*>(obj))
+		{	
+			if (AABBCollision(left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b))
+			{
+
+				isTouchStair = true;
+				nxStair = obj->nx;
+			}
+			else
+				isTouchStair = false;
+		}
+		else
+		{
+
+		
+		}
+	}
 }
 
 void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom)

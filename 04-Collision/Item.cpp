@@ -4,7 +4,7 @@
 
 void Item::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	if (!isDone)
+	if (!isTimeOut)
 	{
 		switch (state)
 		{
@@ -37,7 +37,8 @@ void Item::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		isFlicker = true;
 	if (GetTickCount() - lifeTimeStart > lifeTime)
 	{
-		isDone = true;
+		isTimeOut = true;
+		return;
 	}
 	
 	vector<LPCOLLISIONEVENT> coEvents;
@@ -70,13 +71,13 @@ void Item::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Item::Render()
 {
-	if (this->isDone)
+	if (this->isTimeOut)
 		return;
 	int alpha = 255;
 	if (isFlicker)
 		alpha = rand() % 255 + 100;
 
-
+	RenderBoundingBox();
 	animation_set->at(state)->Render(0, x, y, alpha);
 }
 
@@ -85,9 +86,9 @@ Item::Item()
 {
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(4));
 	lifeTimeStart = GetTickCount();
-	isDone = false;
-	timeFlicker = 1500;
-	lifeTime = 3000;
+	isTimeOut = false;
+	timeFlicker = TIME_FLICKER;
+	lifeTime = LIFE_TIME;
 	isFlicker = false;
 	vy = 0.15;
 }

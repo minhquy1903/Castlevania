@@ -19,7 +19,7 @@ void Whip::Render(int currentID)
 	animation_set->at(state)->RenderWhip(currentID, nx, x, y);
 	CurrentFrame = currentID;
 	}
-	//RenderBoundingBox();
+	RenderBoundingBox();
 	
 }
 
@@ -44,18 +44,26 @@ void Whip::WhipCollideWithCandle(vector<LPGAMEOBJECT>* coObjects)
 
 void Whip::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	top = y + 15;
-	bottom = top + 15;
-	if (nx < 0)
+	if (nx == -1)
 	{
-		left = x + 50;
+		if (state == WHIP_LVL_3)
+			left = x + 20;
+		else
+			left = x + 50;
+		top = y + 15;
+		right = x + 105;
+		bottom = top + 15;
 	}
-	else if (nx > 0)
+	else
 	{
 		left = x + 135;
+		top = y + 15;
+		if (state == WHIP_LVL_3)
+			right = x + 220;
+		else
+			right = x + 190;
+		bottom = top + 15;
 	}
-
-	right = left + 55;
 }
 
 

@@ -239,8 +239,10 @@
 1	256	240	1
 1	288	240	1
 
-#stair
-4	224	400	1	-1	1
+#stair	type	x	y	ani_sey	nxstair	nystair	
+4	224	400	1	1	-1
+4	356	272	1	-1	1
+4	160	208	1	1	-1
 #stair_bottom
 
 [TILEMAP]

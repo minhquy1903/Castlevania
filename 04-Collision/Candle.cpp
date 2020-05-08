@@ -15,15 +15,15 @@ void Candle::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	if (state == BREAK_CANDLE && animation_set->at(state)->IsRenderOver(400)) 
 	{
 		DropItem();
-		isDone = true;
+		renderFireDone = true;
 	}
 }
 
 void Candle::Render()
 {
-	if (isDone)
+	if (renderFireDone)
 		return;
-		
+	RenderBoundingBox();
 	animation_set->at(state)->Render(0, x, y);
 }
 
@@ -47,8 +47,14 @@ void Candle::DropItem()
 
 Candle::Candle()
 {
-	isDone = false;
+	
+}
+
+Candle::Candle(int idItem)
+{
+	renderFireDone = false;
 	state = NOMAL_CANDLE;
+	this->idItem = idItem;
 }
 
 

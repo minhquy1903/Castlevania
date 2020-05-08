@@ -40,10 +40,9 @@ public:
 
 	float vx;
 	float vy;
-	int nx;	 
-	bool isDone;
+	int nx;
+	int ny;
 	int state;
-	int idItem;
 	DWORD dt; 
 
 	LPANIMATION_SET animation_set;

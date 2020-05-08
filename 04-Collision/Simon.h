@@ -18,6 +18,7 @@
 #define SIMON_SIT_HIT			5
 #define SIMON_SHOCK				6
 #define SIMON_STAIR_UP			7
+#define SIMON_STAND_ON_STAIR	11
 #define SIMON_STAIR_DOWN		8
 #define SIMON_STAIR_UP_HIT		9
 #define SIMON_STAIR_DOWN_HIT	10
@@ -25,42 +26,44 @@
 
 #define SIMON_BOX_WIDTH  30
 #define SIMON_BOX_HEIGHT 64
-
 #define SIMON_UNTOUCHABLE_TIME 5000
-
-//
 
 class CSimon : public CGameObject
 {
 	int untouchable;
 	int ani;
-	
 	bool subWeaponIsON;
 	int nxStair;
+	int nyStair;
 	DWORD untouchable_start;
 	Whip *whip;
 	SubWeapon * weapon;
 
 public: 
 	CSimon();
-	bool isTouchStair;
-	bool isHittingWhip = false;
+	void SetAnimation(int ani) { this->ani = ani; }
+	bool isTouchStairTop;
+	bool isTouchStairBottom;
+	bool isOnStair;
 	bool isGrounded;
 	void WalkLeft();
 	void WalkRight();
 	void Jump();
 	void Hit();
 	void HitWeapon();
-	void WalkUpOnStair();
-	void WalkDownOnStair();
+	void GoUpStair();
+	void StandOnStair();
+	void GoDownStair();
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
 	void Render();
 	void SetState(int state);
-	void CollideWithItem(vector<LPGAMEOBJECT> *listItems);
+	void CollideWithItem(vector<LPGAMEOBJECT> *listItems = NULL);
+	void CollodeWhitBirck(vector<LPGAMEOBJECT> *coObjects = NULL);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	bool CollideWithPortal(vector<LPGAMEOBJECT> *portal);
-	void TouchStair(vector<LPGAMEOBJECT> *stair);
+	void SimonTouchStair(vector<LPGAMEOBJECT> *stair = NULL);
+	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	Whip* GetWhip() { return whip; }
 	SubWeapon * GetWeapon() { return weapon; }
-	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	
 };

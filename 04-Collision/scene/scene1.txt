@@ -157,7 +157,7 @@
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = SIMON , 1 = GROUND, 2 = CANDLE
 # SIMON
-0	1376	0	0
+0	0	0	0
 
 # GROUND
 1	0	368	1

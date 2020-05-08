@@ -17,6 +17,6 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	void Render();
 	void SetDirectionSubWeapon(int nx);
-	bool CheckPosKnife(float a);
+	bool CheckExistKnife(float a);
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };

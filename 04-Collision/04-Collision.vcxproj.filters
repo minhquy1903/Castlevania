@@ -75,12 +75,6 @@
     <ClInclude Include="Portal.h">
       <Filter>Header Files\GameObject\StaticObject</Filter>
     </ClInclude>
-    <ClInclude Include="StairBottom.h">
-      <Filter>Header Files\GameObject\StaticObject</Filter>
-    </ClInclude>
-    <ClInclude Include="StairTop.h">
-      <Filter>Header Files\GameObject\StaticObject</Filter>
-    </ClInclude>
     <ClInclude Include="Simon.h">
       <Filter>Header Files\GameObject\Player</Filter>
     </ClInclude>
@@ -95,6 +89,9 @@
     </ClInclude>
     <ClInclude Include="Whip.h">
       <Filter>Header Files\GameObject\SubWeapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Stair.h">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -137,12 +134,6 @@
     <ClCompile Include="Portal.cpp">
       <Filter>Header Files\GameObject\StaticObject</Filter>
     </ClCompile>
-    <ClCompile Include="StairBottom.cpp">
-      <Filter>Header Files\GameObject\StaticObject</Filter>
-    </ClCompile>
-    <ClCompile Include="StairTop.cpp">
-      <Filter>Header Files\GameObject\StaticObject</Filter>
-    </ClCompile>
     <ClCompile Include="Simon.cpp">
       <Filter>Header Files\GameObject\Player</Filter>
     </ClCompile>
@@ -157,6 +148,9 @@
     </ClCompile>
     <ClCompile Include="Whip.cpp">
       <Filter>Header Files\GameObject\SubWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Stair.cpp">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

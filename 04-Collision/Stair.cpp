@@ -1,14 +1,15 @@
-#include "StairTop.h"
+#include "Stair.h"
 #include "Textures.h"
 #include "Game.h"
 
 
-void StairTop::Render()
-{
 
+void Stair::Render()
+{
+	RenderBoundingBox();
 }
 
-void StairTop::RenderBoundingBox()
+void Stair::RenderBoundingBox()
 {
 	D3DXVECTOR3 p(x, y, 0);
 	RECT rect;
@@ -26,23 +27,28 @@ void StairTop::RenderBoundingBox()
 	CGame::GetInstance()->Draw(nx, l, t, bbox, rect.left, rect.top, rect.right, rect.bottom, 120);
 }
 
-void StairTop::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+void Stair::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-
+	left = x;
+	top = y + 30;
+	right = x + 32;
+	bottom = y + 32;
 }
 
-StairTop::StairTop(int direction, int x, int y)
+Stair::Stair(int x, int y, int directionX, int directionY)
 {
-	nx = direction;
+	nx = directionX;
+	ny = directionY;
 	this->x = x;
 	this->y = y;
 }
 
-StairTop::StairTop()
+
+Stair::Stair()
 {
 }
 
 
-StairTop::~StairTop()
+Stair::~Stair()
 {
 }

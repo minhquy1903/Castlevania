@@ -7,14 +7,12 @@
 
 class Whip : public CGameObject
 {
-	bool isHit;
 	
 public:
 	int CurrentFrame;
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	void Render();
-	void SetHit(int ishit) { isHit = ishit; }
-	bool GetHit() { return isHit; }
+	
 	void Render(int currentID = -1);
 	void WhipCollideWithCandle(vector<LPGAMEOBJECT>* coObjects);
 	

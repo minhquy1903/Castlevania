@@ -177,7 +177,7 @@
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = SIMON , 1 = GROUND, 2 = CANDLE
 # SIMON
-0	35	350	0
+0	20	365	0
 
 #wall left
 1	0	80	1
@@ -241,7 +241,7 @@
 
 #stair	type	x	y	ani_sey	nxstair	nystair	
 4	224	400	1	1	-1
-4	356	272	1	-1	1
+4	360	272	1	-1	1
 4	160	208	1	1	-1
 #stair_bottom
 

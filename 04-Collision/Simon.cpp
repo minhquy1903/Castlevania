@@ -140,8 +140,9 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else
 	{
-		CollodeWhitBirck(coObjects);
 		vy += GRAVITY * dt;
+		CollodeWhitBirck(coObjects);
+		
 	}
 		
 }
@@ -153,7 +154,7 @@ void CSimon::Render()
 	{
 		whip->Render(animation_set->at(ani)->GetCurrentFrame());
 	}
-	RenderBoundingBox();
+	//RenderBoundingBox();
 	if (subWeaponIsON)
 		weapon->Render();
 	
@@ -275,9 +276,6 @@ void CSimon::CollodeWhitBirck(vector<LPGAMEOBJECT>* coObjects)
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
 	coEvents.clear();
-
-
-
 	// turn off collision when die 
 
 	CalcPotentialCollisions(coObjects, coEvents);
@@ -319,6 +317,8 @@ void CSimon::CollodeWhitBirck(vector<LPGAMEOBJECT>* coObjects)
 				{
 					isGrounded = true;
 				}
+			/*	else
+					y += dy;*/
 			}
 		}
 	}

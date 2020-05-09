@@ -5,7 +5,7 @@
 #include "Knife.h"
 
 #define SIMON_WALKING_SPEED		0.15f 
-#define SIMON_WALKING_UP		0.15f
+#define SIMON_GO_STAIR_SPEED	0.1f
 #define SIMON_JUMP_SPEED_Y		0.6f
 #define MARIO_JUMP_DEFLECT_SPEED 0.2f
 #define GRAVITY					0.002f

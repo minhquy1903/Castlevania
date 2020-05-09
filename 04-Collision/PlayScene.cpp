@@ -315,7 +315,7 @@ void CPlayScene::Update(DWORD dt)
 	}
 	player->Update(dt, &coObjects);
 	
-	player->SimonTouchStair(&stairs);
+	player->SimonTouchStair(&stairs);// simon chạm cầu thang
 
 	if ((player->GetState() == SIMON_STAND_HIT && player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2) || (player->GetState() == SIMON_SIT_HIT && player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2))
 	{

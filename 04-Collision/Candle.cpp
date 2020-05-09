@@ -23,7 +23,7 @@ void Candle::Render()
 {
 	if (renderFireDone)
 		return;
-	RenderBoundingBox();
+	//RenderBoundingBox();
 	animation_set->at(state)->Render(0, x, y);
 }
 

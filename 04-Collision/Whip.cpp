@@ -19,7 +19,7 @@ void Whip::Render(int currentID)
 	animation_set->at(state)->RenderWhip(currentID, nx, x, y);
 	CurrentFrame = currentID;
 	}
-	RenderBoundingBox();
+	//RenderBoundingBox();
 	
 }
 

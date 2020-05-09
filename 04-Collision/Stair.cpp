@@ -6,7 +6,7 @@
 
 void Stair::Render()
 {
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Stair::RenderBoundingBox()

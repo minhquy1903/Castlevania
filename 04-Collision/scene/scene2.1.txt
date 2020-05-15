@@ -3,7 +3,6 @@
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = SIMON , 1 = GROUND, 2 = CANDLE
 # SIMON
-#0	50	0	0
 
 #wall left
 1	0	80	1

@@ -2,7 +2,7 @@
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = SIMON , 1 = GROUND, 2 = CANDLE
 # SIMON
-0	1248	0	0
+0	32	300	0
 
 # GROUND
 1	0	368	1
@@ -64,7 +64,7 @@
 
 # --- SCENE PORTAL ----
 # type	x	y	ani_set_id	r	b	scene_id	x	y
-50	1376	300	0	32	64	2	50	0
+50	1376	300	0	32	64	2	32	366
 
 [TILEMAP]
 #tile id	file_texture	file_path	tile_width	tile_height

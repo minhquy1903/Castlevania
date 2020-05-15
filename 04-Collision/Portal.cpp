@@ -14,7 +14,7 @@ CPortal::CPortal(float x, float y, float width, float height, int scene_id, int 
 
 void CPortal::Render()
 {
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CPortal::GetBoundingBox(float &l, float &t, float &r, float &b)

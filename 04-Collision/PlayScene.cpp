@@ -298,12 +298,12 @@ void CPlayScene::Render()
 		Candles[i]->Render();
 	for (int i = 0; i < listItem.size(); i++)
 		listItem[i]->Render();
-	for (int i = 0; i < portal.size(); i++)
-		portal[i]->Render();
-	for (int i = 0; i < stairs.size(); i++)
+	/*for (int i = 0; i < portal.size(); i++)
+		portal[i]->Render();*/
+	/*for (int i = 0; i < stairs.size(); i++)
 	{
 		stairs[i]->Render();
-	}
+	}*/
 	player->Render();
 }
 

@@ -170,7 +170,7 @@ void CSimon::Render()
 	
 	
 
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void CSimon::SetState(int state)

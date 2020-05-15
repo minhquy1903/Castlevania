@@ -3,4 +3,8 @@ start	1
 #scene list
 [SCENES]
 1	scene\\scene1.txt
-2	scene\\scene2.txt
+2	scene\\scene2.1.txt
+3	scene\\scene2.2.txt
+[RESOURCE]
+scene\\resource.txt
+#resourceFilePath

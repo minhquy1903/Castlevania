@@ -1,0 +1,79 @@
+
+[OBJECTS]
+# type	x	y	ani_set_id	extra_settings per object type
+# type: 0 = SIMON , 1 = GROUND, 2 = CANDLE
+# SIMON
+#0	50	0	0
+
+#wall left
+1	0	80	1
+1	0	112	1
+1	0	144	1
+1	0	176	1
+1	0	208	1
+1	0	240	1
+1	0	272	1
+1	0	304	1
+1	0	336	1
+1	0	368	1
+1	0	400	1
+#ground
+1	0	432	1
+1	32	432	1
+1	64	432	1
+1	96	432	1
+1	128	432	1
+1	160	432	1
+1	192	432	1
+1	224	432	1
+1	256	432	1
+1	288	432	1
+1	320	432	1
+1	352	432	1
+1	384	432	1
+1	416	432	1
+1	480	432	1
+1	512	432	1
+1	448	432	1
+#wall right
+1	448	80	1
+1	448	112	1
+1	448	144	1
+1	448	176	1
+1	448	208	1
+1	448	240	1
+1	448	272	1
+1	448	304	1
+1	448	336	1
+1	448	368	1
+1	448	400	1
+#top ground 1
+1	352	304	1
+1	384	304	1
+1	416	304	1	
+#top ground 2
+1	32	240	1
+1	32	208	1
+1	32	272	1
+1	32	304	1
+1	64	240	1
+1	96	240	1
+1	128	240	1
+1	160	240	1
+1	192	240	1
+1	224	240	1
+1	256	240	1
+1	288	240	1
+
+#stair	type	x	y	ani_sey	nxstair	nystair	
+4	192	400	1	1	-1
+4	362	272	1	-1	1
+4	128	208	1	1	-1
+
+# --- SCENE PORTAL ----
+# type	x	y	ani_set_id	r	b	scene_id	x	     y
+50	280	75	0	32	1	3	768	370
+[TILEMAP]
+#tile id	file_texture	file_path	tile_width	tile_height
+1000	TileMap\\tilesets_scene2.png	TileMap\\tilemap_scene2.1.txt	4	7	12	17	32	32
+	

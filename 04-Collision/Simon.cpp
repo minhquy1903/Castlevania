@@ -10,13 +10,16 @@
 
 CSimon::CSimon()
 {
-	this->SetAnimationSet(CAnimationSets::GetInstance()->Get(0));
 	untouchable = 0;
 	whip = new Whip();
 	weapon = new Knife();
 	subWeaponIsON = false;
 	isTouchStairTop = false;
 	isOnStair = false;
+	health = 16;
+	life = 3; 
+	heart = 0;
+	currentSubweapon = -1;
 }
 
 void CSimon::WalkLeft()
@@ -70,21 +73,28 @@ void CSimon::Hit()
 
 }
 
-void CSimon::HitWeapon()
+void CSimon::UseSubweapon()
 {
 	if (GetState() == SIMON_SHOCK)
 		return;
-	if (!subWeaponIsON)
+	
+	switch (typeSubWeapon)
 	{
+	case ITEM_KNIFE:
+		if (!subWeaponIsON || heart < 1)
+		{
+			Hit();
+			return;
+		}
+		if (weapon->isSubWeaponExist)
+			return;
 		Hit();
-		return;
-	}
-	if (weapon->isSubWeaponExist)
-		return;
-	Hit();
-	weapon->SetNx(nx);
-	weapon->isHittingSubWeapon = true;
-	weapon->SetDirectionSubWeapon(nx);
+		heart--;
+		weapon->SetNx(nx);
+		weapon->isHittingSubWeapon = true;
+		weapon->SetDirectionSubWeapon(nx);
+		break;
+	}	
 }
 
 void CSimon::GoUpStair()
@@ -160,7 +170,7 @@ void CSimon::Render()
 	
 	
 
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void CSimon::SetState(int state)
@@ -234,6 +244,30 @@ void CSimon::SetState(int state)
 	}
 }
 
+bool CSimon::AutoWalk(int toX)
+{
+	
+	if (toX - (x + 30) > 2)
+	{
+		nx = 1;
+		SetState(SIMON_WALKING);
+		return false;
+	}
+	else if (toX - (x + 30) < -2)
+	{
+		nx = -1;
+		SetState(SIMON_WALKING);
+		return false;
+	}
+	else
+		x = toX - 30;//sử lí if else cho topstair
+	if (toX - (x + 30) == 0)
+		return true;
+	
+	return false;
+}
+
+
 void CSimon::CollideWithItem(vector<LPGAMEOBJECT> *listItems)
 {
 	if (listItems->size() == 0)
@@ -257,11 +291,14 @@ void CSimon::CollideWithItem(vector<LPGAMEOBJECT> *listItems)
 			}
 			else if (e->GetState() == ITEM_HEART)
 			{
-				
+				heart += 5;
 			}
 			else if (e->GetState() == ITEM_KNIFE)
 			{
+				typeSubWeapon = ITEM_KNIFE;
 				subWeaponIsON = true;
+				weapon = new Knife();
+				currentSubweapon = 0;
 			}
 			vector<LPGAMEOBJECT>::iterator it;
 			it = listItems->begin();
@@ -327,7 +364,7 @@ void CSimon::CollodeWhitBirck(vector<LPGAMEOBJECT>* coObjects)
 	for (UINT i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
 
-bool CSimon::CollideWithPortal(vector<LPGAMEOBJECT>* portal)
+int CSimon::CollideWithPortal(vector<LPGAMEOBJECT>* portal)
 {
 	if (portal->size() == 0)
 		return false;
@@ -338,9 +375,10 @@ bool CSimon::CollideWithPortal(vector<LPGAMEOBJECT>* portal)
 	e->GetBoundingBox(left_b, top_b, right_b, bottom_b);
 	if (AABBCollision(left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b))
 	{
-		return true;
+		SetPosition(e->GetXNextPortal(), e->GetYNextPortal());
+		return e->GetSceneID();
 	}
-	return false;
+	return 0;
 }
 
 void CSimon::SimonTouchStair(vector<LPGAMEOBJECT>* stair)
@@ -361,9 +399,14 @@ void CSimon::SimonTouchStair(vector<LPGAMEOBJECT>* stair)
 			if (nyStair == 1)
 			{
 				isTouchStairTop = true;
+				posXStair = obj->x;
 			}
 			else
+			{
+				posXStair = (obj->x * 2 + 64) / 2;
 				isTouchStairBottom = true;
+			}
+
 			if (isTouchStairBottom || isTouchStairTop)
 				return;
 		}
@@ -381,7 +424,7 @@ void CSimon::GetBoundingBox(float &left, float &top, float &right, float &bottom
 {
 	left = x + 15;
 	top = y; 
-	right = x + SIMON_BOX_WIDTH + 15;
+	right = x + SIMON_BOX_WIDTH;
 	bottom = y + SIMON_BOX_HEIGHT;
 }
 

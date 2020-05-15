@@ -6,7 +6,7 @@
 
 void Stair::Render()
 {
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 void Stair::RenderBoundingBox()
@@ -31,7 +31,7 @@ void Stair::GetBoundingBox(float & left, float & top, float & right, float & bot
 {
 	left = x;
 	top = y + 30;
-	right = x + 32;
+	right = x + 48;
 	bottom = y + 32;
 }
 

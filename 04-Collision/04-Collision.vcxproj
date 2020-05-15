@@ -124,6 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="BoardScore.h" />
     <ClInclude Include="Candle.h" />
     <ClInclude Include="CKeyEventHandler.h" />
     <ClInclude Include="Brick.h" />
@@ -145,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="BoardScore.cpp" />
     <ClCompile Include="Candle.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Game.cpp" />

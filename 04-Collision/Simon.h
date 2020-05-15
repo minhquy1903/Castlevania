@@ -24,17 +24,23 @@
 #define SIMON_STAIR_DOWN_HIT	10
 
 
-#define SIMON_BOX_WIDTH  30
+#define SIMON_BOX_WIDTH  45
 #define SIMON_BOX_HEIGHT 64
 #define SIMON_UNTOUCHABLE_TIME 5000
 
 class CSimon : public CGameObject
 {
+	int typeSubWeapon;
 	int untouchable;
 	int ani;
 	bool subWeaponIsON;
 	int nxStair;
 	int nyStair;
+	int posXStair;
+	int health;
+	int life;
+	int heart;
+	int currentSubweapon;
 	DWORD untouchable_start;
 	Whip *whip;
 	SubWeapon * weapon;
@@ -50,19 +56,25 @@ public:
 	void WalkRight();
 	void Jump();
 	void Hit();
-	void HitWeapon();
+	void UseSubweapon();
 	void GoUpStair();
 	void StandOnStair();
 	void GoDownStair();
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
 	void Render();
 	void SetState(int state);
+	bool AutoWalk(int toX);
 	void CollideWithItem(vector<LPGAMEOBJECT> *listItems = NULL);
 	void CollodeWhitBirck(vector<LPGAMEOBJECT> *coObjects = NULL);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
-	bool CollideWithPortal(vector<LPGAMEOBJECT> *portal);
+	int CollideWithPortal(vector<LPGAMEOBJECT> *portal);
 	void SimonTouchStair(vector<LPGAMEOBJECT> *stair = NULL);
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	int GetHealth() { return health; }
+	int GetHeart() { return heart; }
+	int GetLife() { return life; }
+	int GetPosXStair() { return posXStair; }
+	int GetCurrentSubweapon() { return currentSubweapon; }
 	Whip* GetWhip() { return whip; }
 	SubWeapon * GetWeapon() { return weapon; }
 	

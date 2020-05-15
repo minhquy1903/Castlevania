@@ -1,13 +1,15 @@
 #include "Portal.h"
 
 
-CPortal::CPortal(float x, float y, float r, float b, int scene_id)
+CPortal::CPortal(float x, float y, float width, float height, int scene_id, int xNextPortal, int yNextPortal)
 {
 	this->scene_id = scene_id;
 	this->x = x;
 	this->y = y;
-	width = r - x + 1;
-	height = b - y + 1;
+	this->width = width;
+	this->height = height;
+	this->xNextPortal = xNextPortal;
+	this->yNextPortal = yNextPortal;
 }
 
 void CPortal::Render()

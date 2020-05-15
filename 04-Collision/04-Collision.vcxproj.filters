@@ -93,6 +93,9 @@
     <ClInclude Include="Stair.h">
       <Filter>Header Files\GameObject\StaticObject</Filter>
     </ClInclude>
+    <ClInclude Include="BoardScore.h">
+      <Filter>Header Files\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -151,6 +154,9 @@
     </ClCompile>
     <ClCompile Include="Stair.cpp">
       <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="BoardScore.cpp">
+      <Filter>Header Files\Scene</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

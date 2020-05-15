@@ -2,7 +2,7 @@
 
 Brick::Brick()
 {
-	this->SetAnimationSet(CAnimationSets::GetInstance()->Get(GROUND_ID));
+	
 }
 
 void Brick::Render()

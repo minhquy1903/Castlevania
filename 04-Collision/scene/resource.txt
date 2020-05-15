@@ -8,6 +8,9 @@
 5	textures\weapons.png	255	0	255
 6	textures\effect.png	255	0	255
 7	textures\spark	255	0	255
+8	textures\scoreboard.png	255	0	255
+9	textures\healthbar.png	255	0	255
+10	textures\letter.png	255	0	255
 # id	left	top	right	bottom	texture_id
 
 [SPRITES]
@@ -31,7 +34,7 @@
 10	420	66	480	130	0
 11	0	132	60	196	0
 12	60	132	120	196	0
-#shock
+#simon_shock
 13	120	198	180	262	0
 14	60	198	120	262	0
 15	0	198	60	262	0
@@ -51,7 +54,7 @@
 25	240	132	300	196	0
 
 #GROUND	50-100
-50	32	0	64	32	1
+50	0	0	64	32	1
 
 #WHIP	100-150
 #whip_lvl_1
@@ -91,6 +94,34 @@
 #SPARK	350-400
 350	0	0	16	20	7
 
+#SCOREBOARD
+351	0	0	520	80	8
+#HEALTHBAR
+400	0	0	8	15	9
+401	8	0	16	15	9
+402	16	0	24	14	9
+#LETTER
+#0
+450	0	28	15	42	10
+#1
+451	15	28	30	42	10
+#2
+452	30	28	45	42	10
+#3
+453	45	28	60	42	10
+#4
+454	60	28	75	42	10
+#5
+455	75	28	90	42	10
+#6
+456	90	28	105	42	10
+#7
+457	105	28	120	42	10
+#8
+458	120	28	135	42	10
+#9
+459	135	28	150	42	10
+
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 
@@ -117,6 +148,7 @@
 9	20	100	21	100	22	100
 #simon_stairdown	_hit
 10	23	100	24	100	25	100
+
 #====GROUND====
 50	50	100
 
@@ -142,7 +174,7 @@
 #====WEAPONS====
 250	250	100
 
-#====EFFECT_FIRE====
+#====EFFECT FIRE====
 300	300	100	301	100	302	100
 
 #====SPARK====
@@ -153,7 +185,7 @@
 #
 [ANIMATION_SETS]
 # SIMON
-0	0	1	2	3	4	5	6	7	8	9	10
+0	0	1	2	3	4	5	6	7	8	9	10	
 
 # GROUND 
 1	50
@@ -172,80 +204,3 @@
 
 #SPARK
 6	350
-
-[OBJECTS]
-# type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = SIMON , 1 = GROUND, 2 = CANDLE
-# SIMON
-0	20	365	0
-
-#wall left
-1	0	80	1
-1	0	112	1
-1	0	144	1
-1	0	176	1
-1	0	208	1
-1	0	240	1
-1	0	272	1
-1	0	304	1
-1	0	336	1
-1	0	368	1
-1	0	400	1
-#ground
-1	0	432	1
-1	32	432	1
-1	64	432	1
-1	96	432	1
-1	128	432	1
-1	160	432	1
-1	192	432	1
-1	224	432	1
-1	256	432	1
-1	288	432	1
-1	320	432	1
-1	352	432	1
-1	384	432	1
-1	416	432	1
-1	480	432	1
-1	512	432	1
-1	448	432	1
-#wall right
-1	448	80	1
-1	448	112	1
-1	448	144	1
-1	448	176	1
-1	448	208	1
-1	448	240	1
-1	448	272	1
-1	448	304	1
-1	448	336	1
-1	448	368	1
-1	448	400	1
-#top ground 1
-1	352	304	1
-1	384	304	1
-1	416	304	1	
-#top ground 2
-1	32	240	1
-1	32	208	1
-1	32	272	1
-1	32	304	1
-1	64	240	1
-1	96	240	1
-1	128	240	1
-1	160	240	1
-1	192	240	1
-1	224	240	1
-1	256	240	1
-1	288	240	1
-
-#stair	type	x	y	ani_sey	nxstair	nystair	
-4	224	400	1	1	-1
-4	360	272	1	-1	1
-4	160	208	1	1	-1
-#stair_bottom
-
-[TILEMAP]
-#tile id	file_texture	file_path	tile_width	tile_height
-2000	TileMap\\tilesets_scene2.png	TileMap\\tilemap_scene2.txt	4	7	12	17	32	32
-	

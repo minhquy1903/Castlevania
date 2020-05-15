@@ -8,6 +8,7 @@
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include "Scene.h"
+#include "Simon.h"
 #define KEYBOARD_BUFFER_SIZE 1024
 
 using namespace std;
@@ -44,10 +45,13 @@ class CGame
 
 	unordered_map<int, LPSCENE> scenes;
 	int current_scene;
-
+	void _ParseSection_TEXTURES(string line);
+	void _ParseSection_SPRITES(string line);
+	void _ParseSection_ANIMATIONS(string line);
+	void _ParseSection_ANIMATION_SETS(string line);
 	void _ParseSection_SETTINGS(string line);
 	void _ParseSection_SCENES(string line);
-
+	void _ParseSection_RESOURCE(string line);
 
 public:
 	void InitKeyboard();
@@ -63,7 +67,7 @@ public:
 
 	void Load(LPCWSTR gameFile);
 	LPSCENE GetCurrentScene() { return scenes[current_scene]; }
-	void SwitchScene(int scene_id);
+	void SwitchScene(int scene_id, CSimon * simon = NULL);
 
 	static void SweptAABB(
 		float ml,			// move left 

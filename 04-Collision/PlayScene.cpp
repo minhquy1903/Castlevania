@@ -399,6 +399,9 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	CGame *game = CGame::GetInstance();
 	CSimon *simon = ((CPlayScene*)scence)->GetPlayer();
 
+	if (simon->GetState() == SIMON_HURT && !simon->animation_set->at(SIMON_HURT)->IsRenderOver(400))
+		return;
+
 	if (simon->GetState() == SIMON_SHOCK && !(simon->animation_set->at(SIMON_SHOCK)->IsRenderOver(600)))
 		return;
 	if ((simon->GetState() == SIMON_STAIR_UP && !simon->animation_set->at(SIMON_STAIR_UP)->IsRenderOver(200)) || (simon->GetState() == SIMON_STAIR_DOWN && !simon->animation_set->at(SIMON_STAIR_DOWN)->IsRenderOver(200)))

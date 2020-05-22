@@ -8,7 +8,7 @@
 #include "Simon.h"
 #include "Item.h"
 #include "Stair.h"
-
+#include "Knight.h"
 CSimon::CSimon()
 {
 	untouchable = 0;
@@ -21,6 +21,8 @@ CSimon::CSimon()
 	life = 3; 
 	heart = 0;
 	currentSubweapon = -1;
+	isFlicker = false;
+	alpha = 255;
 }
 
 void CSimon::WalkLeft()
@@ -144,6 +146,20 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		weapon->Update(dt);
 	}
 	
+	//simon hurt
+	if (GetTickCount() - recoveryTime < 2500)
+	{
+		isFlicker = true;
+		alpha = rand() % 255 + 150;
+	}
+	else
+	{
+		isFlicker = false;
+		alpha = 255;
+	}
+		
+	//
+
 	if (isOnStair)
 	{
 		x += dx;
@@ -160,7 +176,7 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 void CSimon::Render()
 {
-	animation_set->at(ani)->Render(nx, x, y);
+	animation_set->at(ani)->Render(nx, x, y, alpha);
 	if ((ani == SIMON_STAND_HIT || ani == SIMON_SIT_HIT) && !weapon->isHittingSubWeapon || (weapon->isHittingSubWeapon && !subWeaponIsON))
 	{
 		whip->Render(animation_set->at(ani)->GetCurrentFrame());
@@ -241,6 +257,17 @@ void CSimon::SetState(int state)
 		animation_set->at(ani)->SetCurrentFrame();
 		vx = 0;
 		vy = 0;
+		break;
+	case SIMON_HURT:
+		isGrounded = false;
+		ani = SIMON_HURT;
+		if(nx == 1)
+			vx = -SIMON_WALKING_SPEED;
+		else
+			vx = SIMON_WALKING_SPEED;
+		
+		vy = -SIMON_HURT_SPEED_Y;
+		animation_set->at(ani)->StartRenderAnimation();
 		break;
 	}
 }
@@ -443,7 +470,22 @@ void CSimon::CollideWithEnemy(vector<LPGAMEOBJECT>* enemy)
 				}
 				else
 				{
-					health--;
+					if (isFlicker != true)
+					{
+						SetState(SIMON_HURT);
+						health -= 2;
+						recoveryTime = GetTickCount();
+					}
+				}
+			}
+			if (dynamic_cast<Knight*>(obj))
+			{
+				Knight *knight = dynamic_cast<Knight*>(obj);
+				if (isFlicker != true)
+				{
+					SetState(SIMON_HURT);
+					health -= 2;
+					recoveryTime = GetTickCount();
 				}
 			}
 		}

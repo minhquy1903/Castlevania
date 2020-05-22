@@ -71,7 +71,7 @@ void BoardScore::DrawHealth()
 		healthbar.at(0)->Draw(0, 108 + i * 9 + posX, 33);
 	}
 	for (int i = 0; i < healthSimonLost; i++) {
-		healthbar.at(1)->Draw(0, 108 + (16 - i) * 9 + posX, 33);
+		healthbar.at(1)->Draw(0, 99 + (16 - i) * 9 + posX, 33);
 	}
 
 	for (int i = 0; i < healthBoss; i++) {

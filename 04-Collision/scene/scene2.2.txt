@@ -42,7 +42,7 @@
 1	960	304	1
 
 #stair	type	x	y	ani_sey	nxstair	nystair	
-4	935	272	1	-1	1
+4	903	272	1	-1	1
 
 # --- SCENE PORTAL ----
 # type	x	y	ani_set_id	r	b	scene_id	x	y

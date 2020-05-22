@@ -37,7 +37,7 @@ void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void Bat::Render()
 {
 	animation_set->at(state)->Render(nx, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 

@@ -1,6 +1,7 @@
 ﻿#include <algorithm>
 #include "Utils.h"
 
+#include "Bat.h"
 #include "Game.h"
 #include "Portal.h"
 #include "Brick.h"
@@ -80,7 +81,7 @@ void CSimon::UseSubweapon()
 	
 	switch (typeSubWeapon)
 	{
-	case ITEM_KNIFE:
+	case (ITEM_KNIFE || ITEM_BOOMERANG):
 		if (!subWeaponIsON || heart < 1)
 		{
 			Hit();
@@ -218,19 +219,19 @@ void CSimon::SetState(int state)
 		animation_set->at(ani)->StartRenderAnimation();
 		ani = SIMON_STAIR_UP;
 		if(nx == 1)
-			vx = SIMON_WALKING_SPEED;
+			vx = SIMON_GO_STAIR_SPEED;
 		else
-			vx = -SIMON_WALKING_SPEED;
-		vy = -SIMON_WALKING_SPEED;
+			vx = -SIMON_GO_STAIR_SPEED;
+		vy = -SIMON_GO_STAIR_SPEED;
 		break;
 	case SIMON_STAIR_DOWN:
 		animation_set->at(ani)->StartRenderAnimation();
 		ani = SIMON_STAIR_DOWN;
 		if (nx == 1)
-			vx = SIMON_WALKING_SPEED;
+			vx = SIMON_GO_STAIR_SPEED;
 		else
-			vx = -SIMON_WALKING_SPEED;
-		vy = SIMON_WALKING_SPEED;
+			vx = -SIMON_GO_STAIR_SPEED;
+		vy = SIMON_GO_STAIR_SPEED;
 		break;
 	case SIMON_STAND_ON_STAIR:
 		if(nx == 1)
@@ -272,14 +273,11 @@ void CSimon::CollideWithItem(vector<LPGAMEOBJECT> *listItems)
 {
 	if (listItems->size() == 0)
 		return;
-	float left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b;
-	GetBoundingBox(left_a, top_a, right_a, bottom_a);
 	for (int i = 0; i < listItems->size(); i++)
 	{
 		LPGAMEOBJECT obj = listItems->at(i);
 		Item* e = dynamic_cast<Item*>(obj);
-		e->GetBoundingBox(left_b, top_b, right_b, bottom_b);
-		if (AABBCollision(left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b))
+		if (AABBCollision(obj))
 		{
 			if (e->GetState() == ITEM_UPGRADE_WHIP)
 			{
@@ -299,6 +297,13 @@ void CSimon::CollideWithItem(vector<LPGAMEOBJECT> *listItems)
 				subWeaponIsON = true;
 				weapon = new Knife();
 				currentSubweapon = 0;
+			}
+			else if (e->GetState() == ITEM_BOOMERANG)
+			{
+				typeSubWeapon = ITEM_BOOMERANG;
+				subWeaponIsON = true;
+				weapon = new Boomerang();
+				currentSubweapon = 1;
 			}
 			vector<LPGAMEOBJECT>::iterator it;
 			it = listItems->begin();
@@ -340,8 +345,8 @@ void CSimon::CollodeWhitBirck(vector<LPGAMEOBJECT>* coObjects)
 		x += min_tx * dx + nx * 0.4f;		// nx*0.4f : need to push out a bit to avoid overlapping next frame
 		y += min_ty * dy + ny * 0.4f;
 
-		if (nx != 0) vx = 0;
-		if (ny != 0) vy = 0;
+		/*if (nx != 0) vx = 0;
+		if (ny != 0) vy = 0;*/
 
 		// Collision logic with Goombas
 		for (UINT i = 0; i < coEventsResult.size(); i++)
@@ -350,12 +355,17 @@ void CSimon::CollodeWhitBirck(vector<LPGAMEOBJECT>* coObjects)
 
 			if (dynamic_cast<Brick *>(e->obj)) // if e->obj is Goomba 
 			{
-				if (e->ny < 0)
+				if (e->ny != 0)
 				{
-					isGrounded = true;
+					/*isGrounded = true;*/
+					if (e->ny == -1)
+					{
+						isGrounded = true;
+						vy = 0;
+					}
+					else
+						y += dy;
 				}
-			/*	else
-					y += dy;*/
 			}
 		}
 	}
@@ -370,10 +380,7 @@ int CSimon::CollideWithPortal(vector<LPGAMEOBJECT>* portal)
 		return false;
 	LPGAMEOBJECT obj = portal->at(0);
 	CPortal* e = dynamic_cast<CPortal*>(obj);
-	float left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b;
-	GetBoundingBox(left_a, top_a, right_a, bottom_a);
-	e->GetBoundingBox(left_b, top_b, right_b, bottom_b);
-	if (AABBCollision(left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b))
+	if (AABBCollision(obj))
 	{
 		SetPosition(e->GetXNextPortal(), e->GetYNextPortal());
 		return e->GetSceneID();
@@ -383,27 +390,27 @@ int CSimon::CollideWithPortal(vector<LPGAMEOBJECT>* portal)
 
 void CSimon::SimonTouchStair(vector<LPGAMEOBJECT>* stair)
 {
-	float left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b;
-	GetBoundingBox(left_a, top_a, right_a, bottom_a);
 	for (int i = 0; i < stair->size(); i++)
 	{
 		LPGAMEOBJECT obj = stair->at(i);
 		
-		obj->GetBoundingBox(left_b, top_b, right_b, bottom_b);
-
-		if (AABBCollision(left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b))
+		if (AABBCollision(obj))
 		{
+			Stair *e = dynamic_cast<Stair*>(obj);
 			nxStair = obj->nx;
 			nyStair = obj->ny;
-			isOnStair = false;
+			float left_a, top_a, right_a, bottom_a;
+			GetBoundingBox(left_a, top_a, right_a, bottom_a);
+			if (left_a < e->GetMidStair() && right_a > e->GetMidStair() && top_a < e->y && bottom_a > e->y)
+				isOnStair = false;
 			if (nyStair == 1)
 			{
 				isTouchStairTop = true;
-				posXStair = obj->x;
+				posXStair = 348;
 			}
 			else
 			{
-				posXStair = (obj->x * 2 + 64) / 2;
+				posXStair = e->GetMidStair() - 1;
 				isTouchStairBottom = true;
 			}
 
@@ -416,6 +423,29 @@ void CSimon::SimonTouchStair(vector<LPGAMEOBJECT>* stair)
 				isTouchStairTop = false;
 			else
 				isTouchStairBottom = false;
+		}
+	}
+}
+
+void CSimon::CollideWithEnemy(vector<LPGAMEOBJECT>* enemy)
+{
+	for (int i = 0; i < enemy->size(); i++)
+	{
+		LPGAMEOBJECT obj = enemy->at(i);
+		if (AABBCollision(obj))
+		{
+			if (dynamic_cast<Bat*>(obj))
+			{
+				Bat *bat = dynamic_cast<Bat*>(obj);
+				if (!bat->GetIsWakeUp())
+				{
+					bat->SetISWakeUp(true);
+				}
+				else
+				{
+					health--;
+				}
+			}
 		}
 	}
 }

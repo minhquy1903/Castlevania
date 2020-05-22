@@ -34,6 +34,9 @@
     <Filter Include="Header Files\GameObject\SubWeapon">
       <UniqueIdentifier>{0609ba10-1a64-458c-ac73-3aa4beec2937}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\GameObject\Enemy">
+      <UniqueIdentifier>{720baecd-4f6c-4cc6-9019-95796946c201}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject.h">
@@ -69,9 +72,6 @@
     <ClInclude Include="Brick.h">
       <Filter>Header Files\GameObject\StaticObject</Filter>
     </ClInclude>
-    <ClInclude Include="Candle.h">
-      <Filter>Header Files\GameObject\StaticObject</Filter>
-    </ClInclude>
     <ClInclude Include="Portal.h">
       <Filter>Header Files\GameObject\StaticObject</Filter>
     </ClInclude>
@@ -95,6 +95,21 @@
     </ClInclude>
     <ClInclude Include="BoardScore.h">
       <Filter>Header Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Torch.h">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Candle.h">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Bat.h">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Knight.h">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Boomerang.h">
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,13 +140,7 @@
     <ClCompile Include="TileMap.cpp">
       <Filter>Header Files\GameMachine</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Brick.cpp">
-      <Filter>Header Files\GameObject\StaticObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Candle.cpp">
       <Filter>Header Files\GameObject\StaticObject</Filter>
     </ClCompile>
     <ClCompile Include="Portal.cpp">
@@ -157,6 +166,24 @@
     </ClCompile>
     <ClCompile Include="BoardScore.cpp">
       <Filter>Header Files\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Torch.cpp">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Candle.cpp">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Knight.cpp">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Bat.cpp">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Boomerang.cpp">
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@ Knife::Knife()
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(KNIFE_ANIMATION_SET));
 	isSubWeaponExist = false;
 	isHittingSubWeapon = false;
-	vx = VX_KNIFE;
+	vx = VX_BOOMERANG;
 }
 
 
@@ -36,9 +36,9 @@ void Knife::Render()
 void Knife::SetDirectionSubWeapon(int nx)
 {
 	if (nx > 0)
-		vx = VX_KNIFE;
+		vx = VX_BOOMERANG;
 	else
-		vx = -VX_KNIFE;
+		vx = -VX_BOOMERANG;
 }
 
 bool Knife::CheckExistKnife(float a)
@@ -53,8 +53,12 @@ bool Knife::CheckExistKnife(float a)
 		if (a - x >= ((SCREEN_WIDTH/2) + 100))
 			return true;
 	}
-	
 	return false;
+}
+
+void Knife::TimeStart()
+{
+	timeExist = GetTickCount();
 }
 
 void Knife::GetBoundingBox(float & left, float & top, float & right, float & bottom)

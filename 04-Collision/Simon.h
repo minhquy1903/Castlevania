@@ -3,9 +3,10 @@
 #include "Whip.h"
 #include "SubWeapon.h"
 #include "Knife.h"
+#include "Boomerang.h"
 
 #define SIMON_WALKING_SPEED		0.15f 
-#define SIMON_GO_STAIR_SPEED	0.1f
+#define SIMON_GO_STAIR_SPEED	0.08f
 #define SIMON_JUMP_SPEED_Y		0.6f
 #define MARIO_JUMP_DEFLECT_SPEED 0.2f
 #define GRAVITY					0.002f
@@ -69,6 +70,7 @@ public:
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	int CollideWithPortal(vector<LPGAMEOBJECT> *portal);
 	void SimonTouchStair(vector<LPGAMEOBJECT> *stair = NULL);
+	void CollideWithEnemy(vector<LPGAMEOBJECT> *enemy = NULL);
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	int GetHealth() { return health; }
 	int GetHeart() { return heart; }

@@ -26,6 +26,11 @@ void Item::GetBoundingBox(float & left, float & top, float & right, float & bott
 			right = left + 32;
 			bottom = top + 18;
 			break;
+		case ITEM_BOOMERANG:
+			left = x;
+			top = y;
+			right = left + 30;
+			bottom = top + 28;
 		}
 	}
 }
@@ -64,6 +69,7 @@ void Item::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		if (nx != 0) vx = 0;
 		if (ny != 0) vy = 0;
 	}
+
 
 	// clean up collision events
 	for (int i = 0; i < coEvents.size(); i++) delete coEvents[i];

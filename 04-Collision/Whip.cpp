@@ -1,6 +1,7 @@
 #include "Whip.h"
-#include "Candle.h"
+#include "Torch.h"
 #include "Utils.h"
+#include "Candle.h"
 
 void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -23,20 +24,24 @@ void Whip::Render(int currentID)
 	
 }
 
-void Whip::WhipCollideWithCandle(vector<LPGAMEOBJECT>* coObjects)
+void Whip::WhipCollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects)
 {
 	for (int i = 0; i < coObjects->size(); i++)
 	{
 		LPGAMEOBJECT obj = coObjects->at(i);
-		Candle * candle = dynamic_cast<Candle*>(obj);
-
-		float left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b;
-		GetBoundingBox(left_a, top_a, right_a, bottom_a);
-		candle->GetBoundingBox(left_b, top_b, right_b, bottom_b);
-		if (AABBCollision(left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b))
+		if (AABBCollision(obj))
 		{
-			candle->SetState(BREAK_CANDLE);
-		}	
+			if (dynamic_cast<Torch*>(obj))
+			{
+				Torch *torch = dynamic_cast<Torch*>(obj);
+				torch->SetState(BREAK_TORCH);
+			}
+			else if (dynamic_cast<Candle*>(obj))
+			{
+				Candle *candle = dynamic_cast<Candle*>(obj);
+				candle->SetIsBreak(true);
+			}
+		}
 	}
 }
 

@@ -3,7 +3,7 @@
 
 #define KNIFE_ANI 0
 #define KNIFE_ANIMATION_SET 5
-#define VX_KNIFE 0.5f
+#define VX_BOOMERANG 0.5f
 
 #define SCREEN_WIDTH 512
 #define SCREEN_HEIGHT 480
@@ -18,5 +18,6 @@ public:
 	void Render();
 	void SetDirectionSubWeapon(int nx);
 	bool CheckExistKnife(float a);
+	void TimeStart();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };

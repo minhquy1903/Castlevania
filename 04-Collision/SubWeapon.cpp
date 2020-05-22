@@ -1,6 +1,6 @@
 #include "SubWeapon.h"
+#include "Torch.h"
 #include "Candle.h"
-
 
 void SubWeapon::Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects)
 {
@@ -31,19 +31,25 @@ void SubWeapon::GetBoundingBox(float & left, float & top, float & right, float &
 }
 
 
-void SubWeapon::SubWeaponCollideWithCandle(vector<LPGAMEOBJECT>* coObjects)
+void SubWeapon::SubWeaponCollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects)
 {
 	for (int i = 0; i < coObjects->size(); i++)
 	{
 		LPGAMEOBJECT obj = coObjects->at(i);
-		Candle * candle = dynamic_cast<Candle*>(obj);
-		float left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b;
-		GetBoundingBox(left_a, top_a, right_a, bottom_a);
-		candle->GetBoundingBox(left_b, top_b, right_b, bottom_b);
-		if (AABBCollision(left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b))
+
+		if (AABBCollision(obj))
 		{
-			isSubWeaponExist = false;
-			candle->SetState(BREAK_CANDLE);
+			if (dynamic_cast<Torch*>(obj))
+			{
+				Torch * torch = dynamic_cast<Torch*>(obj);
+				isSubWeaponExist = false;
+				torch->SetState(BREAK_TORCH);
+			}
+			else if (dynamic_cast<Candle*>(obj))
+			{
+				Candle *candle = dynamic_cast<Candle*>(obj);
+				candle->SetIsBreak(true);
+			}
 		}
 	}
 }

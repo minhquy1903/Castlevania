@@ -14,7 +14,7 @@ public:
 	void Render();
 	
 	void Render(int currentID = -1);
-	void WhipCollideWithCandle(vector<LPGAMEOBJECT>* coObjects);
+	void WhipCollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects);
 	
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	Whip();

@@ -1,11 +1,17 @@
 ﻿#include <iostream>
 #include <fstream>
-#include "Portal.h"
 #include "PlayScene.h"
 #include "Utils.h"
 #include "Textures.h"
 #include "Sprites.h"
 #include "Stair.h"
+#include "Candle.h"
+#include "Brick.h"
+#include "Torch.h"
+#include "Item.h"
+#include "Portal.h"
+#include "Bat.h"
+#include "Knight.h"
 using namespace std;
 
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
@@ -28,10 +34,10 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define SCENE_SECTION_TILEMAP 7
 #define OBJECT_TYPE_SIMON	0
 #define OBJECT_TYPE_BRICK	1
-#define OBJECT_TYPE_CANDLE	2
+#define OBJECT_TYPE_SECRETOBJ	2
 #define OBJECT_TYPE_ITEM	3
 #define OBJECT_TYPE_STAIR	4
-
+#define OBJECT_TYPE_ENEMY	5
 #define OBJECT_TYPE_PORTAL	50
 
 #define MAX_SCENE_LINE 1024
@@ -127,11 +133,15 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new Brick();
 		bricks.push_back(obj);
 		break;
-	case OBJECT_TYPE_CANDLE: 
+	case OBJECT_TYPE_SECRETOBJ: 
 	{
 		int iditem = atof(tokens[4].c_str());
-		obj = new  Candle(iditem);
-		Candles.push_back(obj);
+		int typeObj = atof(tokens[5].c_str());
+		if (typeObj == 0)
+			obj = new Torch(iditem);
+		else
+			obj = new Candle(iditem);
+		secretObj.push_back(obj);
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:
@@ -143,6 +153,20 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int yNext = atoi(tokens[8].c_str());
 		obj = new CPortal(x, y, width, height, scene_id, xNext, yNext);
 		portal.push_back(obj);
+		break;
+	}
+	case OBJECT_TYPE_ENEMY:
+	{
+		int typeEnemy = atof(tokens[4].c_str());
+		if (typeEnemy == 0)
+		{
+			obj = new Bat();
+		}
+		else if (typeEnemy == 1)
+		{
+			obj = new Knight();
+		}
+		enemys.push_back(obj);
 		break;
 	}
 	case OBJECT_TYPE_STAIR:
@@ -215,33 +239,54 @@ void CPlayScene::Update(DWORD dt)
 		}
 		else
 		{
-			player->GetWhip()->WhipCollideWithCandle(&Candles);
+			player->GetWhip()->WhipCollideWithSecretObj(&secretObj);//kt torch vaf candle có bị đánh trúng k
 		}
 	}
 
-	if (player->GetWeapon()->isSubWeaponExist) //kiểm tra subweapon va chạm với nến
+	if (player->GetWeapon()->isSubWeaponExist) //kiểm tra subweapon va chạm với torch va candle
 	{
-		player->GetWeapon()->SubWeaponCollideWithCandle(&Candles);
+		player->GetWeapon()->SubWeaponCollideWithSecretObj(&secretObj);
 	}
 	
 
-	for (size_t i = 0; i < Candles.size(); i++)//kt nến có bị đánh trúng k
+	for (size_t i = 0; i < secretObj.size(); i++)
 	{
-		LPGAMEOBJECT obj = Candles[i];
-		Candle* candle = dynamic_cast<Candle*>(obj);
-		if (candle->GetRenderFire())
+		LPGAMEOBJECT obj = secretObj[i];
+		if (dynamic_cast<Torch*>(obj))
 		{
-			listItem.push_back(candle->GetItem());
-			vector<LPGAMEOBJECT>::iterator it;
-			it = Candles.begin();
-			it += i;
-			Candles.erase(it);
+			Torch* torch = dynamic_cast<Torch*>(obj);
+			if (torch->GetRenderFire())
+			{
+				listItem.push_back(torch->GetItem());
+				vector<LPGAMEOBJECT>::iterator it;
+				it = secretObj.begin();
+				it += i;
+				secretObj.erase(it);
+			}
+			else
+				secretObj[i]->Update(dt);
 		}
-		else
-			Candles[i]->Update(dt);
+		else if (dynamic_cast<Candle*>(obj))
+		{
+			Candle * candle = dynamic_cast<Candle*>(obj);
+			if (candle->GetIsBreak())
+			{
+				candle->DropItem();
+				listItem.push_back(candle->GetItem());
+				vector<LPGAMEOBJECT>::iterator it;
+				it = secretObj.begin();
+				it += i;
+				secretObj.erase(it);
+			}
+		}
 	}
 
-	
+	for (int i = 0; i < enemys.size(); i++)
+	{
+		enemys[i]->Update(dt,&coObjects);
+	}
+
+	player->CollideWithEnemy(&enemys);
 
 	for (size_t i = 0; i < listItem.size(); i++)//update list item
 	{
@@ -294,16 +339,18 @@ void CPlayScene::Render()
 	for (int i = 0; i < bricks.size(); i++)
 		bricks[i]->Render();
 	tilemap->Draw();
-	for (size_t i = 0; i < Candles.size(); i++)
-		Candles[i]->Render();
+	for (size_t i = 0; i < secretObj.size(); i++)
+		secretObj[i]->Render();
 	for (int i = 0; i < listItem.size(); i++)
 		listItem[i]->Render();
+	for (int i = 0; i < enemys.size(); i++)
+		enemys[i]->Render();
 	/*for (int i = 0; i < portal.size(); i++)
 		portal[i]->Render();*/
-	/*for (int i = 0; i < stairs.size(); i++)
+	for (int i = 0; i < stairs.size(); i++)
 	{
 		stairs[i]->Render();
-	}*/
+	}
 	player->Render();
 }
 
@@ -321,6 +368,8 @@ void CPlayScene::Unload()
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
+int i = 1;
+
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
@@ -337,6 +386,10 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			simon->UseSubweapon();
 		else 
 			simon->Hit();
+		break;
+	case DIK_1:
+		CGame::GetInstance()->SwitchScene(++i, simon);
+		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
 		break;
 	}
 }
@@ -359,7 +412,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		simon->SetAnimation(SIMON_JUMP);
 	}
 
-	if (simon->isTouchStairTop && game->IsKeyDown(DIK_DOWN))
+	if (simon->isTouchStairTop && game->IsKeyDown(DIK_DOWN) && !simon->isOnStair)
 	{
 		if (simon->AutoWalk(simon->GetPosXStair()))
 		{
@@ -369,7 +422,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		else
 			return;
 	}
-	else if (simon->isTouchStairBottom && game->IsKeyDown(DIK_UP))
+	else if (simon->isTouchStairBottom && game->IsKeyDown(DIK_UP) && !simon->isOnStair)
 	{
 		if (simon->AutoWalk(simon->GetPosXStair()))
 		{

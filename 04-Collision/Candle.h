@@ -1,24 +1,21 @@
 #pragma once
-#include "GameObject.h"
 #include "Item.h"
-#define NOMAL_CANDLE 0
-#define BREAK_CANDLE 1
-
+#include "GameObject.h"
 class Candle : public CGameObject
 {
 	Item * item;
-	bool renderFireDone;
 	int idItem;
+	bool isBreak;
 public:
-	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
-	void Update(DWORD dt ,vector<LPGAMEOBJECT> *coObjects = NULL);
-	void Render();
-	void SetState(int state);
-	void DropItem();
-	bool GetRenderFire() { return renderFireDone; }
-	Item* GetItem() { return item; }
 	Candle();
-	Candle(int idItem);
+	Candle(int iditem);
+	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
+	void Render();
+	void DropItem();
+	void SetIsBreak(bool isBreak) { this->isBreak = isBreak; }
+	bool GetIsBreak() { return isBreak; }
+	Item* GetItem() { return item; }
 	~Candle();
 };
 

@@ -3,6 +3,8 @@
 #define ITEM_UPGRADE_WHIP	0
 #define ITEM_HEART			1
 #define ITEM_KNIFE			2
+#define ITEM_BOOMERANG		3
+
 #define TIME_FLICKER		1500
 #define LIFE_TIME			3000
 

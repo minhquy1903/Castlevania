@@ -131,10 +131,12 @@ void CGameObject::RenderBoundingBox()
 	CGame::GetInstance()->Draw(nx, l, t, bbox, rect.left, rect.top, rect.right, rect.bottom, 120);
 }
 
-bool CGameObject::AABBCollision(float l_a, float t_a, float r_a, float b_a, float l_b, float t_b, float r_b, float b_b)
+bool CGameObject::AABBCollision(LPGAMEOBJECT b)
 {
-	return (l_a < r_b && r_a > l_b && t_a < b_b && b_a > t_b);
-	return false;
+	float left_a, top_a, right_a, bottom_a, left_b, top_b, right_b, bottom_b;
+	GetBoundingBox(left_a, top_a, right_a, bottom_a);
+	b->GetBoundingBox(left_b, top_b, right_b, bottom_b);
+	return (left_a < right_b && right_a > left_b && top_a < bottom_b && bottom_a > top_b);
 }
 
 

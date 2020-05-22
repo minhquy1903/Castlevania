@@ -6,6 +6,7 @@ class SubWeapon :public CGameObject
 {
 	int id;
 public:
+	DWORD timeExist;
 	float posX; // vị trí simon lúc thực hiện ném dao
 	bool isHittingSubWeapon;
 	bool isSubWeaponExist;
@@ -15,7 +16,8 @@ public:
 	virtual void SetPosSubWeapon(D3DXVECTOR3 pos, bool isStanding);
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void SetDirectionSubWeapon(int nx) = 0;
-	void SubWeaponCollideWithCandle(vector<LPGAMEOBJECT>* coObjects);
+	virtual void TimeStart() = 0;
+	void SubWeaponCollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects);
 	int GetIDSubWeapon() { return id; }
 	int SetIDSubWeapon(int _id) { id = _id; }
 	SubWeapon();

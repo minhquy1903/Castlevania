@@ -31,7 +31,7 @@ struct CCollisionEvent
 class CGameObject
 {
 public:
-
+	int type;
 	float x; 
 	float y;
 
@@ -57,7 +57,7 @@ public:
 	int GetState() { return this->state; }
 
 	void RenderBoundingBox();
-	bool AABBCollision(float l_a, float t_a, float r_a, float b_a, float l_b, float t_b, float r_b, float b_b);
+	bool AABBCollision(LPGAMEOBJECT b);
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coO);
 	void CalcPotentialCollisions(vector<LPGAMEOBJECT> *coObjects, vector<LPCOLLISIONEVENT> &coEvents);
 	void FilterCollision(

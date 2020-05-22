@@ -1,13 +1,8 @@
 #pragma once
 #include "Game.h"
-#include "Textures.h"
 #include "Scene.h"
 #include "GameObject.h"
 #include "Simon.h"
-#include "Brick.h"
-#include "Whip.h"
-#include "Candle.h"
-#include "Item.h"
 #include "TileMap.h"
 #include "BoardScore.h"
 
@@ -18,10 +13,11 @@ protected:
 	TileMap *tilemap; 
 	BoardScore * boardscore;
 	vector<LPGAMEOBJECT> bricks;
-	vector<LPGAMEOBJECT> Candles;
+	vector<LPGAMEOBJECT> secretObj;
 	vector<LPGAMEOBJECT> listItem;
 	vector<LPGAMEOBJECT> portal;
 	vector<LPGAMEOBJECT> stairs;
+	vector<LPGAMEOBJECT> enemys;
 	
 	void _ParseSection_OBJECTS(string line);
 	void _ParseSection_TILEMAP(string line);

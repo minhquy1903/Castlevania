@@ -41,6 +41,7 @@ Stair::Stair(int x, int y, int directionX, int directionY)
 	ny = directionY;
 	this->x = x;
 	this->y = y;
+	midStairX = (x * 2 + 48) / 2;
 }
 
 

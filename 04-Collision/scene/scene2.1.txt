@@ -49,14 +49,14 @@
 
 #stair	type	x	y	ani_sey	nxstair	nystair	
 4	200	400	1	1	-1
-4	340	272	1	-1	1
+4	328	272	1	-1	1
 4	136	208	1	1	-1
 #362
 #enemy
 #bat
 5	68	100	8	0
 #knight
-5	128	108	9	1	
+5	258	170	9	1	
 
 # --- SCENE PORTAL ----
 # type	x	y	ani_set_id	r	b	scene_id	x	     y

@@ -17,7 +17,7 @@ protected:
 	vector<LPGAMEOBJECT> listItem;
 	vector<LPGAMEOBJECT> portal;
 	vector<LPGAMEOBJECT> stairs;
-	vector<LPGAMEOBJECT> enemys;
+	vector<LPGAMEOBJECT> enemies;
 	
 	void _ParseSection_OBJECTS(string line);
 	void _ParseSection_TILEMAP(string line);

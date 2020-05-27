@@ -111,6 +111,9 @@
     <ClInclude Include="Boomerang.h">
       <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClInclude>
+    <ClInclude Include="Zombie.h">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -184,6 +187,9 @@
     </ClCompile>
     <ClCompile Include="Boomerang.cpp">
       <Filter>Header Files\GameObject\SubWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Zombie.cpp">
+      <Filter>Header Files\GameObject\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -5,22 +5,26 @@
 void Knight::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;
-	right = x + 40;
+	right = x + 32;
 	top = y;
-	bottom = y + 80;
+	bottom = y + 64;
 }
 
 void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	if (hp <= 0)
+	{
+		SetState(KNIGHT_DEAD);
+		isDead = true;
+	}
+	if (GetTickCount() - timeDelay >= 260)
+		SetState(KNIGHT_WALK);
 
-	if (nx == 1)
-		vx = 0.1;
-	else
-		vx = -0.1;
+	
 	CGameObject::Update(dt);
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
-
+	
 	coEvents.clear();
 
 
@@ -29,7 +33,7 @@ void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		nx = -nx;*/
 
 	CalcPotentialCollisions(coObjects, coEvents);
-	DebugOut(L"size: %d \n", coEvents.size());
+	//DebugOut(L"size: %d \n", coEvents.size());1
 	
 	if (coEvents.size() == 0)
 	{
@@ -68,12 +72,33 @@ void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Knight::Render()
 {
-	animation_set->at(0)->Render(nx, x, y);
+	animation_set->at(ani)->Render(nx, x, y);
 }
 
 void Knight::SetState(int state)
 {
-	
+	CGameObject::SetState(state);
+	switch (state)
+	{
+	case KNIGHT_IS_HIT:
+		vx = 0;
+		ani = KNIGHT_WALK;
+		animation_set->at(ani)->SetCurrentFrame();
+		timeDelay = GetTickCount();
+		break;
+	case KNIGHT_WALK:
+		ani = KNIGHT_WALK;
+		if (nx == 1)
+			vx = 0.1;
+		else
+			vx = -0.1;
+		break;
+	case KNIGHT_DEAD:
+
+		break;
+	default:
+		break;
+	}
 }
 
 Knight::Knight()
@@ -81,6 +106,7 @@ Knight::Knight()
 	vx = 0.7f;
 	nx = 1;
 	vy = 0.1f;
+	hp = 3;
 	isTurning = false;
 }
 

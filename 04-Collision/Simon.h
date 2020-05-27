@@ -6,8 +6,8 @@
 #include "Boomerang.h"
 
 #define SIMON_WALKING_SPEED		0.15f 
-#define SIMON_GO_STAIR_SPEED	0.08f
-#define SIMON_JUMP_SPEED_Y		0.6f
+#define SIMON_GO_STAIR_SPEED	0.078f
+#define SIMON_JUMP_SPEED_Y		0.56f
 #define SIMON_HURT_SPEED_Y		0.43f
 #define MARIO_JUMP_DEFLECT_SPEED 0.2f
 #define GRAVITY					0.002f
@@ -23,9 +23,8 @@
 #define SIMON_STAIR_DOWN		8
 #define SIMON_STAIR_UP_HIT		9
 #define SIMON_STAIR_DOWN_HIT	10
-#define SIMON_STAND_ON_STAIR	12
 #define SIMON_HURT				11
-
+#define SIMON_STAND_ON_STAIR	12
 
 #define SIMON_BOX_WIDTH  45
 #define SIMON_BOX_HEIGHT 64
@@ -35,7 +34,7 @@ class CSimon : public CGameObject
 {
 	int typeSubWeapon;
 	int untouchable;
-	int ani;
+	int directionOnStair;
 	bool subWeaponIsON;
 	int nxStair;
 	int nyStair;

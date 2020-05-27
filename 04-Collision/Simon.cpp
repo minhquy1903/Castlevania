@@ -47,7 +47,7 @@ void CSimon::WalkRight()
 
 void CSimon::Jump()
 {
-	if (GetState() == SIMON_STAND_HIT || GetState() == SIMON_SIT_HIT || GetState() == SIMON_SHOCK)
+	if (GetState() == SIMON_STAND_HIT || GetState() == SIMON_SIT_HIT || GetState() == SIMON_SHOCK || isOnStair)
 		return;
 	if (isGrounded && !(state == SIMON_SIT)) // đang trên mặt đất và đang không ngồi thì mới nhảy đc
 	{
@@ -59,8 +59,18 @@ void CSimon::Jump()
 void CSimon::Hit()
 {
 	whip->SetNx(nx);
-	if (GetState() == SIMON_SHOCK)
+	
+	if (isOnStair)
+	{
+		if (directionOnStair == 1)
+		{
+			SetState(SIMON_STAIR_UP_HIT);
+		}
+		else
+			SetState(SIMON_STAIR_DOWN_HIT);
 		return;
+	}
+
 	if ((GetState() == SIMON_IDLE || GetState() == SIMON_JUMP || GetState() == SIMON_WALKING))
 	{
 		if (isGrounded)
@@ -83,7 +93,7 @@ void CSimon::UseSubweapon()
 	
 	switch (typeSubWeapon)
 	{
-	case (ITEM_KNIFE || ITEM_BOOMERANG):
+	case (ITEM_KNIFE):
 		if (!subWeaponIsON || heart < 1)
 		{
 			Hit();
@@ -177,17 +187,13 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 void CSimon::Render()
 {
 	animation_set->at(ani)->Render(nx, x, y, alpha);
-	if ((ani == SIMON_STAND_HIT || ani == SIMON_SIT_HIT) && !weapon->isHittingSubWeapon || (weapon->isHittingSubWeapon && !subWeaponIsON))
+	if ((ani == SIMON_STAND_HIT || ani == SIMON_SIT_HIT || ani == SIMON_STAIR_DOWN_HIT || ani == SIMON_STAIR_UP_HIT) && !weapon->isHittingSubWeapon || (weapon->isHittingSubWeapon && !subWeaponIsON))
 	{
 		whip->Render(animation_set->at(ani)->GetCurrentFrame());
 	}
 	//RenderBoundingBox();
 	if (subWeaponIsON)
-		weapon->Render();
-	
-	
-
-	//RenderBoundingBox();
+		weapon->Render();RenderBoundingBox();
 }
 
 void CSimon::SetState(int state)
@@ -231,7 +237,8 @@ void CSimon::SetState(int state)
 		animation_set->at(ani)->SetCurrentFrame();
 		animation_set->at(ani)->StartRenderAnimation();
 		break;
-	case SIMON_STAIR_UP:		
+	case SIMON_STAIR_UP:	
+		directionOnStair = 1;
 		animation_set->at(ani)->StartRenderAnimation();
 		ani = SIMON_STAIR_UP;
 		if(nx == 1)
@@ -241,6 +248,7 @@ void CSimon::SetState(int state)
 		vy = -SIMON_GO_STAIR_SPEED;
 		break;
 	case SIMON_STAIR_DOWN:
+		directionOnStair = -1;
 		animation_set->at(ani)->StartRenderAnimation();
 		ani = SIMON_STAIR_DOWN;
 		if (nx == 1)
@@ -268,6 +276,18 @@ void CSimon::SetState(int state)
 		
 		vy = -SIMON_HURT_SPEED_Y;
 		animation_set->at(ani)->StartRenderAnimation();
+		break;
+	case SIMON_STAIR_DOWN_HIT:
+		ani = SIMON_STAIR_DOWN_HIT;
+		animation_set->at(ani)->SetCurrentFrame();
+		animation_set->at(ani)->StartRenderAnimation();
+		vx = 0;
+		break;
+	case SIMON_STAIR_UP_HIT:
+		ani = SIMON_STAIR_UP_HIT;
+		animation_set->at(ani)->SetCurrentFrame();
+		animation_set->at(ani)->StartRenderAnimation();
+		vx = 0;
 		break;
 	}
 }
@@ -420,33 +440,47 @@ void CSimon::SimonTouchStair(vector<LPGAMEOBJECT>* stair)
 	for (int i = 0; i < stair->size(); i++)
 	{
 		LPGAMEOBJECT obj = stair->at(i);
-		
+		float left_a, top_a, right_a, bottom_a;
+		GetBoundingBox(left_a, top_a, right_a, bottom_a);
+		Stair *e = dynamic_cast<Stair*>(obj);
+
 		if (AABBCollision(obj))
 		{
-			Stair *e = dynamic_cast<Stair*>(obj);
 			nxStair = obj->nx;
 			nyStair = obj->ny;
-			float left_a, top_a, right_a, bottom_a;
-			GetBoundingBox(left_a, top_a, right_a, bottom_a);
-			if (left_a < e->GetMidStair() && right_a > e->GetMidStair() && top_a < e->y && bottom_a > e->y)
-				isOnStair = false;
 			if (nyStair == 1)
 			{
+
+
+
+				if (isOnStair)
+					if (directionOnStair == 1)
+						if (left_a < e->GetMidStair() && right_a > e->GetMidStair() && top_a < e->y && bottom_a > e->y)
+						{
+							isOnStair = false;
+							SetState(SIMON_IDLE);
+							y = e->y - 30;
+						}
 				isTouchStairTop = true;
-				posXStair = 348;
+				posXStair = e->GetMidStair();
 			}
 			else
 			{
-				posXStair = e->GetMidStair() - 1;
+				if (isOnStair)
+					if (directionOnStair == -1)
+						if (left_a < e->GetMidStair() && right_a > e->GetMidStair() && top_a < e->y && bottom_a > e->y)
+						{
+							isOnStair = false;
+						}
+				posXStair = e->GetMidStair();
 				isTouchStairBottom = true;
 			}
-
 			if (isTouchStairBottom || isTouchStairTop)
 				return;
 		}
 		else
 		{
-			if(obj->ny == 1)
+			if (nyStair == 1)
 				isTouchStairTop = false;
 			else
 				isTouchStairBottom = false;
@@ -461,6 +495,7 @@ void CSimon::CollideWithEnemy(vector<LPGAMEOBJECT>* enemy)
 		LPGAMEOBJECT obj = enemy->at(i);
 		if (AABBCollision(obj))
 		{
+			
 			if (dynamic_cast<Bat*>(obj))
 			{
 				Bat *bat = dynamic_cast<Bat*>(obj);
@@ -472,7 +507,8 @@ void CSimon::CollideWithEnemy(vector<LPGAMEOBJECT>* enemy)
 				{
 					if (isFlicker != true)
 					{
-						SetState(SIMON_HURT);
+						if (!isOnStair)
+							SetState(SIMON_HURT);
 						health -= 2;
 						recoveryTime = GetTickCount();
 					}
@@ -483,7 +519,8 @@ void CSimon::CollideWithEnemy(vector<LPGAMEOBJECT>* enemy)
 				Knight *knight = dynamic_cast<Knight*>(obj);
 				if (isFlicker != true)
 				{
-					SetState(SIMON_HURT);
+					if (!isOnStair)
+						SetState(SIMON_HURT);
 					health -= 2;
 					recoveryTime = GetTickCount();
 				}

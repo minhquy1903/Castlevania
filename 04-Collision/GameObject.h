@@ -34,7 +34,7 @@ public:
 	int type;
 	float x; 
 	float y;
-
+	int ani;
 	float dx;	// dx = vx*dt
 	float dy;	// dy = vy*dt
 
@@ -43,6 +43,7 @@ public:
 	int nx;
 	int ny;
 	int state;
+	bool isDead;
 	DWORD dt; 
 
 	LPANIMATION_SET animation_set;

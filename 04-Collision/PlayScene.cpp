@@ -166,7 +166,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		{
 			obj = new Knight();
 		}
-		enemys.push_back(obj);
+		enemies.push_back(obj);
 		break;
 	}
 	case OBJECT_TYPE_STAIR:
@@ -226,7 +226,10 @@ void CPlayScene::Update(DWORD dt)
 	
 	player->SimonTouchStair(&stairs);// simon chạm cầu thang
 
-	if ((player->GetState() == SIMON_STAND_HIT && player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2) || (player->GetState() == SIMON_SIT_HIT && player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2))
+	if ((player->GetState() == SIMON_STAND_HIT && player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2) || 
+		(player->GetState() == SIMON_SIT_HIT && player->animation_set->at(SIMON_SIT_HIT)->GetCurrentFrame() == 2) ||
+		player->GetState() == SIMON_STAIR_UP_HIT && player->animation_set->at(SIMON_STAIR_UP_HIT)->GetCurrentFrame() == 2 ||
+		player->GetState() == SIMON_STAIR_DOWN_HIT && player->animation_set->at(SIMON_STAIR_DOWN_HIT)->GetCurrentFrame() == 2)
 	{
 		if (player->GetWeapon()->isHittingSubWeapon) // simon đang thực hiên động tác đánh
 		{
@@ -239,7 +242,9 @@ void CPlayScene::Update(DWORD dt)
 		}
 		else
 		{
-			player->GetWhip()->WhipCollideWithSecretObj(&secretObj);//kt torch vaf candle có bị đánh trúng k
+			player->GetWhip()->Update(dt);//update whip
+			player->GetWhip()->CollideWithSecretObj(&secretObj);
+			player->GetWhip()->CollideWithSecretEnemies(&enemies);
 		}
 	}
 
@@ -281,12 +286,19 @@ void CPlayScene::Update(DWORD dt)
 		}
 	}
 
-	for (int i = 0; i < enemys.size(); i++)
+	for (int i = 0; i < enemies.size(); i++)
 	{
-		enemys[i]->Update(dt,&coObjects);
+		enemies[i]->Update(dt,&coObjects);
+		if (enemies[i]->isDead == true) 
+		{
+			vector<LPGAMEOBJECT>::iterator it;
+			it = enemies.begin();
+			it += i;
+			enemies.erase(it);
+		}
 	}
 
-	player->CollideWithEnemy(&enemys);
+	player->CollideWithEnemy(&enemies);
 
 	for (size_t i = 0; i < listItem.size(); i++)//update list item
 	{
@@ -343,8 +355,8 @@ void CPlayScene::Render()
 		secretObj[i]->Render();
 	for (int i = 0; i < listItem.size(); i++)
 		listItem[i]->Render();
-	for (int i = 0; i < enemys.size(); i++)
-		enemys[i]->Render();
+	for (int i = 0; i < enemies.size(); i++)
+		enemies[i]->Render();
 	/*for (int i = 0; i < portal.size(); i++)
 		portal[i]->Render();*/
 	for (int i = 0; i < stairs.size(); i++)
@@ -361,7 +373,9 @@ void CPlayScene::Unload()
 {
 	for (int i = 0; i < bricks.size(); i++)
 		delete bricks[i];
-
+	for (int i = 0; i < enemies.size(); i++)
+		delete enemies[i];
+	enemies.clear();
 	bricks.clear();
 	//player = NULL;
 
@@ -376,6 +390,12 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 
 	CSimon *simon = ((CPlayScene*)scence)->GetPlayer();
 	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
+	if (simon->GetState() == SIMON_SHOCK)
+		return;
+	if ((simon->GetState() == SIMON_STAIR_UP_HIT && !(simon->animation_set->at(SIMON_STAIR_UP_HIT)->IsRenderOver(300))) || (simon->GetState() == SIMON_STAIR_DOWN_HIT && !simon->animation_set->at(SIMON_STAIR_DOWN_HIT)->IsRenderOver(300)))
+		return;
+	//if ((simon->GetState() == SIMON_STAIR_UP && !simon->animation_set->at(SIMON_STAIR_UP)->IsRenderOver(200)) || (simon->GetState() == SIMON_STAIR_DOWN && !simon->animation_set->at(SIMON_STAIR_DOWN)->IsRenderOver(200)))
+	//	return;
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
@@ -388,7 +408,13 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			simon->Hit();
 		break;
 	case DIK_1:
-		CGame::GetInstance()->SwitchScene(++i, simon);
+		CGame::GetInstance()->SwitchScene(5, simon);
+		simon->SetPosition(80, 0);
+		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
+		break;
+	case DIK_2:
+		CGame::GetInstance()->SwitchScene(2, simon);
+		simon->SetPosition(80,300);
 		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
 		break;
 	}
@@ -407,6 +433,9 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	if ((simon->GetState() == SIMON_STAIR_UP && !simon->animation_set->at(SIMON_STAIR_UP)->IsRenderOver(200)) || (simon->GetState() == SIMON_STAIR_DOWN && !simon->animation_set->at(SIMON_STAIR_DOWN)->IsRenderOver(200)))
 		return;
 	if ((simon->GetState() == SIMON_STAND_HIT && !(simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(300))) || (simon->GetState() == SIMON_SIT_HIT && !simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(300)))
+		return;
+
+	if ((simon->GetState() == SIMON_STAIR_UP_HIT && !(simon->animation_set->at(SIMON_STAIR_UP_HIT)->IsRenderOver(300))) || (simon->GetState() == SIMON_STAIR_DOWN_HIT && !simon->animation_set->at(SIMON_STAIR_DOWN_HIT)->IsRenderOver(300)))
 		return;
 
 	if ((simon->GetState() == SIMON_STAND_HIT && (simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(300))) || (simon->GetState() == SIMON_SIT_HIT && simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(300)))
@@ -440,7 +469,9 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		if (game->IsKeyDown(DIK_UP))
 			simon->GoUpStair();
 		else if (game->IsKeyDown(DIK_DOWN))
+		{
 			simon->GoDownStair();
+		}
 		else
 			simon->StandOnStair();
 		return;

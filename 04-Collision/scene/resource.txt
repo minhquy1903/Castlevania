@@ -11,8 +11,7 @@
 8	textures\scoreboard.png	255	0	255
 9	textures\healthbar.png	255	0	255
 10	textures\letter.png	255	0	255
-11	textures\bat.png	255	0	255
-12	textures\knight.png	116	116	116
+11	textures\enemies.png	116	116	116
 # id	left	top	right	bottom	texture_id
 
 [SPRITES]
@@ -133,14 +132,17 @@
 459	135	28	150	42	10
 
 #BAT
-500	0	0	32	32	11
-501	32	0	64	32	11
-502	64	0	96	32	11
-503	96	0	128	32	11
+500	474	22	506	54	11
+501	508	22	540	54	11
+502	542	22	574	54	11
+503	576	22	608	54	11
 #KIGHT
-550	0	0	40	80	12
-551	40	0	80	80	12
-552	80	0	120	80	12
+550	798	58	830	120	11
+551	832	56	864	120	11
+552	866	58	898	120	11
+#ZOMBIE
+600	2	56	34	120	11
+601	36	58	68	120	11
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 
@@ -212,11 +214,12 @@
 500	500	100
 #bat fly
 501	501	100	502	100	503	100
-#
 
 #====KNIGHT====
 550	550	100	551	100	552	100
 
+#====ZOMBIE====
+600	600	100	601	100
 # id	ani1	ani2	ani3
 #
 [ANIMATION_SETS]
@@ -238,7 +241,7 @@
 #knife
 5	250
 #boomerang
-9	251
+10	251
 #SPARK
 6	350
 
@@ -250,3 +253,5 @@
 
 #KNIGHT
 9	550
+#ZOMBIE
+11	600

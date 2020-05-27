@@ -2,10 +2,18 @@
 #include "Torch.h"
 #include "Utils.h"
 #include "Candle.h"
+#include "Bat.h"
+#include "Knight.h"
 
 void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-
+	if (state == WHIP_LVL_1)
+		dame = 1;
+	else if (state == WHIP_LVL_3 || state == state == WHIP_LVL_2)
+		dame = 2;
+	
+	if (GetTickCount() - timeResetHit >= TIME_RESET_HIT)
+		isResetHit = true;
 }
 
 void Whip::Render()
@@ -24,8 +32,9 @@ void Whip::Render(int currentID)
 	
 }
 
-void Whip::WhipCollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects)
+void Whip::CollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects)
 {
+	
 	for (int i = 0; i < coObjects->size(); i++)
 	{
 		LPGAMEOBJECT obj = coObjects->at(i);
@@ -41,6 +50,34 @@ void Whip::WhipCollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects)
 				Candle *candle = dynamic_cast<Candle*>(obj);
 				candle->SetIsBreak(true);
 			}
+		}
+	}
+}
+
+void Whip::CollideWithSecretEnemies(vector<LPGAMEOBJECT>* coObjects)
+{
+	if (isResetHit == false)
+		return;
+	for (int i = 0; i < coObjects->size(); i++)
+	{
+		LPGAMEOBJECT obj = coObjects->at(i);
+		if (AABBCollision(obj))
+		{
+			if (dynamic_cast<Bat*>(obj))
+			{
+				Bat *bat = dynamic_cast<Bat*>(obj);
+				if (bat->GetIsWakeUp() == true)
+					bat->SetHP(bat->GetHP() - dame);
+			}
+			else if (dynamic_cast<Knight*>(obj))
+			{
+				Knight*knight = dynamic_cast<Knight*>(obj);
+				knight->SetHP(knight->GetHP() - dame);
+				knight->SetState(KNIGHT_IS_HIT);
+				//DebugOut(L"hp: %d\n", knight->GetHP());
+			}
+			timeResetHit = GetTickCount();
+			isResetHit = false;
 		}
 	}
 }
@@ -74,7 +111,9 @@ void Whip::GetBoundingBox(float & left, float & top, float & right, float & bott
 
 Whip::Whip()
 {
-	SetAnimationSet(CAnimationSets::GetInstance()->Get(2));
+	dame = 1;
+	isResetHit = true;
+	SetAnimationSet(CAnimationSets::GetInstance()->Get(ANIMATION_WHIP));
 }
 
 

@@ -36,10 +36,7 @@
 
 #define MAX_FRAME_RATE 120
 
-#define ID_TEX_SIMON 0
-#define ID_TEX_ENEMY 10
-#define ID_TEX_GROUND 20
-#define ID_TEX_WHIP  30
+
 CGame *game;
 
 

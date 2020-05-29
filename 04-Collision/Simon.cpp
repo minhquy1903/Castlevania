@@ -9,6 +9,9 @@
 #include "Item.h"
 #include "Stair.h"
 #include "Knight.h"
+#include "Ghost.h"
+#include "Bridge.h"
+
 CSimon::CSimon()
 {
 	untouchable = 0;
@@ -193,7 +196,7 @@ void CSimon::Render()
 	}
 	//RenderBoundingBox();
 	if (subWeaponIsON)
-		weapon->Render();RenderBoundingBox();
+		weapon->Render();
 }
 
 void CSimon::SetState(int state)
@@ -209,16 +212,22 @@ void CSimon::SetState(int state)
 		ani = SIMON_WALKING;
 		break;
 	case SIMON_JUMP:
-		isGrounded = false;
+		if (isGrounded)
+		{
+			if (vx != SIMON_WALKING_SPEED && vx != -SIMON_WALKING_SPEED)
+				vx = 0;
+			isGrounded = false;
+			vy = -SIMON_JUMP_SPEED_Y;
+		}
 		ani = SIMON_JUMP;
-		vy = -SIMON_JUMP_SPEED_Y;
 		break;
 	case SIMON_SIT:
 		vx = 0;
 		ani = SIMON_SIT;
 		break;
 	case SIMON_IDLE:
-		vx = 0;
+		if(!isOnBridge)
+			vx = 0;
 		ani = SIMON_IDLE;
 		break;
 	case SIMON_SHOCK:
@@ -408,6 +417,22 @@ void CSimon::CollodeWhitBirck(vector<LPGAMEOBJECT>* coObjects)
 					if (e->ny == -1)
 					{
 						isGrounded = true;
+						isOnBridge = false;
+						vy = 0;
+					}
+					else
+						y += dy;
+				}
+			}
+			else if (dynamic_cast<Bridge*>(e->obj))
+			{
+				if (e->ny != 0)
+				{
+					if (e->ny == -1)
+					{
+						isOnBridge = true;
+						isGrounded = true;
+						vx = e->obj->vx;
 						vy = 0;
 					}
 					else
@@ -425,12 +450,16 @@ int CSimon::CollideWithPortal(vector<LPGAMEOBJECT>* portal)
 {
 	if (portal->size() == 0)
 		return false;
-	LPGAMEOBJECT obj = portal->at(0);
-	CPortal* e = dynamic_cast<CPortal*>(obj);
-	if (AABBCollision(obj))
+	for (int i = 0; i < portal->size(); i++)
 	{
-		SetPosition(e->GetXNextPortal(), e->GetYNextPortal());
-		return e->GetSceneID();
+		LPGAMEOBJECT obj = portal->at(i);
+		CPortal* e = dynamic_cast<CPortal*>(obj);
+		if (AABBCollision(obj))
+		{
+			SetPosition(e->GetXNextPortal(), e->GetYNextPortal());
+			return e->GetSceneID();
+		}
+		
 	}
 	return 0;
 }
@@ -488,11 +517,11 @@ void CSimon::SimonTouchStair(vector<LPGAMEOBJECT>* stair)
 	}
 }
 
-void CSimon::CollideWithEnemy(vector<LPGAMEOBJECT>* enemy)
+void CSimon::CollideWithEnemy(vector<LPGAMEOBJECT>* enemies)
 {
-	for (int i = 0; i < enemy->size(); i++)
+	for (int i = 0; i < enemies->size(); i++)
 	{
-		LPGAMEOBJECT obj = enemy->at(i);
+		LPGAMEOBJECT obj = enemies->at(i);
 		if (AABBCollision(obj))
 		{
 			
@@ -509,21 +538,36 @@ void CSimon::CollideWithEnemy(vector<LPGAMEOBJECT>* enemy)
 					{
 						if (!isOnStair)
 							SetState(SIMON_HURT);
-						health -= 2;
+						health -= bat->dame;
 						recoveryTime = GetTickCount();
 					}
+					vector<LPGAMEOBJECT>::iterator it;
+					it = enemies->begin();
+					enemies->erase(it);
 				}
 			}
-			if (dynamic_cast<Knight*>(obj))
+			else if (dynamic_cast<Knight*>(obj))
 			{
 				Knight *knight = dynamic_cast<Knight*>(obj);
 				if (isFlicker != true)
 				{
 					if (!isOnStair)
 						SetState(SIMON_HURT);
-					health -= 2;
+					health -= knight->dame;
 					recoveryTime = GetTickCount();
 				}
+			}
+			else if (dynamic_cast<Ghost*>(obj))
+			{
+				Ghost * ghost = dynamic_cast<Ghost*>(obj);
+				if (isFlicker != true)
+				{
+					if (!isOnStair)
+						SetState(SIMON_HURT);
+					health -= ghost->dame;
+					recoveryTime = GetTickCount();
+				}
+				
 			}
 		}
 	}

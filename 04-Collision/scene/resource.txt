@@ -1,7 +1,7 @@
 # id	file_path	transparent_color   r	     g	b
 [TEXTURES]
 0	textures\simon.png	255	0	255
-1	textures\ground.png	255	0	255
+1	textures\ground.png	0	0	0
 2	textures\whip.png	255	0	255
 3	textures\candle.png	255	0	255
 4	textures\items.png	255	0	255
@@ -12,6 +12,7 @@
 9	textures\healthbar.png	255	0	255
 10	textures\letter.png	255	0	255
 11	textures\enemies.png	116	116	116
+12	textures\bridge.png	116	116	116
 # id	left	top	right	bottom	texture_id
 
 [SPRITES]
@@ -56,8 +57,8 @@
 #simon hurt
 26	0	66	60	130	0
 #GROUND	50-100
-50	0	0	64	32	1
-
+50	0	0	32	32	1
+51	0	0	64	16	12
 #WHIP	100-150
 #whip_lvl_1
 100	0	0	240	66	2
@@ -136,13 +137,19 @@
 501	508	22	540	54	11
 502	542	22	574	54	11
 503	576	22	608	54	11
-#KIGHT
+#KNIGHT
 550	798	58	830	120	11
 551	832	56	864	120	11
 552	866	58	898	120	11
+
 #ZOMBIE
 600	2	56	34	120	11
 601	36	58	68	120	11
+
+#GHOST
+650	2	150	34	182	11
+651	36	150	68	182	11
+
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 
@@ -173,7 +180,7 @@
 11	26	100
 #====GROUND====
 50	50	100
-
+51	51	100
 #====WHIP====
 #whip_lvl_1
 100	100	100	101	100	102	100
@@ -220,6 +227,9 @@
 
 #====ZOMBIE====
 600	600	100	601	100
+
+#====GHOST====
+650	650	100	651	100
 # id	ani1	ani2	ani3
 #
 [ANIMATION_SETS]
@@ -255,3 +265,9 @@
 9	550
 #ZOMBIE
 11	600
+
+#GHOST
+12	650
+
+#BRIDGE
+13	51

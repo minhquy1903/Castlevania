@@ -9,7 +9,6 @@
 class Bat : public CGameObject
 {
 	bool isWakeUp;
-	int hp;
 	double r;
 public:
 	Bat();

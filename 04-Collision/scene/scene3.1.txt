@@ -75,6 +75,9 @@
 1	32	112	1
 1	32	80	1
 
+#Ghost
+5	1450	290	12	2
+
 [TILEMAP]
 #tile id	file_texture	file_path		tile_width		tile_height		num_col		num_row
 4000	TileMap\\tilesets_scene3.png	TileMap\\tilemap_scene3.1.txt	5	12	12	50	32	32

@@ -114,6 +114,12 @@
     <ClInclude Include="Zombie.h">
       <Filter>Header Files\GameObject\Enemy</Filter>
     </ClInclude>
+    <ClInclude Include="Ghost.h">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Bridge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -190,6 +196,12 @@
     </ClCompile>
     <ClCompile Include="Zombie.cpp">
       <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Ghost.cpp">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Bridge.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 #include "Knight.h"
 #include "Utils.h"
-
+#include "Brick.h"
 
 void Knight::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
@@ -33,7 +33,7 @@ void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		nx = -nx;*/
 
 	CalcPotentialCollisions(coObjects, coEvents);
-	//DebugOut(L"size: %d \n", coEvents.size());1
+	DebugOut(L"size: %d \n", coEvents.size());
 	
 	if (coEvents.size() == 0)
 	{
@@ -54,6 +54,9 @@ void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		/*if (nx != 0) vx = 0;
 		if (ny != 0) vy = 0;*/
 	}
+	
+	
+
 	if (coEvents.size() == 1 || coEvents.size() > 3)
 	{
 		if (isTurning == false)
@@ -107,6 +110,7 @@ Knight::Knight()
 	nx = 1;
 	vy = 0.1f;
 	hp = 3;
+	dame = 2;
 	isTurning = false;
 }
 

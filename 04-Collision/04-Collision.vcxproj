@@ -127,7 +127,9 @@
     <ClInclude Include="Bat.h" />
     <ClInclude Include="BoardScore.h" />
     <ClInclude Include="Boomerang.h" />
+    <ClInclude Include="Bridge.h" />
     <ClInclude Include="Candle.h" />
+    <ClInclude Include="Ghost.h" />
     <ClInclude Include="Knight.h" />
     <ClInclude Include="Torch.h" />
     <ClInclude Include="CKeyEventHandler.h" />
@@ -154,7 +156,9 @@
     <ClCompile Include="Bat.cpp" />
     <ClCompile Include="BoardScore.cpp" />
     <ClCompile Include="Boomerang.cpp" />
+    <ClCompile Include="Bridge.cpp" />
     <ClCompile Include="Candle.cpp" />
+    <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="Knight.cpp" />
     <ClCompile Include="Torch.cpp" />
     <ClCompile Include="Brick.cpp" />

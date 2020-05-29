@@ -45,7 +45,8 @@ public:
 	int state;
 	bool isDead;
 	DWORD dt; 
-
+	int hp;
+	int dame;
 	LPANIMATION_SET animation_set;
 
 public: 

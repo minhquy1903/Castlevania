@@ -27,7 +27,7 @@
 #define SIMON_STAND_ON_STAIR	12
 
 #define SIMON_BOX_WIDTH  45
-#define SIMON_BOX_HEIGHT 64
+#define SIMON_BOX_HEIGHT 63
 #define SIMON_UNTOUCHABLE_TIME 5000
 
 class CSimon : public CGameObject
@@ -45,6 +45,7 @@ class CSimon : public CGameObject
 	int currentSubweapon;
 	int alpha;
 	bool isFlicker;
+	bool isOnBridge;
 	DWORD untouchable_start;
 	DWORD recoveryTime;
 	Whip *whip;

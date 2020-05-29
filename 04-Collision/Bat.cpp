@@ -50,6 +50,7 @@ Bat::Bat()
 	hp = 1;
 	vy = -0.6;
 	r = 0;
+	dame = 2;
 	vx = SPEED_BAT;
 	vy = SPEED_BAT;
 }

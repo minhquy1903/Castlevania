@@ -4,6 +4,7 @@
 #include "Candle.h"
 #include "Bat.h"
 #include "Knight.h"
+#include "Ghost.h"
 
 void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -75,6 +76,11 @@ void Whip::CollideWithSecretEnemies(vector<LPGAMEOBJECT>* coObjects)
 				knight->SetHP(knight->GetHP() - dame);
 				knight->SetState(KNIGHT_IS_HIT);
 				//DebugOut(L"hp: %d\n", knight->GetHP());
+			}
+			else if (dynamic_cast<Ghost*>(obj))
+			{
+				Ghost * ghost = dynamic_cast<Ghost*>(obj);
+				ghost->SetHP(ghost->GetHP() - dame);
 			}
 			timeResetHit = GetTickCount();
 			isResetHit = false;

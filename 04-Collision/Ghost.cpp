@@ -10,18 +10,16 @@ void Ghost::GetBoundingBox(float & left, float & top, float & right, float & bot
 	bottom = y + 32;
 }
 
-void Ghost::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void Ghost::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
-	LPGAMEOBJECT obj = coObjects->back();
-	CSimon* e = dynamic_cast<CSimon*>(obj);
-	ChasingSimon(e->x, e->y);
+	ChasingSimon(simon->x, simon->y);
 	CGameObject::Update(dt);
 	x += dx;
 	y += dy;
 	if (hp <= 0)
 		isDead = true;
-
 }
+
 
 void Ghost::Render()
 {
@@ -30,7 +28,14 @@ void Ghost::Render()
 
 void Ghost::SetState(int state)
 {
+	CGameObject::SetState(state);
+	switch (state)
+	{
+	//case IDLE:
 
+	default:
+		break;
+	}
 }
 
 void Ghost::ChasingSimon(int xS, int yS)

@@ -5,6 +5,7 @@
 #include "Simon.h"
 #include "TileMap.h"
 #include "BoardScore.h"
+#include "Enemy.h"
 
 class CPlayScene : public CScene
 {
@@ -17,7 +18,7 @@ protected:
 	vector<LPGAMEOBJECT> listItem;
 	vector<LPGAMEOBJECT> portal;
 	vector<LPGAMEOBJECT> stairs;
-	vector<LPGAMEOBJECT> enemies;
+	vector<LPENEMY> enemies;
 	
 	void _ParseSection_OBJECTS(string line);
 	void _ParseSection_TILEMAP(string line);

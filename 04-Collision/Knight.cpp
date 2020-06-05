@@ -5,19 +5,19 @@
 void Knight::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;
-	right = x + 32;
+	right = x + KNIGHT_BBOX_WIDTH;
 	top = y;
-	bottom = y + 64;
+	bottom = y + KNIGHT_BBOX_HEIGHT;
 }
 
-void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
 	if (hp <= 0)
 	{
 		SetState(KNIGHT_DEAD);
 		isDead = true;
 	}
-	if (GetTickCount() - timeDelay >= 260)
+	if (GetTickCount() - timeDelay >= DELAY_TIME)
 		SetState(KNIGHT_WALK);
 
 	
@@ -91,10 +91,7 @@ void Knight::SetState(int state)
 		break;
 	case KNIGHT_WALK:
 		ani = KNIGHT_WALK;
-		if (nx == 1)
-			vx = 0.1;
-		else
-			vx = -0.1;
+		vx = KNIGHT_WALK_SPEED * nx;
 		break;
 	case KNIGHT_DEAD:
 
@@ -106,11 +103,10 @@ void Knight::SetState(int state)
 
 Knight::Knight()
 {
-	vx = 0.7f;
-	nx = 1;
-	vy = 0.1f;
-	hp = 3;
-	dame = 2;
+	vx = KNIGHT_WALK_SPEED;
+	vy = VY;
+	hp = HEALTH;
+	dame = DAME;
 	isTurning = false;
 }
 

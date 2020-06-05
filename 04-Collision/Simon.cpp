@@ -181,8 +181,6 @@ void CSimon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	else
 	{
 		vy += GRAVITY * dt;
-		CollodeWhitBirck(coObjects);
-		
 	}
 		
 }
@@ -388,8 +386,12 @@ void CSimon::CollodeWhitBirck(vector<LPGAMEOBJECT>* coObjects)
 	// No collision occured, proceed normally
 	if (coEvents.size() == 0)
 	{
+		if (!isOnStair)
+		{
 			x += dx;
 			y += dy;
+		}
+			
 	}
 	else
 	{
@@ -517,11 +519,11 @@ void CSimon::SimonTouchStair(vector<LPGAMEOBJECT>* stair)
 	}
 }
 
-void CSimon::CollideWithEnemy(vector<LPGAMEOBJECT>* enemies)
+void CSimon::CollideWithEnemy(vector<LPENEMY>* enemies)
 {
 	for (int i = 0; i < enemies->size(); i++)
 	{
-		LPGAMEOBJECT obj = enemies->at(i);
+		LPENEMY obj = enemies->at(i);
 		if (AABBCollision(obj))
 		{
 			
@@ -541,7 +543,7 @@ void CSimon::CollideWithEnemy(vector<LPGAMEOBJECT>* enemies)
 						health -= bat->dame;
 						recoveryTime = GetTickCount();
 					}
-					vector<LPGAMEOBJECT>::iterator it;
+					vector<LPENEMY>::iterator it;
 					it = enemies->begin();
 					enemies->erase(it);
 				}

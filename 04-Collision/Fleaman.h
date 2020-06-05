@@ -1,12 +1,16 @@
 #pragma once
 #include "Enemy.h"
 
-#define GHOST_SPEED 0.085f
-#define VY_GHOST	0.022f;
+#define FLEAMAN_BBOX_WIDTH 32
+#define FLEAMAN_BBOX_HEIGHT 32
 
-class Ghost : public Enemy
+#define IDLE 0
+#define JUMP 1
+#define DEAD 2
+#define GRAVITY 0.002f
+
+class Fleaman : public Enemy
 {
-	
 public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL, LPGAMEOBJECT simon = NULL);
@@ -15,7 +19,7 @@ public:
 	void ChasingSimon(int x, int y);
 	int GetHP() { return hp; }
 	void SetHP(int HP) { hp = HP; }
-	Ghost();
-	~Ghost();
+	Fleaman();
+	~Fleaman();
 };
 

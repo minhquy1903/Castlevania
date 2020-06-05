@@ -118,6 +118,12 @@
       <Filter>Header Files\GameObject\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Bridge.h">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Fleaman.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -201,6 +207,12 @@
       <Filter>Header Files\GameObject\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Bridge.cpp">
+      <Filter>Header Files\GameObject\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Fleaman.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,9 +5,9 @@
 void Bridge::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;
-	right = x + 64;
+	right = x + BRIDGE_BBOX_WIDTH;
 	top = y;
-	bottom = y + 16;
+	bottom = y + BRIDGE_BBOX_HEIGHT;
 }
 
 void Bridge::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
@@ -58,12 +58,12 @@ void Bridge::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void Bridge::Render()
 {
 	animation_set->at(0)->Render(0, x, y);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 Bridge::Bridge()
 {
-	vx = 0.065f;
+	vx = BRIDGE_SPEED;
 	vy = 0;
 }
 

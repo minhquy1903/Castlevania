@@ -129,6 +129,8 @@
     <ClInclude Include="Boomerang.h" />
     <ClInclude Include="Bridge.h" />
     <ClInclude Include="Candle.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Fleaman.h" />
     <ClInclude Include="Ghost.h" />
     <ClInclude Include="Knight.h" />
     <ClInclude Include="Torch.h" />
@@ -158,6 +160,8 @@
     <ClCompile Include="Boomerang.cpp" />
     <ClCompile Include="Bridge.cpp" />
     <ClCompile Include="Candle.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Fleaman.cpp" />
     <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="Knight.cpp" />
     <ClCompile Include="Torch.cpp" />

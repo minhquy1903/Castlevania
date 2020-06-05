@@ -55,7 +55,7 @@ void Whip::CollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects)
 	}
 }
 
-void Whip::CollideWithSecretEnemies(vector<LPGAMEOBJECT>* coObjects)
+void Whip::CollideWithSecretEnemies(vector<LPENEMY>* coObjects)
 {
 	if (isResetHit == false)
 		return;

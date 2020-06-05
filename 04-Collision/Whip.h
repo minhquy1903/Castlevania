@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Enemy.h"
 
 #define WHIP_LVL_1		0
 #define WHIP_LVL_2		1
@@ -19,7 +20,7 @@ public:
 	
 	void Render(int currentID = -1);
 	void CollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects);
-	void CollideWithSecretEnemies(vector<LPGAMEOBJECT>* coObjects);
+	void CollideWithSecretEnemies(vector<LPENEMY>* coObjects);
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	Whip();
 	~Whip();

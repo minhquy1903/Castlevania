@@ -4,6 +4,7 @@
 #include "SubWeapon.h"
 #include "Knife.h"
 #include "Boomerang.h"
+#include "Enemy.h"
 
 #define SIMON_WALKING_SPEED		0.15f 
 #define SIMON_GO_STAIR_SPEED	0.078f
@@ -75,7 +76,7 @@ public:
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
 	int CollideWithPortal(vector<LPGAMEOBJECT> *portal);
 	void SimonTouchStair(vector<LPGAMEOBJECT> *stair = NULL);
-	void CollideWithEnemy(vector<LPGAMEOBJECT> *enemy = NULL);
+	void CollideWithEnemy(vector<LPENEMY> *enemy = NULL);
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	int GetHealth() { return health; }
 	int GetHeart() { return heart; }

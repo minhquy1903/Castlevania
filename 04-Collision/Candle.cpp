@@ -16,9 +16,9 @@ Candle::Candle(int iditem)
 void Candle::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;
-	right = x + 16;
+	right = x + CANDLE_BBOX_WIDTH;
 	top = y;
-	bottom = y + 32;
+	bottom = y + CANDLE_BBOX_HEIGHT;
 }
 
 void Candle::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)

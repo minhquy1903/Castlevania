@@ -28,15 +28,12 @@ using namespace std;
 #define OBJECT_TYPE_ENEMY	5
 #define OBJECT_TYPE_BRIDGE	6
 #define OBJECT_TYPE_PORTAL	50
-
+#define MAX_SCENE_LINE		1024
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
-
 	key_handler = new CPlayScenceKeyHandler(this);
 }
-
-
 
 
 /*
@@ -45,8 +42,6 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 */
 
 
-
-#define MAX_SCENE_LINE 1024
 
 void CPlayScene::Load()
 {
@@ -119,7 +114,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	int ani_set_id = atoi(tokens[3].c_str());
 
 	CAnimationSets * animation_sets = CAnimationSets::GetInstance();
-
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 	CGameObject *obj = NULL;
 
 	switch (object_type)
@@ -133,11 +128,15 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		obj = new CSimon();
 		player = (CSimon*)obj;
+		obj->SetPosition(x, y);
+		obj->SetAnimationSet(ani_set);
 		DebugOut(L"[INFO] Player object created!\n");
 		break;
 	case OBJECT_TYPE_BRICK: 
 		obj = new Brick();
 		bricks.push_back(obj);
+		obj->SetPosition(x, y);
+		obj->SetAnimationSet(ani_set);
 		break;
 	case OBJECT_TYPE_SECRETOBJ: 
 	{
@@ -148,6 +147,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		else
 			obj = new Candle(iditem);
 		secretObj.push_back(obj);
+		obj->SetPosition(x, y);
+		obj->SetAnimationSet(ani_set);
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:
@@ -159,39 +160,47 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int yNext = atoi(tokens[8].c_str());
 		obj = new CPortal(x, y, width, height, scene_id, xNext, yNext);
 		portal.push_back(obj);
+		obj->SetPosition(x, y);
+		obj->SetAnimationSet(ani_set);
 		break;
 	}
 	case OBJECT_TYPE_ENEMY:
 	{
+		Enemy * enemy = NULL;
 		int typeEnemy = atof(tokens[4].c_str());
 		if (typeEnemy == 0)
 		{
-			obj = new Bat();
+			enemy = new Bat();
 		}
 		else if (typeEnemy == 1)
 		{
-			obj = new Knight();
+			enemy = new Knight();
 		}
 		else if (typeEnemy == 2)
 		{
-			obj = new Ghost();
+			enemy = new Ghost();
 		}
-		enemies.push_back(obj);
+		enemies.push_back(enemy);
+		enemy->SetPosition(x, y);
+		enemy->SetAnimationSet(ani_set);
 		break;
 	}
 	case OBJECT_TYPE_STAIR:
 	{
 		int DirectionX = atof(tokens[4].c_str());
 		int DirectionY = atof(tokens[5].c_str());
-		
 		obj = new Stair(x,y,DirectionX, DirectionY);
 		stairs.push_back(obj);
+		obj->SetPosition(x, y);
+		obj->SetAnimationSet(ani_set);
 		break;
 	}
 	case OBJECT_TYPE_BRIDGE:
 	{
 		obj = new Bridge();
 		bricks.push_back(obj);
+		obj->SetPosition(x, y);
+		obj->SetAnimationSet(ani_set);
 		break;
 	}
 		
@@ -200,12 +209,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		return;
 	}
 
-	// General object setup
-	obj->SetPosition(x, y);
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-
-	obj->SetAnimationSet(ani_set);
-	
 }
 
 void CPlayScene::_ParseSection_TILEMAP(string line)
@@ -245,8 +248,10 @@ void CPlayScene::Update(DWORD dt)
 		bricks[i]->Update(dt, &bricks);
 	}
 
-	player->Update(dt, &coObjects);
+	player->Update(dt);
 	
+	player->CollodeWhitBirck(&bricks);
+
 	player->SimonTouchStair(&stairs);// simon chạm cầu thang
 
 	if ((player->GetState() == SIMON_STAND_HIT && player->animation_set->at(SIMON_STAND_HIT)->GetCurrentFrame() == 2) || 
@@ -309,19 +314,19 @@ void CPlayScene::Update(DWORD dt)
 		}
 	}
 
-	for (int i = 0; i < enemies.size(); i++)
+	for (int i = 0; i < enemies.size(); i++)//quái update
 	{
-		enemies[i]->Update(dt,&coObjects);
+		enemies[i]->Update(dt,&bricks, player);
 		if (enemies[i]->isDead == true) 
 		{
-			vector<LPGAMEOBJECT>::iterator it;
+			vector<LPENEMY>::iterator it;
 			it = enemies.begin();
 			it += i;
 			enemies.erase(it);
 		}
 	}
 
-	player->CollideWithEnemy(&enemies);
+	player->CollideWithEnemy(&enemies);//simon va chạm với quoái
 
 	for (size_t i = 0; i < listItem.size(); i++)//update list item
 	{

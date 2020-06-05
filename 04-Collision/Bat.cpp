@@ -14,13 +14,13 @@ void Bat::GetBoundingBox(float & left, float & top, float & right, float & botto
 	else
 	{
 		left = x;
-		right = x + 32;
+		right = x + BAT_BBOX_WIDTH;
 		top = y;
-		bottom = y + 32;
+		bottom = y + BAT_BBOX_HEIGHT;
 	}
 }
 
-void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
+void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
 	if (hp <= 0)
 		isDead = true;
@@ -30,7 +30,7 @@ void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		state = BAT_FLY;
 		x += dx;
 		r += dy;
-		if (r < 85)
+		if (r < RANGE)
 			y += dy;
 
 	}
@@ -39,7 +39,7 @@ void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 void Bat::Render()
 {
 	animation_set->at(state)->Render(nx, x, y);
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 
@@ -47,10 +47,10 @@ Bat::Bat()
 {
 	state = BAT_SLEEP;
 	isWakeUp = false;
-	hp = 1;
-	vy = -0.6;
+	hp = HEALTH;
+	vy = BAT_SPEED;
 	r = 0;
-	dame = 2;
+	dame = DAME;
 	vx = SPEED_BAT;
 	vy = SPEED_BAT;
 }

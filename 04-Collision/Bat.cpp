@@ -4,26 +4,19 @@
 
 void Bat::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	if (state == BAT_SLEEP)
-	{
-		left = x - 210;
-		right = x + 210;
-		top = y + 60;
-		bottom = y + 120;
-	}
-	else
-	{
-		left = x;
-		right = x + BAT_BBOX_WIDTH;
-		top = y;
-		bottom = y + BAT_BBOX_HEIGHT;
-	}
+	left = x;
+	right = x + BAT_BBOX_WIDTH;
+	top = y;
+	bottom = y + BAT_BBOX_HEIGHT;
 }
 
 void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
 	if (hp <= 0)
 		isDead = true;
+	if (abs(x - simon->x) < 210 && abs(y - simon->y) < 80)
+		isWakeUp = true;
+
 	if (isWakeUp)
 	{
 		CGameObject::Update(dt);

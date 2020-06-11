@@ -220,7 +220,8 @@ void CSimon::SetState(int state)
 		ani = SIMON_JUMP;
 		break;
 	case SIMON_SIT:
-		vx = 0;
+		if(!isOnBridge)
+			vx = 0;
 		ani = SIMON_SIT;
 		break;
 	case SIMON_IDLE:
@@ -524,54 +525,26 @@ void CSimon::CollideWithEnemy(vector<LPENEMY>* enemies)
 	for (int i = 0; i < enemies->size(); i++)
 	{
 		LPENEMY obj = enemies->at(i);
-		if (AABBCollision(obj))
-		{
-			
-			if (dynamic_cast<Bat*>(obj))
+		if (!obj->isDead)
+			if (AABBCollision(obj))
 			{
-				Bat *bat = dynamic_cast<Bat*>(obj);
-				if (!bat->GetIsWakeUp())
+				if (dynamic_cast<Bat*>(obj))
 				{
-					bat->SetISWakeUp(true);
-				}
-				else
-				{
-					if (isFlicker != true)
-					{
-						if (!isOnStair)
-							SetState(SIMON_HURT);
-						health -= bat->dame;
-						recoveryTime = GetTickCount();
-					}
+					Bat *bat = dynamic_cast<Bat*>(obj);
 					vector<LPENEMY>::iterator it;
 					it = enemies->begin();
 					enemies->erase(it);
 				}
-			}
-			else if (dynamic_cast<Knight*>(obj))
-			{
-				Knight *knight = dynamic_cast<Knight*>(obj);
+
 				if (isFlicker != true)
 				{
 					if (!isOnStair)
 						SetState(SIMON_HURT);
-					health -= knight->dame;
+					health -= obj->dame;
 					recoveryTime = GetTickCount();
 				}
+
 			}
-			else if (dynamic_cast<Ghost*>(obj))
-			{
-				Ghost * ghost = dynamic_cast<Ghost*>(obj);
-				if (isFlicker != true)
-				{
-					if (!isOnStair)
-						SetState(SIMON_HURT);
-					health -= ghost->dame;
-					recoveryTime = GetTickCount();
-				}
-				
-			}
-		}
 	}
 }
 

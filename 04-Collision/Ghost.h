@@ -13,8 +13,6 @@ public:
 	void Render();
 	void SetState(int state);
 	void ChasingSimon(int x, int y);
-	int GetHP() { return hp; }
-	void SetHP(int HP) { hp = HP; }
 	Ghost();
 	~Ghost();
 };

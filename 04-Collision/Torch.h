@@ -7,7 +7,6 @@
 class Torch : public CGameObject
 {
 	Item * item;
-	bool renderFireDone;
 	int idItem;
 public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);

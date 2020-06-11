@@ -50,7 +50,6 @@ Torch::Torch()
 
 Torch::Torch(int idItem)
 {
-	renderFireDone = false;
 	state = NOMAL_TORCH;
 	this->idItem = idItem;
 }

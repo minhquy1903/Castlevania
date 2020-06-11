@@ -24,8 +24,6 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL, LPGAMEOBJECT simon = NULL);
 	void Render();
 	void SetState(int state);
-	int GetHP() { return hp; }
-	void SetHP(int HP) { hp = HP; }
 	Knight();
 	~Knight();
 };

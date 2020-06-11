@@ -8,6 +8,9 @@
 #define ANIMATION_WHIP	2
 #define TIME_RESET_HIT	200
 
+#define DAME_WHIP_LVL1	1
+#define DAME_WHIP_LVL23	2
+
 class Whip : public CGameObject
 {
 	int dame;

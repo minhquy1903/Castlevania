@@ -5,13 +5,15 @@
 #include "Bat.h"
 #include "Knight.h"
 #include "Ghost.h"
+#include "Fleaman.h"
+#include "Skeleton.h"
 
 void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (state == WHIP_LVL_1)
-		dame = 1;
+		dame = DAME_WHIP_LVL1;
 	else if (state == WHIP_LVL_3 || state == state == WHIP_LVL_2)
-		dame = 2;
+		dame = DAME_WHIP_LVL23;
 	
 	if (GetTickCount() - timeResetHit >= TIME_RESET_HIT)
 		isResetHit = true;
@@ -61,14 +63,13 @@ void Whip::CollideWithSecretEnemies(vector<LPENEMY>* coObjects)
 		return;
 	for (int i = 0; i < coObjects->size(); i++)
 	{
-		LPGAMEOBJECT obj = coObjects->at(i);
+		LPENEMY obj = coObjects->at(i);
 		if (AABBCollision(obj))
 		{
 			if (dynamic_cast<Bat*>(obj))
 			{
 				Bat *bat = dynamic_cast<Bat*>(obj);
-				if (bat->GetIsWakeUp() == true)
-					bat->SetHP(bat->GetHP() - dame);
+				bat->SetHP(bat->GetHP() - dame);
 			}
 			else if (dynamic_cast<Knight*>(obj))
 			{
@@ -81,6 +82,16 @@ void Whip::CollideWithSecretEnemies(vector<LPENEMY>* coObjects)
 			{
 				Ghost * ghost = dynamic_cast<Ghost*>(obj);
 				ghost->SetHP(ghost->GetHP() - dame);
+			}
+			else if (dynamic_cast<Fleaman*>(obj))
+			{
+				Fleaman * fleaman = dynamic_cast<Fleaman*>(obj);
+				fleaman->SetHP(fleaman->GetHP() - dame);
+			}
+			else if (dynamic_cast<Skeleton*>(obj))
+			{
+				Skeleton * skeleton = dynamic_cast<Skeleton*>(obj);
+				skeleton->SetHP(skeleton->GetHP() - dame);
 			}
 			timeResetHit = GetTickCount();
 			isResetHit = false;

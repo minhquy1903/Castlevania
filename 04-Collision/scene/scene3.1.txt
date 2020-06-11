@@ -13,6 +13,7 @@
 1	1408	400	1
 1	1376	400	1
 1	1344	400	1
+1	1344	432	1
 1	1312	432	1
 1	1280	432	1
 1	1248	432	1
@@ -76,8 +77,15 @@
 1	32	80	1
 
 #Ghost
-5	1450	290	12	2
+#5	1450	290	12	2
+#Fleaman
+#5	864	303	14	3
+#5	608	303	14	3
+#5	352	239	14	3
 
+#Skeleton
+5	85	260	15	4
+#85	260
 [TILEMAP]
 #tile id	file_texture	file_path		tile_width		tile_height		num_col		num_row
 4000	TileMap\\tilesets_scene3.png	TileMap\\tilemap_scene3.1.txt	5	12	12	50	32	32

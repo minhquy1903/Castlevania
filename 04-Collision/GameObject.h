@@ -37,16 +37,15 @@ public:
 	int ani;
 	float dx;	// dx = vx*dt
 	float dy;	// dy = vy*dt
-
 	float vx;
 	float vy;
 	int nx;
 	int ny;
 	int state;
 	bool isDead;
+	bool renderFireDone;
 	DWORD dt; 
-	int hp;
-	int dame;
+	
 	LPANIMATION_SET animation_set;
 
 public: 

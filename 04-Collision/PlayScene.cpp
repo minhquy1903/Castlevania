@@ -14,6 +14,8 @@
 #include "Knight.h"
 #include "Ghost.h"
 #include "Bridge.h"
+#include "Fleaman.h"
+#include "Skeleton.h"
 
 using namespace std;
 
@@ -180,9 +182,18 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		{
 			enemy = new Ghost();
 		}
-		enemies.push_back(enemy);
+		else if (typeEnemy == 3)
+		{
+			enemy = new Fleaman();
+		}
+		else if (typeEnemy == 4)
+		{
+			enemy = new Skeleton();
+		}
+		
 		enemy->SetPosition(x, y);
 		enemy->SetAnimationSet(ani_set);
+		enemies.push_back(enemy);
 		break;
 	}
 	case OBJECT_TYPE_STAIR:
@@ -317,8 +328,10 @@ void CPlayScene::Update(DWORD dt)
 	for (int i = 0; i < enemies.size(); i++)//quái update
 	{
 		enemies[i]->Update(dt,&bricks, player);
-		if (enemies[i]->isDead == true) 
+		if (enemies[i]->renderFireDone) 
 		{
+			enemies[i]->DropItem();
+			listItem.push_back(enemies[i]->GetItem());
 			vector<LPENEMY>::iterator it;
 			it = enemies.begin();
 			it += i;
@@ -438,11 +451,6 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		else 
 			simon->Hit();
 		break;
-	case DIK_5:
-		CGame::GetInstance()->SwitchScene(5, simon);
-		simon->SetPosition(80, 0);
-		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
-		break;
 	case DIK_2:
 		CGame::GetInstance()->SwitchScene(2, simon);
 		simon->SetPosition(80,300);
@@ -453,6 +461,21 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		simon->SetPosition(128, 80);
 		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
 		break;
+	case DIK_4:
+		CGame::GetInstance()->SwitchScene(4, simon);
+		simon->SetPosition(300, 300);
+		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
+		break;
+	case DIK_5:
+		CGame::GetInstance()->SwitchScene(5, simon);
+		simon->SetPosition(80, 0);
+		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
+		break;
+	/*case DIK_6:
+		CGame::GetInstance()->SwitchScene(6, simon);
+		simon->SetPosition(80, 0);
+		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
+		break;*/
 	}
 }
 

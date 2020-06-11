@@ -24,8 +24,6 @@ public:
 	void Render();
 	bool GetIsWakeUp() { return isWakeUp; }
 	void SetISWakeUp(bool iswakeup) { isWakeUp = iswakeup; }
-	int GetHP() { return hp; }
-	void SetHP(int HP) { hp = HP; }
 	
 	~Bat();
 };

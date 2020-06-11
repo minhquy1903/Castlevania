@@ -120,10 +120,16 @@
     <ClInclude Include="Bridge.h">
       <Filter>Header Files\GameObject\StaticObject</Filter>
     </ClInclude>
-    <ClInclude Include="Fleaman.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Enemy.h">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Fleaman.h">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Skeleton.h">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Bone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -209,10 +215,16 @@
     <ClCompile Include="Bridge.cpp">
       <Filter>Header Files\GameObject\StaticObject</Filter>
     </ClCompile>
-    <ClCompile Include="Fleaman.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Enemy.cpp">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Fleaman.cpp">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Skeleton.cpp">
+      <Filter>Header Files\GameObject\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Bone.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

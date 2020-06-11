@@ -57,7 +57,7 @@
 5	640	287	9	1
 
 # --- SCENE PORTAL ----
-# type	x	y	ani_set_id	r	b	scene_id	x	y
+# type	x	y	ani_set_id	r	b	scene_id	xs	ys
 50	736	464	0	32	1	2	235	75
 50	0	144	0	32	64	4	1340	330
 

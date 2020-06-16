@@ -10,7 +10,7 @@
 class CPlayScene : public CScene
 {
 protected:
-	CSimon *player;					// A play scene has to have player, right? 
+	Simon *player;					// A play scene has to have player, right? 
 	TileMap *tilemap; 
 	BoardScore * boardscore;
 	vector<LPGAMEOBJECT> bricks;
@@ -29,8 +29,9 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
-	virtual void SetPlayer(CSimon* player) { this->player = player; }
-	CSimon * GetPlayer() { return player; }
+	void SimonRevival();
+	virtual void SetPlayer(Simon* player) { this->player = player; }
+	Simon * GetPlayer() { return player; }
 
 	//friend class CPlayScenceKeyHandler;
 };

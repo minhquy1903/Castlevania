@@ -25,20 +25,27 @@
 #define SIMON_STAIR_UP_HIT		9
 #define SIMON_STAIR_DOWN_HIT	10
 #define SIMON_HURT				11
-#define SIMON_STAND_ON_STAIR	12
+#define SIMON_STAND_ON_STAIR	13
+#define SIMON_DEAD				12
 
 #define SIMON_BOX_WIDTH  45
-#define SIMON_BOX_HEIGHT 63
+#define SIMON_BOX_HEIGHT 61
 #define SIMON_UNTOUCHABLE_TIME 5000
+#define TIME_SIMON_DIE			2500
+#define SIMON_LIFE		3
+#define SIMON_HP		16
+#define RGB_255			255
+#define TIME_LIFE		300
 
-class CSimon : public CGameObject
+
+class Simon : public CGameObject
 {
+public:
 	int typeSubWeapon;
 	int untouchable;
 	int directionOnStair;
 	bool subWeaponIsON;
-	int nxStair;
-	int nyStair;
+	
 	int posXStair;
 	int health;
 	int life;
@@ -47,16 +54,25 @@ class CSimon : public CGameObject
 	int alpha;
 	bool isFlicker;
 	bool isOnBridge;
+	bool revival;
+	bool isDead;
+	int currentScene;
+	int timeLife;
+	int nxStairTop;
+	int nxStairBottom;
+	int pairStair;
+	bool isTouchStairTop;
+	bool isTouchStairBottom;
+	bool checkTouchStairBottom;
+	bool checkTouchStairTop;
 	DWORD untouchable_start;
 	DWORD recoveryTime;
 	Whip *whip;
 	SubWeapon * weapon;
 
 public: 
-	CSimon();
+	Simon();
 	void SetAnimation(int ani) { this->ani = ani; }
-	bool isTouchStairTop;
-	bool isTouchStairBottom;
 	bool isOnStair;
 	bool isGrounded;
 	void WalkLeft();

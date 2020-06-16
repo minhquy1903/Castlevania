@@ -42,8 +42,8 @@
 1	960	304	1
 1	896	304	1
 1	609	336	1
-#stair	type	x	y	ani_sey	nxstair	nystair	
-4	904	272	1	-1	1
+#stair	type	x	y	ani_sey	nxstair	nystair	pair
+4	912	240	1	-1	1	1
 
 #bridge
 6	105	240	13

@@ -99,8 +99,6 @@ void Whip::CollideWithSecretEnemies(vector<LPENEMY>* coObjects)
 	}
 }
 
-
-
 void Whip::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	if (nx == -1)
@@ -128,7 +126,7 @@ void Whip::GetBoundingBox(float & left, float & top, float & right, float & bott
 
 Whip::Whip()
 {
-	dame = 1;
+	dame = DAME_WHIP_LVL1;
 	isResetHit = true;
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(ANIMATION_WHIP));
 }

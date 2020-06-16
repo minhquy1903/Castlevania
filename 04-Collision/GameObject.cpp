@@ -14,7 +14,7 @@ CGameObject::CGameObject()
 	vx = vy = 0;
 	nx = 1;	
 	isDead = false;
-	renderFireDone = false;
+	//renderFireDone = false;
 }
 
 void CGameObject::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)

@@ -20,7 +20,6 @@ void Fleaman::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT sim
 	
 	if (state == DEAD && animation_set->at(ani)->IsRenderOver(400))
 	{
-		DropItem();
 		renderFireDone = true;
 	}
 

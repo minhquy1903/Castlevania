@@ -12,12 +12,24 @@ void Ghost::GetBoundingBox(float & left, float & top, float & right, float & bot
 
 void Ghost::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
+	if (hp <= 0 && isDead == false)
+	{
+		isDead = true;
+		SetState(DEAD);
+	}
+
+	if (state == DEAD && animation_set->at(ani)->IsRenderOver(400))
+	{
+		renderFireDone = true;
+	}
+
+	if (isDead)
+		return;
+
 	ChasingSimon(simon->x, simon->y);
 	CGameObject::Update(dt);
 	x += dx;
 	y += dy;
-	if (hp <= 0)
-		isDead = true;
 }
 
 
@@ -31,8 +43,12 @@ void Ghost::SetState(int state)
 	CGameObject::SetState(state);
 	switch (state)
 	{
-	//case IDLE:
-
+	case DEAD:
+		ani = DEAD;
+		vx = 0;
+		vy = 0;
+		animation_set->at(ani)->StartRenderAnimation();
+		break;
 	default:
 		break;
 	}

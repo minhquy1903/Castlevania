@@ -1,9 +1,9 @@
 #pragma once
 #include "Enemy.h"
 
-#define	KNIGHT_IS_HIT	1
-#define KNIGHT_WALK		0
-#define KNIGHT_DEAD		2
+#define	KNIGHT_IS_HIT	2
+#define WALK		0
+#define DEAD		1
 
 #define KNIGHT_ANI		0
 

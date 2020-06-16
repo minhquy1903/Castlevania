@@ -130,7 +130,7 @@
       <Filter>Header Files\GameObject\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Bone.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GameObject\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -225,7 +225,7 @@
       <Filter>Header Files\GameObject\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Bone.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files\GameObject\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

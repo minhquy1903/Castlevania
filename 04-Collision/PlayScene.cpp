@@ -128,8 +128,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			//player->SetPosition(x, y);
 			return;
 		}
-		obj = new CSimon();
-		player = (CSimon*)obj;
+		obj = new Simon();
+		player = (Simon*)obj;
 		obj->SetPosition(x, y);
 		obj->SetAnimationSet(ani_set);
 		DebugOut(L"[INFO] Player object created!\n");
@@ -199,8 +199,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_STAIR:
 	{
 		int DirectionX = atof(tokens[4].c_str());
-		int DirectionY = atof(tokens[5].c_str());
-		obj = new Stair(x,y,DirectionX, DirectionY);
+		int typeStair = atof(tokens[5].c_str());
+		int Pair = atof(tokens[6].c_str());
+		obj = new Stair(x,y,DirectionX, typeStair, Pair);
 		stairs.push_back(obj);
 		obj->SetPosition(x, y);
 		obj->SetAnimationSet(ani_set);
@@ -241,12 +242,24 @@ void CPlayScene::_ParseSection_TILEMAP(string line)
 	tilemap = new TileMap(ID, filePath_texture.c_str(), filePath_data.c_str(), num_row_on_texture, num_col_on_textture, num_row_on_tilemap, num_col_on_tilemap, tileset_width, tileset_height);
 }
 
+void CPlayScene::SimonRevival()
+{
+	int currentScene = player->currentScene;
+	player = NULL;
+	player = new Simon();
+
+	CGame::GetInstance()->SetCamPos(0, 0.0f);
+	CGame::GetInstance()->SwitchScene(currentScene, player);
+
+}
 
 void CPlayScene::Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
 	
+	
+
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 1; i < bricks.size(); i++)
 	{
@@ -379,6 +392,11 @@ void CPlayScene::Update(DWORD dt)
 	//DebugOut(L"tileWidth: %d\n", tilemap->GetWidthTileMap());
 	boardscore->Update(dt, CGame::GetInstance()->GetCamPosX(),0,player);
 
+	if (player->revival)
+	{
+		SimonRevival();
+	}
+
 	if (int idScene = player->CollideWithPortal(&portal)) //kiểm tra simon đi vào cổng
 	{
 		//portal.at(0).idscene();
@@ -432,14 +450,14 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
 	//DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 
-	CSimon *simon = ((CPlayScene*)scence)->GetPlayer();
+	Simon *simon = ((CPlayScene*)scence)->GetPlayer();
 	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	if (simon->GetState() == SIMON_SHOCK)
 		return;
-	if ((simon->GetState() == SIMON_STAIR_UP_HIT && !(simon->animation_set->at(SIMON_STAIR_UP_HIT)->IsRenderOver(300))) || (simon->GetState() == SIMON_STAIR_DOWN_HIT && !simon->animation_set->at(SIMON_STAIR_DOWN_HIT)->IsRenderOver(300)))
+	if ((simon->GetState() == SIMON_STAIR_UP_HIT && !(simon->animation_set->at(SIMON_STAIR_UP_HIT)->IsRenderOver(400))) || 
+		(simon->GetState() == SIMON_STAIR_DOWN_HIT && !simon->animation_set->at(SIMON_STAIR_DOWN_HIT)->IsRenderOver(400)))
 		return;
-	//if ((simon->GetState() == SIMON_STAIR_UP && !simon->animation_set->at(SIMON_STAIR_UP)->IsRenderOver(200)) || (simon->GetState() == SIMON_STAIR_DOWN && !simon->animation_set->at(SIMON_STAIR_DOWN)->IsRenderOver(200)))
-	//	return;
+
 	switch (KeyCode)
 	{
 	case DIK_SPACE:
@@ -476,13 +494,19 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		simon->SetPosition(80, 0);
 		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
 		break;*/
+	case DIK_H:
+		simon->health = 2;
+		break;
 	}
 }
 
 void CPlayScenceKeyHandler::KeyState(BYTE *states)
 {
 	CGame *game = CGame::GetInstance();
-	CSimon *simon = ((CPlayScene*)scence)->GetPlayer();
+	Simon *simon = ((CPlayScene*)scence)->GetPlayer();
+
+	if (simon->GetState() == SIMON_DEAD)
+		return;
 
 	if (simon->GetState() == SIMON_HURT && !simon->animation_set->at(SIMON_HURT)->IsRenderOver(400))
 		return;
@@ -491,13 +515,15 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 		return;
 	if ((simon->GetState() == SIMON_STAIR_UP && !simon->animation_set->at(SIMON_STAIR_UP)->IsRenderOver(200)) || (simon->GetState() == SIMON_STAIR_DOWN && !simon->animation_set->at(SIMON_STAIR_DOWN)->IsRenderOver(200)))
 		return;
-	if ((simon->GetState() == SIMON_STAND_HIT && !(simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(300))) || (simon->GetState() == SIMON_SIT_HIT && !simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(300)))
+	if ((simon->GetState() == SIMON_STAND_HIT && !(simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(400))) || 
+		(simon->GetState() == SIMON_SIT_HIT && !simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(400)))
 		return;
 
-	if ((simon->GetState() == SIMON_STAIR_UP_HIT && !(simon->animation_set->at(SIMON_STAIR_UP_HIT)->IsRenderOver(300))) || (simon->GetState() == SIMON_STAIR_DOWN_HIT && !simon->animation_set->at(SIMON_STAIR_DOWN_HIT)->IsRenderOver(300)))
+	if ((simon->GetState() == SIMON_STAIR_UP_HIT && !(simon->animation_set->at(SIMON_STAIR_UP_HIT)->IsRenderOver(400))) || (simon->GetState() == SIMON_STAIR_DOWN_HIT && !simon->animation_set->at(SIMON_STAIR_DOWN_HIT)->IsRenderOver(400)))
 		return;
 
-	if ((simon->GetState() == SIMON_STAND_HIT && (simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(300))) || (simon->GetState() == SIMON_SIT_HIT && simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(300)))
+	if ((simon->GetState() == SIMON_STAND_HIT && (simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(400))) || 
+		(simon->GetState() == SIMON_SIT_HIT && simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(400)))
 	{
 		simon->GetWeapon()->isHittingSubWeapon = false;
 		if(!simon->isGrounded)
@@ -508,16 +534,27 @@ void CPlayScenceKeyHandler::KeyState(BYTE *states)
 	{
 		if (simon->AutoWalk(simon->GetPosXStair()))
 		{
+			if (simon->nxStairTop == 1)
+				simon->pairStair = -1;
+			else
+				simon->pairStair = 1;
+
 			simon->isOnStair = true;
 			simon->isTouchStairTop = false;
 		}
 		else
 			return;
 	}
+	
 	else if (simon->isTouchStairBottom && game->IsKeyDown(DIK_UP) && !simon->isOnStair)
 	{
 		if (simon->AutoWalk(simon->GetPosXStair()))
 		{
+			if (simon->nxStairBottom == 1)
+				simon->pairStair = 1;
+			else
+				simon->pairStair = -1;
+
 			simon->isOnStair = true;
 			simon->isTouchStairBottom = false;
 		}

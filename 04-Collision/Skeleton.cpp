@@ -12,7 +12,6 @@ void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT si
 
 	if (state == DEAD && animation_set->at(ani)->IsRenderOver(400))
 	{
-		DropItem();
 		renderFireDone = true;
 	}
 

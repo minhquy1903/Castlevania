@@ -3,6 +3,7 @@
 
 #define GHOST_SPEED 0.085f
 #define VY_GHOST	0.022f;
+#define DEAD		1	
 
 class Ghost : public Enemy
 {

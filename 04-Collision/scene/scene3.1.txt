@@ -86,6 +86,12 @@
 #Skeleton
 5	85	260	15	4
 #85	260
+#stair
+4	304	272	1	-1	-1	-1
+
+# --- SCENE PORTAL ----
+# type	x	y	ani_set_id	r	b	scene_id	x	     y
+50	128	70	0	32	1	5	160	400
 [TILEMAP]
 #tile id	file_texture	file_path		tile_width		tile_height		num_col		num_row
 4000	TileMap\\tilesets_scene3.png	TileMap\\tilemap_scene3.1.txt	5	12	12	50	32	32

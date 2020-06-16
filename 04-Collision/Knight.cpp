@@ -12,13 +12,22 @@ void Knight::GetBoundingBox(float & left, float & top, float & right, float & bo
 
 void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
-	if (hp <= 0)
+	if (hp <= 0 && isDead == false)
 	{
-		SetState(KNIGHT_DEAD);
 		isDead = true;
+		SetState(DEAD);
 	}
+
+	if (ani == DEAD && animation_set->at(DEAD)->IsRenderOver(400))
+	{
+		renderFireDone = true;
+	}
+
+	if (isDead)
+		return;
+
 	if (GetTickCount() - timeDelay >= DELAY_TIME)
-		SetState(KNIGHT_WALK);
+		SetState(WALK);
 
 	
 	CGameObject::Update(dt);
@@ -85,16 +94,18 @@ void Knight::SetState(int state)
 	{
 	case KNIGHT_IS_HIT:
 		vx = 0;
-		ani = KNIGHT_WALK;
 		animation_set->at(ani)->SetCurrentFrame();
 		timeDelay = GetTickCount();
 		break;
-	case KNIGHT_WALK:
-		ani = KNIGHT_WALK;
+	case WALK:
+		ani = WALK;
 		vx = KNIGHT_WALK_SPEED * nx;
 		break;
-	case KNIGHT_DEAD:
-
+	case DEAD:
+		ani = DEAD;
+		vx = 0;
+		vy = 0;
+		animation_set->at(ani)->StartRenderAnimation();
 		break;
 	default:
 		break;

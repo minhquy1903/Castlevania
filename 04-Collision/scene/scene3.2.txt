@@ -60,8 +60,13 @@
 1	1504	336	1
 1	128	400	1
 #stair
-4	128	368	1	1	-1
-4	128	368	1	1	1
+4	112	336	1	1	1	-1
+4	237	208	1	-1	1	1
+4	112	400	1	1	-1	1
+
+# --- SCENE PORTAL ----
+# type	x	y	ani_set_id	r	b	scene_id	x	     y
+50	192	464	0	32	1	4	158	80
 [TILEMAP]
 #tile id	file_texture	file_path		tile_width		tile_height		num_col		num_row
 6000	TileMap\\tilesets_scene3.png	TileMap\\tilemap_scene3.2.txt	5	12	12	48	32	32

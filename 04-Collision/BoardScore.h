@@ -5,7 +5,8 @@
 #include <string>
 
 #define LIFE_TIME 300
-
+#define HP_SIMON_AND_BOSS	16
+#define A_MINUTE	60
 class BoardScore
 {
 	vector<LPSPRITE> healthbar;

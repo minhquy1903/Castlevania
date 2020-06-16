@@ -3,6 +3,7 @@
 
 #define BAT_SLEEP	0
 #define BAT_FLY		1
+#define DEAD		2
 #define SPEED_BAT	0.18f	
 #define GRAVITY		-0.002f
 

@@ -67,7 +67,7 @@ public:
 
 	void Load(LPCWSTR gameFile);
 	LPSCENE GetCurrentScene() { return scenes[current_scene]; }
-	void SwitchScene(int scene_id, CSimon * simon = NULL);
+	void SwitchScene(int scene_id, Simon * simon = NULL);
 
 	static void SweptAABB(
 		float ml,			// move left 

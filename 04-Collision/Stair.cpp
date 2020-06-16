@@ -6,26 +6,38 @@
 
 void Stair::Render()
 {
-	//RenderBoundingBox();
+	RenderBoundingBox();
 }
 
 
 
 void Stair::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
-	left = x;
-	top = y + 30;
-	right = x + 48;
-	bottom = y + 32;
+	if (typeStair == 1)
+	{
+		left = x;
+		top = y;
+		right = x + WIDTH_BBOX_STAIR;
+		bottom = y + 5;
+	}
+	else
+	{
+		left = x;
+		top = y - 2;
+		right = x + WIDTH_BBOX_STAIR;
+		bottom = y;
+	}
+	
 }
 
-Stair::Stair(int x, int y, int directionX, int directionY)
+Stair::Stair(int x, int y, int directionX, int typeStair, int pair)
 {
 	nx = directionX;
-	ny = directionY;
+	this->typeStair = typeStair;
 	this->x = x;
 	this->y = y;
-	midStairX = (x * 2 + 48) / 2;
+	this->pair = pair;
+	midStairX = (x * 2 + WIDTH_BBOX_STAIR) / 2;
 }
 
 

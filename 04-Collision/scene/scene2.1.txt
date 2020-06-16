@@ -47,10 +47,10 @@
 2	400	307	7	1	1
 2	310	88	7	1	1
 
-#stair	type	x	y	ani_sey	nxstair	nystair	
-4	200	400	1	1	-1
-4	328	272	1	-1	1
-4	136	208	1	1	-1
+#stair	type	x	y	ani_sey	nxstair	typestair	pair	
+4	208	432	1	1	-1	1
+4	336	240	1	-1	1	1
+4	144	240	1	1	-1	1
 #362
 #enemy
 #bat

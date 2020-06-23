@@ -17,7 +17,7 @@ Simon::Simon()
 {
 	untouchable = 0;
 	whip = new Whip();
-	weapon = new Knife();
+	weapon.push_back(new Knife());
 	subWeaponIsON = false;
 	isOnStair = false;
 	health = SIMON_HP;
@@ -95,7 +95,11 @@ void Simon::UseSubweapon()
 {
 	if (GetState() == SIMON_SHOCK)
 		return;
-
+	if (currentSubweapon == -1)
+	{
+		Hit();
+		return;
+	}
 	switch (currentSubweapon)
 	{
 	case ITEM_KNIFE:
@@ -104,13 +108,22 @@ void Simon::UseSubweapon()
 			Hit();
 			return;
 		}
-		if (weapon->isSubWeaponExist)
-			return;
+		for (int i = 0; i < weapon.size(); i++)
+		{
+			if (!weapon[i]->isSubWeaponExist) // subweapon k con ton tai
+			{
+				
+				weapon[i]->SetNx(nx);
+				weapon[i]->isHittingSubWeapon = true;
+				weapon[i]->SetDirectionSubWeapon(nx);
+				heart--;
+				
+			}
+			if (weapon[i]->isHittingSubWeapon)
+				break;
+		}
+		
 		Hit();
-		heart--;
-		weapon->SetNx(nx);
-		weapon->isHittingSubWeapon = true;
-		weapon->SetDirectionSubWeapon(nx);
 		break;
 	case ITEM_AXE:
 		if (!subWeaponIsON || heart < 1)
@@ -118,14 +131,21 @@ void Simon::UseSubweapon()
 			Hit();
 			return;
 		}
-		if (weapon->isSubWeaponExist)
-			return;
-		Hit();
-		heart--;
-		weapon->SetNx(nx); 
-		weapon->vy = -0.78;
-		weapon->isHittingSubWeapon = true;
-		weapon->SetDirectionSubWeapon(nx);
+
+		for (int i = 0; i < weapon.size(); i++)
+		{
+			if (!weapon[i]->isSubWeaponExist)
+			{
+				Hit();
+				heart--;
+				weapon[i]->SetNx(nx);
+				weapon[i]->vy = -0.5;
+				weapon[i]->isHittingSubWeapon = true;
+				weapon[i]->SetDirectionSubWeapon(nx);
+			}
+			if (weapon[i]->isHittingSubWeapon)
+				break;
+		}
 		break;
 	}
 }
@@ -185,11 +205,13 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		whip->SetPosition(x - SIMON_BOX_WIDTH * 2, y + SIMON_BOX_WIDTH / 3);
 	}
 	//
-	if (weapon->isSubWeaponExist && subWeaponIsON)
+	for (int i = 0; i < weapon.size(); i++)
 	{
-		weapon->Update(dt);
+		if (weapon[i]->isSubWeaponExist && subWeaponIsON)
+		{
+			weapon[i]->Update(dt);
+		}
 	}
-
 	//simon hurt
 	if (!isDead)
 		if (GetTickCount() - recoveryTime < TIME_HURT)
@@ -215,21 +237,36 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 }
 
+int countHit = 0;
+
 void Simon::Render()
 {
 	animation_set->at(ani)->Render(nx, x, y, alpha);
-	if ((ani == SIMON_STAND_HIT ||
-		ani == SIMON_SIT_HIT ||
-		ani == SIMON_STAIR_DOWN_HIT ||
-		ani == SIMON_STAIR_UP_HIT) &&
-		!weapon->isHittingSubWeapon ||
-		(weapon->isHittingSubWeapon && !subWeaponIsON))
+	for (int i = 0; i < weapon.size(); i++)
 	{
-		whip->Render(animation_set->at(ani)->GetCurrentFrame());
+		
+		if (weapon[i]->isHittingSubWeapon)
+			break;
+		if (weapon.size() > 1)
+			if (weapon[i]->isSubWeaponExist)
+				i = 1;
+		if ((ani == SIMON_STAND_HIT ||
+			ani == SIMON_SIT_HIT ||
+			ani == SIMON_STAIR_DOWN_HIT ||
+			ani == SIMON_STAIR_UP_HIT) &&
+			!weapon[i]->isHittingSubWeapon ||
+			(weapon[i]->isHittingSubWeapon && !subWeaponIsON))
+		{
+			whip->Render(animation_set->at(ani)->GetCurrentFrame());
+		}
+		
 	}
 	//RenderBoundingBox();
 	if (subWeaponIsON)
-		weapon->Render();
+		for (int i = 0; i < weapon.size(); i++)
+		{
+			weapon[i]->Render();
+		}
 }
 
 void Simon::SetState(int state)
@@ -385,14 +422,15 @@ void Simon::CollideWithItem(vector<LPGAMEOBJECT>* listItems)
 			}
 			else if (e->GetState() == ITEM_HEART)
 			{
-				heart += 5;
+				heart += BIG_HEART;
 			}
 			else if (e->GetState() == ITEM_KNIFE)
 			{
-				weapon = NULL;
+				ResetSubweapon();
+				SubWeapon* e = new Knife();
 				typeSubWeapon = ITEM_KNIFE;
 				subWeaponIsON = true;
-				weapon = new Knife();
+				weapon.push_back(e);
 				currentSubweapon = ITEM_KNIFE;
 			}
 			/*else if (e->GetState() == ITEM_BOOMERANG)
@@ -404,11 +442,25 @@ void Simon::CollideWithItem(vector<LPGAMEOBJECT>* listItems)
 			}*/
 			else if (e->state == ITEM_AXE)
 			{
-				weapon = NULL;
+				ResetSubweapon();
+				SubWeapon* e = new Axe();
 				typeSubWeapon = ITEM_KNIFE;
 				subWeaponIsON = true;
-				weapon = new Axe();
+				weapon.push_back(e);
 				currentSubweapon = ITEM_AXE;
+			}
+			else if (e->state == ITEM_DOUBLE)
+			{
+				if (currentSubweapon == ITEM_KNIFE)
+				{
+					SubWeapon* e = new Knife();
+					weapon.push_back(e);
+				}
+				else if (currentSubweapon == ITEM_AXE)
+				{
+					SubWeapon* e = new Axe();
+					weapon.push_back(e);
+				}
 			}
 			vector<LPGAMEOBJECT>::iterator it;
 			it = listItems->begin();
@@ -603,6 +655,15 @@ void Simon::CollideWithEnemy(vector<LPENEMY>* enemies)
 				}
 
 			}
+	}
+}
+
+void Simon::ResetSubweapon()
+{
+	int sizeWeapon = weapon.size();
+	for (int i = 0; i < sizeWeapon; i++)
+	{
+		weapon.pop_back();
 	}
 }
 

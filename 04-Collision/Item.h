@@ -5,6 +5,8 @@
 #define ITEM_KNIFE			2
 #define ITEM_BOOMERANG		3
 #define ITEM_AXE			4
+#define ITEM_DOUBLE			5
+#define ITEM_TRIPLE			6
 
 #define TIME_FLICKER		1500
 #define LIFE_TIME			3000
@@ -15,7 +17,10 @@
 #define KNIFE_BBOX_HEIGHT	16
 #define BOOMERANG_BBOX		32
 #define	AXE_BBOX			32
+#define ITEM_DOUBLE_TRIPLE_BBOX	32
 
+#define VY_ITEM				0.15f
+#define ANIMATIONSET_ITEM	4
 class Item : public CGameObject
 {
 	DWORD lifeTimeStart;

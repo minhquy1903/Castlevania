@@ -78,10 +78,10 @@
 1	224	240	1
 1	256	240	1
 1	288	240	1
-
+	
 #candle
 2	155	307	7	4	1
-2	400	307	7	1	1
+2	400	307	7	5	1
 2	310	88	7	1	1
 
 #stair	type	x	y	ani_sey	nxstair	typestair	pair	

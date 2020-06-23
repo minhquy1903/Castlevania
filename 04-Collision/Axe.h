@@ -1,7 +1,7 @@
 #pragma once
 #include "SubWeapon.h"
 
-#define GRAVITY 0.002
+#define GRAVITY 0.001
 #define VX_AXE	0.22
 #define AXE_BBOX_WIDTH_WIDTH	32
 #define AXE_ANIMATION_SET		17

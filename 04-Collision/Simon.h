@@ -38,6 +38,7 @@
 #define TIME_LIFE		300
 #define TIME_HURT		2500
 
+#define BIG_HEART		5
 class Simon : public CGameObject
 {
 public:
@@ -61,6 +62,8 @@ public:
 	int nxStairTop;
 	int nxStairBottom;
 	int pairStair;
+	bool isDouble;
+	bool isTriple;
 	bool isTouchStairTop;
 	bool isTouchStairBottom;
 	bool checkTouchStairBottom;
@@ -68,7 +71,7 @@ public:
 	DWORD untouchable_start;
 	DWORD recoveryTime;
 	Whip* whip;
-	SubWeapon* weapon;
+	vector<SubWeapon*> weapon;
 
 public:
 	Simon();
@@ -93,6 +96,7 @@ public:
 	int CollideWithPortal(vector<LPGAMEOBJECT>* portal);
 	void SimonTouchStair(vector<LPGAMEOBJECT>* stair = NULL);
 	void CollideWithEnemy(vector<LPENEMY>* enemy = NULL);
+	void ResetSubweapon();
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	int GetHealth() { return health; }
 	int GetHeart() { return heart; }
@@ -100,6 +104,6 @@ public:
 	int GetPosXStair() { return posXStair; }
 	int GetCurrentSubweapon() { return currentSubweapon; }
 	Whip* GetWhip() { return whip; }
-	SubWeapon* GetWeapon() { return weapon; }
+	vector<SubWeapon*> GetWeapon() { return weapon; }
 
 };

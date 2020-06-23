@@ -78,6 +78,7 @@ void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simo
 		if (isTurning == false)
 		{
 			nx = -nx;
+			vx *= nx;
 			isTurning = true;
 		}
 	}

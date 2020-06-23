@@ -283,27 +283,35 @@ void CPlayScene::Update(DWORD dt)
 		player->GetState() == SIMON_STAIR_UP_HIT && player->animation_set->at(SIMON_STAIR_UP_HIT)->GetCurrentFrame() == 2 ||
 		player->GetState() == SIMON_STAIR_DOWN_HIT && player->animation_set->at(SIMON_STAIR_DOWN_HIT)->GetCurrentFrame() == 2)
 	{
-		if (player->GetWeapon()->isHittingSubWeapon) // simon đang thực hiên động tác đánh
+		for (int i = 0; i < player->weapon.size(); i++)
 		{
-			player->GetWeapon()->isSubWeaponExist = true;//subweapon đc update và render
-			if (player->GetState() == SIMON_SIT_HIT)
-				player->GetWeapon()->SetPosSubWeapon(D3DXVECTOR3(player->x, player->y, 0), false);
+			if (player->weapon[i]->isHittingSubWeapon) // simon đang thực hiên động tác đánh
+			{
+				player->weapon[i]->isSubWeaponExist = true;//subweapon đc update và render
+				if (player->GetState() == SIMON_SIT_HIT)
+					player->weapon[i]->SetPosSubWeapon(D3DXVECTOR3(player->x, player->y, 0), false);
+				else
+					player->weapon[i]->SetPosSubWeapon(D3DXVECTOR3(player->x, player->y, 0), true);
+
+			}
 			else
-				player->GetWeapon()->SetPosSubWeapon(D3DXVECTOR3(player->x, player->y, 0), true);
-
+			{
+				player->GetWhip()->Update(dt);//update whip
+				player->GetWhip()->CollideWithSecretObj(&secretObj);
+				player->GetWhip()->CollideWithSecretEnemies(&enemies);
+			}
 		}
-		else
-		{
-			player->GetWhip()->Update(dt);//update whip
-			player->GetWhip()->CollideWithSecretObj(&secretObj);
-			player->GetWhip()->CollideWithSecretEnemies(&enemies);
-		}
+		
 	}
 
-	if (player->GetWeapon()->isSubWeaponExist) //kiểm tra subweapon va chạm với torch va candle
+	for (int i = 0; i < player->weapon.size(); i++)
 	{
-		player->GetWeapon()->SubWeaponCollideWithSecretObj(&secretObj);
+		if (player->weapon[i]->isSubWeaponExist) //kiểm tra subweapon va chạm với torch va candle
+		{
+			player->weapon[i]->SubWeaponCollideWithSecretObj(&secretObj);
+		}
 	}
+	
 
 
 	for (size_t i = 0; i < secretObj.size(); i++)
@@ -450,7 +458,6 @@ void CPlayScene::Unload()
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
 }
 
-int i = 1;
 
 void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 {
@@ -533,13 +540,17 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 	if ((simon->GetState() == SIMON_STAIR_UP_HIT && !(simon->animation_set->at(SIMON_STAIR_UP_HIT)->IsRenderOver(400))) || (simon->GetState() == SIMON_STAIR_DOWN_HIT && !simon->animation_set->at(SIMON_STAIR_DOWN_HIT)->IsRenderOver(400)))
 		return;
 
-	if ((simon->GetState() == SIMON_STAND_HIT && (simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(400))) ||
-		(simon->GetState() == SIMON_SIT_HIT && simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(400)))
+	for (int i = 0; i < simon->weapon.size(); i++)
 	{
-		simon->GetWeapon()->isHittingSubWeapon = false;
-		if (!simon->isGrounded)
-			simon->SetState(SIMON_JUMP);
+		if ((simon->GetState() == SIMON_STAND_HIT && (simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(400))) ||
+			(simon->GetState() == SIMON_SIT_HIT && simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(400)))
+		{
+			simon->weapon[i]->isHittingSubWeapon = false;
+			if (!simon->isGrounded)
+				simon->SetState(SIMON_JUMP);
+		}
 	}
+	
 
 	if (simon->isTouchStairTop && game->IsKeyDown(DIK_DOWN) && !simon->isOnStair)
 	{

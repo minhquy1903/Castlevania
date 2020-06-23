@@ -37,6 +37,16 @@ void Item::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 			top = y;
 			right = left + AXE_BBOX;
 			bottom = top + AXE_BBOX;
+		case ITEM_DOUBLE:
+			left = x;
+			top = y;
+			right = left + ITEM_DOUBLE_TRIPLE_BBOX;
+			bottom = top + ITEM_DOUBLE_TRIPLE_BBOX;
+		case ITEM_TRIPLE:
+			left = x;
+			top = y;
+			right = left + ITEM_DOUBLE_TRIPLE_BBOX;
+			bottom = top + ITEM_DOUBLE_TRIPLE_BBOX;
 		}
 	}
 }
@@ -95,13 +105,13 @@ void Item::Render()
 
 Item::Item()
 {
-	SetAnimationSet(CAnimationSets::GetInstance()->Get(4));
+	SetAnimationSet(CAnimationSets::GetInstance()->Get(ANIMATIONSET_ITEM));
 	lifeTimeStart = GetTickCount();
 	isTimeOut = false;
 	timeFlicker = TIME_FLICKER;
 	lifeTime = LIFE_TIME;
 	isFlicker = false;
-	vy = 0.15;
+	vy = VY_ITEM;
 }
 
 

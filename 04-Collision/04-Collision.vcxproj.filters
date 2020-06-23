@@ -133,7 +133,7 @@
       <Filter>Header Files\GameObject\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Axe.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -231,7 +231,7 @@
       <Filter>Header Files\GameObject\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Axe.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

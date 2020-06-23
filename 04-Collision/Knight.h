@@ -7,14 +7,14 @@
 
 #define KNIGHT_ANI		0
 
-#define KNIGHT_WALK_SPEED 0.1f
+#define KNIGHT_WALK_SPEED 0.09f
 #define KNIGHT_BBOX_WIDTH	32
 #define KNIGHT_BBOX_HEIGHT	64
 #define DELAY_TIME			260
 #define HEALTH				3
 #define DAME				2
 #define VY					0.1f
-
+#define GRAVITY				0.0002
 class Knight : public Enemy
 {
 	bool isTurning;

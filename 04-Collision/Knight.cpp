@@ -28,9 +28,10 @@ void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simo
 
 	if (GetTickCount() - timeDelay >= DELAY_TIME)
 		SetState(WALK);
-
+	
 	
 	CGameObject::Update(dt);
+	vy += GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	
@@ -51,21 +52,28 @@ void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simo
 	}
 	else
 	{
-		
-		float min_tx, min_ty, nx = 0, ny;
+		float min_tx, min_ty, nx = 0, ny = 0;
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-		y += min_ty * dy + ny * 0.6f;
+
 		x += min_tx * dx + nx * 0.4f;
+		y += min_ty * dy + ny * 0.4f;
 
-		/*if (nx != 0) vx = 0;
-		if (ny != 0) vy = 0;*/
+		if (ny == -1.0f)
+		{
+			vy = 0;
+		}
+
+		if (nx == 1 || nx == -1)
+		{
+
+			this->nx *= -1;
+			this->vx *= -1;
+		}
 	}
-	
-	
 
-	if (coEvents.size() == 1 || coEvents.size() > 3)
+	if (coEvents.size() == 1)
 	{
 		if (isTurning == false)
 		{
@@ -73,7 +81,8 @@ void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simo
 			isTurning = true;
 		}
 	}
-	if (coEvents.size() > 1 && coEvents.size() < 4)
+	DebugOut(L"SIZE: %d\n", coEvents.size());
+	if (coEvents.size() > 1)
 	{
 		isTurning = false;
 	}

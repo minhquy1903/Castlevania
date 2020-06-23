@@ -4,6 +4,11 @@
 
 void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
+	if (abs(simon->x - x) < AREA_ACTIVE)
+		active = true;
+
+	if (!active)
+		return;
 	if (hp <= 0 && isDead == false)
 	{
 		isDead = true;
@@ -17,10 +22,8 @@ void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT si
 
 	if (isDead)
 		return;
-	if(active)
-		bone->Update(dt,NULL,simon);
 
-	if (bone->y > 450)
+	if (bone->y > SIZE_BONE)
 	{
 		bone->x = x + SKELETON_BBOX_WIDTH / 2;
 		bone->y = y;
@@ -56,17 +59,16 @@ void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT si
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 
-		/*if (nx != 0) 
+		/*if (nx != 0)
 			vx = 0;*/
-		if (ny != 0) 
+		if (ny != 0)
 			vy = 0;
 		isGrounded = true;
 		if (nx != 0)
 			this->vx *= -1;
 
 	}
-	if (abs(simon->x - x) < AREA_ACTIVE)
-		active = true;
+
 	if (active)
 		ChasingSimon(simon->x, simon->y);
 
@@ -77,18 +79,18 @@ void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT si
 	else
 		state = WALK;
 	// clean up collision events
-	for (int i = 0; i < coEvents.size(); i++) 
+	for (int i = 0; i < coEvents.size(); i++)
 		delete coEvents[i];
 }
 
 void Skeleton::Render()
 {
 	animation_set->at(ani)->Render(nx, x, y);
-	bone->Render();
+	//bone->Render();
 	//RenderBoundingBox();
 }
 
-void Skeleton::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+void Skeleton::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	left = x;
 	right = x + SKELETON_BBOX_WIDTH;
@@ -105,7 +107,7 @@ void Skeleton::ChasingSimon(double xs, double ys)
 		nx = 1;
 		vx = SKELETON_SPEED_X;
 	}
-	else if(xs > x && abs(xs - x) < AREA_TURNING2)
+	else if (xs > x && abs(xs - x) < AREA_TURNING2)
 	{
 		nx = 1;
 		vx = -SKELETON_SPEED_X;

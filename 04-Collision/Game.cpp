@@ -453,9 +453,11 @@ void CGame::SwitchScene(int scene_id, Simon* player)
 	scenes[current_scene]->Unload();
 	current_scene = scene_id;
 	LPSCENE s = scenes[scene_id];
-	s->SetPlayer(player);
-	if(player != NULL)
+	if (player != NULL)
+	{
+		s->SetPlayer(player);
 		player->currentScene = scene_id;
+	}
 	CGame::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
 	s->Load();
 }

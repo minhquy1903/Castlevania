@@ -3,6 +3,7 @@
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = SIMON , 1 = GROUND, 2 = CANDLE
 # SIMON
+0	32	366	0
 
 #ground
 1	0	432	1
@@ -43,7 +44,7 @@
 1	288	240	1
 
 #candle
-2	155	307	7	3	1
+2	155	307	7	4	1
 2	400	307	7	1	1
 2	310	88	7	1	1
 

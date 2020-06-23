@@ -18,7 +18,7 @@ void Stair::GetBoundingBox(float & left, float & top, float & right, float & bot
 		left = x;
 		top = y;
 		right = x + WIDTH_BBOX_STAIR;
-		bottom = y + 5;
+		bottom = y + 3;
 	}
 	else
 	{

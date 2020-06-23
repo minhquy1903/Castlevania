@@ -24,8 +24,12 @@ void BoardScore::DrawNumber(int x, int y, string stringNumb)
 
 void BoardScore::DrawSubWeapon()
 {
-	if(idSubWeapon == 0)
+	if(idSubWeapon == 2)
 		CSprites::GetInstance()->Get(202)->Draw(0, posX + 310, 38);
+	if (idSubWeapon == 4)
+	{
+		CSprites::GetInstance()->Get(204)->Draw(0, posX + 310, 38);
+	}
 }
 
 void BoardScore::DrawParameter()

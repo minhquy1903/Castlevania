@@ -2,7 +2,7 @@
 # type	x	y	ani_set_id	extra_settings per object type
 # type: 0 = Simon , 1 = Ground 
 # Simon
-#0	768	370	0
+0	768	370	0
 # Brick
 1	0	240	1
 1	32	240	1

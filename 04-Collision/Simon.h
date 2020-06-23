@@ -9,7 +9,7 @@
 #define SIMON_WALKING_SPEED		0.15f 
 #define SIMON_GO_STAIR_SPEED	0.078f
 #define SIMON_JUMP_SPEED_Y		0.56f
-#define SIMON_HURT_SPEED_Y		0.43f
+#define SIMON_HURT_SPEED_Y		0.36f
 #define MARIO_JUMP_DEFLECT_SPEED 0.2f
 #define GRAVITY					0.002f
 
@@ -36,7 +36,7 @@
 #define SIMON_HP		16
 #define RGB_255			255
 #define TIME_LIFE		300
-
+#define TIME_HURT		2500
 
 class Simon : public CGameObject
 {
@@ -45,7 +45,7 @@ public:
 	int untouchable;
 	int directionOnStair;
 	bool subWeaponIsON;
-	
+
 	int posXStair;
 	int health;
 	int life;
@@ -67,10 +67,10 @@ public:
 	bool checkTouchStairTop;
 	DWORD untouchable_start;
 	DWORD recoveryTime;
-	Whip *whip;
-	SubWeapon * weapon;
+	Whip* whip;
+	SubWeapon* weapon;
 
-public: 
+public:
 	Simon();
 	void SetAnimation(int ani) { this->ani = ani; }
 	bool isOnStair;
@@ -83,23 +83,23 @@ public:
 	void GoUpStair();
 	void StandOnStair();
 	void GoDownStair();
-	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL);
+	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	void Render();
 	void SetState(int state);
 	bool AutoWalk(int toX);
-	void CollideWithItem(vector<LPGAMEOBJECT> *listItems = NULL);
-	void CollodeWhitBirck(vector<LPGAMEOBJECT> *coObjects = NULL);
+	void CollideWithItem(vector<LPGAMEOBJECT>* listItems = NULL);
+	void CollodeWhitBirck(vector<LPGAMEOBJECT>* coObjects = NULL);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount(); }
-	int CollideWithPortal(vector<LPGAMEOBJECT> *portal);
-	void SimonTouchStair(vector<LPGAMEOBJECT> *stair = NULL);
-	void CollideWithEnemy(vector<LPENEMY> *enemy = NULL);
-	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	int CollideWithPortal(vector<LPGAMEOBJECT>* portal);
+	void SimonTouchStair(vector<LPGAMEOBJECT>* stair = NULL);
+	void CollideWithEnemy(vector<LPENEMY>* enemy = NULL);
+	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	int GetHealth() { return health; }
 	int GetHeart() { return heart; }
 	int GetLife() { return life; }
 	int GetPosXStair() { return posXStair; }
 	int GetCurrentSubweapon() { return currentSubweapon; }
 	Whip* GetWhip() { return whip; }
-	SubWeapon * GetWeapon() { return weapon; }
-	
+	SubWeapon* GetWeapon() { return weapon; }
+
 };

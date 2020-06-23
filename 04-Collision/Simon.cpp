@@ -11,6 +11,7 @@
 #include "Knight.h"
 #include "Ghost.h"
 #include "Bridge.h"
+#include "Axe.h"
 
 Simon::Simon()
 {
@@ -20,22 +21,21 @@ Simon::Simon()
 	subWeaponIsON = false;
 	isOnStair = false;
 	health = SIMON_HP;
-	life = SIMON_LIFE; 
+	life = SIMON_LIFE;
 	heart = 0;
 	currentSubweapon = -1;
 	isFlicker = false;
 	alpha = RGB_255;
 	timeLife = TIME_LIFE;
 	pairStair = 0;
-	SetAnimationSet(CAnimationSets::GetInstance()->Get(0));
 }
 
 void Simon::WalkLeft()
 {
 	if (isGrounded)
 	{
-	nx = -1;
-	SetState(SIMON_WALKING);
+		nx = -1;
+		SetState(SIMON_WALKING);
 	}
 
 }
@@ -44,10 +44,10 @@ void Simon::WalkRight()
 {
 	if (isGrounded)
 	{
-	nx = 1;
-	SetState(SIMON_WALKING);
+		nx = 1;
+		SetState(SIMON_WALKING);
 	}
-	
+
 }
 
 void Simon::Jump()
@@ -58,13 +58,13 @@ void Simon::Jump()
 	{
 		SetState(SIMON_JUMP);
 	}
-	
+
 }
 
 void Simon::Hit()
 {
 	whip->SetNx(nx);
-	
+
 	if (isOnStair)
 	{
 		if (directionOnStair == 1)
@@ -95,10 +95,10 @@ void Simon::UseSubweapon()
 {
 	if (GetState() == SIMON_SHOCK)
 		return;
-	
-	switch (typeSubWeapon)
+
+	switch (currentSubweapon)
 	{
-	case (ITEM_KNIFE):
+	case ITEM_KNIFE:
 		if (!subWeaponIsON || heart < 1)
 		{
 			Hit();
@@ -112,7 +112,22 @@ void Simon::UseSubweapon()
 		weapon->isHittingSubWeapon = true;
 		weapon->SetDirectionSubWeapon(nx);
 		break;
-	}	
+	case ITEM_AXE:
+		if (!subWeaponIsON || heart < 1)
+		{
+			Hit();
+			return;
+		}
+		if (weapon->isSubWeaponExist)
+			return;
+		Hit();
+		heart--;
+		weapon->SetNx(nx); 
+		weapon->vy = -0.78;
+		weapon->isHittingSubWeapon = true;
+		weapon->SetDirectionSubWeapon(nx);
+		break;
+	}
 }
 
 void Simon::GoUpStair()
@@ -139,54 +154,55 @@ void Simon::GoDownStair()
 	SetState(SIMON_STAIR_DOWN);
 }
 
-void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
+void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	// Calculate dx, dy 
-	CGameObject::Update(dt);
 
-	// Simple fall down
-	
 	if (health <= 0 && !isDead)
 	{
 		SetState(SIMON_DEAD);
 		isDead = true;
+		isOnStair = false;
+		alpha = 255;
+		return;
 	}
-		
 
 	if (isDead && animation_set->at(SIMON_DEAD)->IsRenderOver(TIME_SIMON_DIE))
 	{
 		revival = true;
 	}
+	// Calculate dx, dy 
+	CGameObject::Update(dt);
+
+	// Simple fall down
 
 	//whip
 	if (ani != SIMON_SIT_HIT)
 	{
-		whip->SetPosition(x - 90, y);
+		whip->SetPosition(x - SIMON_BOX_WIDTH * 2, y);
 	}
 	else
 	{
-		whip->SetPosition(x - 90, y + 15);
+		whip->SetPosition(x - SIMON_BOX_WIDTH * 2, y + SIMON_BOX_WIDTH / 3);
 	}
 	//
 	if (weapon->isSubWeaponExist && subWeaponIsON)
 	{
 		weapon->Update(dt);
 	}
-	
-	//simon hurt
-	if (GetTickCount() - recoveryTime < 2500)
-	{
-		isFlicker = true;
-		alpha = rand() % 255 + 150;
-	}
-	else
-	{
-		isFlicker = false;
-		alpha = 255;
-	}
-		
-	//
 
+	//simon hurt
+	if (!isDead)
+		if (GetTickCount() - recoveryTime < TIME_HURT)
+		{
+			isFlicker = true;
+			alpha = rand() % 255 + 150;
+		}
+		else
+		{
+			isFlicker = false;
+			alpha = 255;
+		}
+	//
 	if (isOnStair)
 	{
 		x += dx;
@@ -196,13 +212,18 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	{
 		vy += GRAVITY * dt;
 	}
-		
+
 }
 
 void Simon::Render()
 {
 	animation_set->at(ani)->Render(nx, x, y, alpha);
-	if ((ani == SIMON_STAND_HIT || ani == SIMON_SIT_HIT || ani == SIMON_STAIR_DOWN_HIT || ani == SIMON_STAIR_UP_HIT) && !weapon->isHittingSubWeapon || (weapon->isHittingSubWeapon && !subWeaponIsON))
+	if ((ani == SIMON_STAND_HIT ||
+		ani == SIMON_SIT_HIT ||
+		ani == SIMON_STAIR_DOWN_HIT ||
+		ani == SIMON_STAIR_UP_HIT) &&
+		!weapon->isHittingSubWeapon ||
+		(weapon->isHittingSubWeapon && !subWeaponIsON))
 	{
 		whip->Render(animation_set->at(ani)->GetCurrentFrame());
 	}
@@ -230,17 +251,17 @@ void Simon::SetState(int state)
 				vx = 0;
 			isGrounded = false;
 			vy = -SIMON_JUMP_SPEED_Y;
-			
+
 		}
 		ani = SIMON_JUMP;
 		break;
 	case SIMON_SIT:
-		if(!isOnBridge)
+		if (!isOnBridge)
 			vx = 0;
 		ani = SIMON_SIT;
 		break;
 	case SIMON_IDLE:
-		if(!isOnBridge)
+		if (!isOnBridge)
 			vx = 0;
 		ani = SIMON_IDLE;
 		break;
@@ -260,11 +281,11 @@ void Simon::SetState(int state)
 		animation_set->at(ani)->SetCurrentFrame();
 		animation_set->at(ani)->StartRenderAnimation();
 		break;
-	case SIMON_STAIR_UP:	
+	case SIMON_STAIR_UP:
 		directionOnStair = 1;
 		animation_set->at(ani)->StartRenderAnimation();
 		ani = SIMON_STAIR_UP;
-		if(nx == 1)
+		if (nx == 1)
 			vx = SIMON_GO_STAIR_SPEED;
 		else
 			vx = -SIMON_GO_STAIR_SPEED;
@@ -281,7 +302,7 @@ void Simon::SetState(int state)
 		vy = SIMON_GO_STAIR_SPEED;
 		break;
 	case SIMON_STAND_ON_STAIR:
-		if(directionOnStair == 1)
+		if (directionOnStair == 1)
 			ani = SIMON_STAIR_UP;
 		else
 			ani = SIMON_STAIR_DOWN;
@@ -292,11 +313,11 @@ void Simon::SetState(int state)
 	case SIMON_HURT:
 		isGrounded = false;
 		ani = SIMON_HURT;
-		if(nx == 1)
+		if (nx == 1)
 			vx = -SIMON_WALKING_SPEED;
 		else
 			vx = SIMON_WALKING_SPEED;
-		
+
 		vy = -SIMON_HURT_SPEED_Y;
 		animation_set->at(ani)->StartRenderAnimation();
 		break;
@@ -315,7 +336,6 @@ void Simon::SetState(int state)
 	case SIMON_DEAD:
 		ani = SIMON_DEAD;
 		vx = 0;
-		vy = 0;
 		animation_set->at(ani)->StartRenderAnimation();
 		break;
 	}
@@ -323,7 +343,7 @@ void Simon::SetState(int state)
 
 bool Simon::AutoWalk(int toX)
 {
-	
+
 	if (toX - (x + 30) > 2)
 	{
 		nx = 1;
@@ -340,12 +360,12 @@ bool Simon::AutoWalk(int toX)
 		x = toX - 30;//sử lí if else cho topstair
 	if (toX - (x + 30) == 0)
 		return true;
-	
+
 	return false;
 }
 
 
-void Simon::CollideWithItem(vector<LPGAMEOBJECT> *listItems)
+void Simon::CollideWithItem(vector<LPGAMEOBJECT>* listItems)
 {
 	if (listItems->size() == 0)
 		return;
@@ -369,17 +389,26 @@ void Simon::CollideWithItem(vector<LPGAMEOBJECT> *listItems)
 			}
 			else if (e->GetState() == ITEM_KNIFE)
 			{
+				weapon = NULL;
 				typeSubWeapon = ITEM_KNIFE;
 				subWeaponIsON = true;
 				weapon = new Knife();
-				currentSubweapon = 0;
+				currentSubweapon = ITEM_KNIFE;
 			}
-			else if (e->GetState() == ITEM_BOOMERANG)
+			/*else if (e->GetState() == ITEM_BOOMERANG)
 			{
 				typeSubWeapon = ITEM_BOOMERANG;
 				subWeaponIsON = true;
 				weapon = new Boomerang();
 				currentSubweapon = 1;
+			}*/
+			else if (e->state == ITEM_AXE)
+			{
+				weapon = NULL;
+				typeSubWeapon = ITEM_KNIFE;
+				subWeaponIsON = true;
+				weapon = new Axe();
+				currentSubweapon = ITEM_AXE;
 			}
 			vector<LPGAMEOBJECT>::iterator it;
 			it = listItems->begin();
@@ -413,7 +442,7 @@ void Simon::CollodeWhitBirck(vector<LPGAMEOBJECT>* coObjects)
 			x += dx;
 			y += dy;
 		}
-			
+
 	}
 	else
 	{
@@ -433,7 +462,7 @@ void Simon::CollodeWhitBirck(vector<LPGAMEOBJECT>* coObjects)
 		{
 			LPCOLLISIONEVENT e = coEventsResult[i];
 
-			if (dynamic_cast<Brick *>(e->obj)) // if e->obj is Goomba 
+			if (dynamic_cast<Brick*>(e->obj)) // if e->obj is Goomba 
 			{
 				if (e->ny != 0)
 				{
@@ -483,7 +512,7 @@ int Simon::CollideWithPortal(vector<LPGAMEOBJECT>* portal)
 			SetPosition(e->GetXNextPortal(), e->GetYNextPortal());
 			return e->GetSceneID();
 		}
-		
+
 	}
 	return 0;
 }
@@ -496,10 +525,7 @@ void Simon::SimonTouchStair(vector<LPGAMEOBJECT>* stair)
 		LPGAMEOBJECT obj = stair->at(i);
 		float left_a, top_a, right_a, bottom_a;
 		GetBoundingBox(left_a, top_a, right_a, bottom_a);
-		Stair *e = dynamic_cast<Stair*>(obj);
-
-		/*if (countBottom == 1 || countTop == 1)
-			return;*/
+		Stair* e = dynamic_cast<Stair*>(obj);
 
 		if (AABBCollision(obj))
 		{
@@ -541,18 +567,20 @@ void Simon::SimonTouchStair(vector<LPGAMEOBJECT>* stair)
 			{
 				isTouchStairTop = false;
 			}
-			else if(e->typeStair == -1 && countBottom == 0)
+			else if (e->typeStair == -1 && countBottom == 0)
 			{
 				isTouchStairBottom = false;
 			}
 		}
 	}
-	
+
 }
 
 void Simon::CollideWithEnemy(vector<LPENEMY>* enemies)
 {
-	if (state == SIMON_DEAD)
+	if (enemies->size() == 0)
+		return;
+	if (isDead)
 		return;
 	for (int i = 0; i < enemies->size(); i++)
 	{
@@ -562,7 +590,7 @@ void Simon::CollideWithEnemy(vector<LPENEMY>* enemies)
 			{
 				if (dynamic_cast<Bat*>(obj))
 				{
-					Bat *bat = dynamic_cast<Bat*>(obj);
+					Bat* bat = dynamic_cast<Bat*>(obj);
 					bat->hp = 0;
 				}
 
@@ -578,13 +606,13 @@ void Simon::CollideWithEnemy(vector<LPENEMY>* enemies)
 	}
 }
 
-void Simon::GetBoundingBox(float &left, float &top, float &right, float &bottom)
+void Simon::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
-	
-	left = x + 15;
-	top = y; 
+
+	left = x + SIMON_BOX_WIDTH / 3;
+	top = y;
 	if (state == SIMON_SIT)
-		top = y + 15;
+		top = y + SIMON_BOX_WIDTH / 3;
 	right = x + SIMON_BOX_WIDTH;
 	bottom = y + SIMON_BOX_HEIGHT;
 }

@@ -22,6 +22,7 @@
 
 #define SKELETON_HP				1
 #define DAME					3
+#define SIZE_BONE				450
 
 class Skeleton : public Enemy
 {
@@ -34,6 +35,7 @@ public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void ChasingSimon(double x, double y);
 	void SetState(int state);
+	Bone* GetBone() { return bone; }
 	Skeleton();
 	~Skeleton();
 };

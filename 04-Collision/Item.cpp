@@ -2,7 +2,7 @@
 #include "Utils.h"
 
 
-void Item::GetBoundingBox(float & left, float & top, float & right, float & bottom)
+void Item::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	if (!isTimeOut)
 	{
@@ -11,26 +11,32 @@ void Item::GetBoundingBox(float & left, float & top, float & right, float & bott
 		case ITEM_UPGRADE_WHIP:
 			left = x;
 			top = y;
-			right = left + 32;
-			bottom = top + 32;
+			right = left + UPGRADE_WHIP_BBOX;
+			bottom = top + UPGRADE_WHIP_BBOX;
 			break;
 		case ITEM_HEART:
 			left = x;
 			top = y;
-			right = left + 24;
-			bottom = top + 20;
+			right = left + HEART_BBOX;
+			bottom = top + HEART_BBOX;
 			break;
 		case ITEM_KNIFE:
 			left = x;
 			top = y;
-			right = left + 32;
-			bottom = top + 18;
+			right = left + KNIFE_BBOX_WIDTH;
+			bottom = top + KNIFE_BBOX_HEIGHT;
 			break;
 		case ITEM_BOOMERANG:
 			left = x;
 			top = y;
-			right = left + 30;
-			bottom = top + 28;
+			right = left + BOOMERANG_BBOX;
+			bottom = top + BOOMERANG_BBOX;
+			break;
+		case ITEM_AXE:
+			left = x;
+			top = y;
+			right = left + AXE_BBOX;
+			bottom = top + AXE_BBOX;
 		}
 	}
 }
@@ -45,7 +51,7 @@ void Item::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		isTimeOut = true;
 		return;
 	}
-	
+
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 

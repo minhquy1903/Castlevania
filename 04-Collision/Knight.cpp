@@ -42,7 +42,6 @@ void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simo
 		nx = -nx;*/
 
 	CalcPotentialCollisions(coObjects, coEvents);
-	DebugOut(L"size: %d \n", coEvents.size());
 	
 	if (coEvents.size() == 0)
 	{

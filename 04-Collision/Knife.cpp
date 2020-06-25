@@ -20,7 +20,7 @@ void Knife::Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects)
 	if (CheckExistKnife(posX))
 	{
 		isSubWeaponExist = false;
-		
+		active = false;
 		return;
 	}
 	CGameObject::Update(dt);

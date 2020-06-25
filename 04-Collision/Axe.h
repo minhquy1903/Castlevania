@@ -3,6 +3,7 @@
 
 #define GRAVITY 0.001
 #define VX_AXE	0.22
+#define VY_AXE	0.55
 #define AXE_BBOX_WIDTH_WIDTH	32
 #define AXE_ANIMATION_SET		17
 

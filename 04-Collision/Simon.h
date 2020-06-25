@@ -11,7 +11,7 @@
 #define SIMON_JUMP_SPEED_Y		0.56f
 #define SIMON_HURT_SPEED_Y		0.36f
 #define MARIO_JUMP_DEFLECT_SPEED 0.2f
-#define GRAVITY					0.002f
+#define SIMON_GRAVITY			0.002f
 
 #define SIMON_IDLE				0
 #define SIMON_WALKING			1
@@ -64,6 +64,7 @@ public:
 	int pairStair;
 	bool isDouble;
 	bool isTriple;
+	bool normalHit;
 	bool isTouchStairTop;
 	bool isTouchStairBottom;
 	bool checkTouchStairBottom;

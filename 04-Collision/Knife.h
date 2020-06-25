@@ -3,7 +3,7 @@
 
 #define KNIFE_ANI 0
 #define KNIFE_ANIMATION_SET 5
-#define VX_KNIFE 0.1f
+#define VX_KNIFE 0.32f
 
 #define SCREEN_WIDTH 512
 #define SCREEN_HEIGHT 480

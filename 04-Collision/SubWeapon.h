@@ -10,6 +10,7 @@ public:
 	float posX; // vị trí simon lúc thực hiện ném dao
 	bool isHittingSubWeapon;
 	bool isSubWeaponExist;
+	bool active;
 public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
 	void Render();

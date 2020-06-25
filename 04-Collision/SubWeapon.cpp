@@ -43,10 +43,13 @@ void SubWeapon::SubWeaponCollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects)
 			{
 				Torch * torch = dynamic_cast<Torch*>(obj);
 				isSubWeaponExist = false;
+				active = false;
 				torch->SetState(BREAK_TORCH);
 			}
 			else if (dynamic_cast<Candle*>(obj))
 			{
+				isSubWeaponExist = false;
+				active = false;
 				Candle *candle = dynamic_cast<Candle*>(obj);
 				candle->SetIsBreak(true);
 			}
@@ -57,6 +60,8 @@ void SubWeapon::SubWeaponCollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects)
 SubWeapon::SubWeapon()
 {
 	isHittingSubWeapon = false;
+	isSubWeaponExist = false;
+	active = false;
 }
 
 SubWeapon::SubWeapon(int state)

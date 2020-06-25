@@ -482,7 +482,11 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		if (CGame::GetInstance()->IsKeyDown(DIK_UP))
 			simon->UseSubweapon();
 		else
+		{
 			simon->Hit();
+			simon->normalHit = true;
+		}
+			
 		break;
 	case DIK_2:
 		CGame::GetInstance()->SwitchScene(2, simon);
@@ -546,6 +550,7 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 			(simon->GetState() == SIMON_SIT_HIT && simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(400)))
 		{
 			simon->weapon[i]->isHittingSubWeapon = false;
+			simon->normalHit = false;
 			if (!simon->isGrounded)
 				simon->SetState(SIMON_JUMP);
 		}

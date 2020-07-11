@@ -125,21 +125,18 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		if (player != NULL)
 		{
 			DebugOut(L"[ERROR] SIMON object was created before!\n");
+			return;
 		}
 		else
 		{
 			obj = new Simon();
 			player = (Simon*)obj;
-			obj->SetPosition(x, y);
-			obj->SetAnimationSet(ani_set);
 			DebugOut(L"[INFO] Player object created!\n");
+			
 		}
 		break;
 	case OBJECT_TYPE_BRICK:
 		obj = new Brick();
-		bricks.push_back(obj);
-		obj->SetPosition(x, y);
-		obj->SetAnimationSet(ani_set);
 		break;
 	case OBJECT_TYPE_SECRETOBJ:
 	{
@@ -149,9 +146,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			obj = new Torch(iditem);
 		else
 			obj = new Candle(iditem);
-		secretObj.push_back(obj);
-		obj->SetPosition(x, y);
-		obj->SetAnimationSet(ani_set);
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:
@@ -163,40 +157,32 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int yNext = atoi(tokens[8].c_str());
 		obj = new CPortal(x, y, width, height, scene_id, xNext, yNext);
 		portal.push_back(obj);
-		obj->SetPosition(x, y);
-		obj->SetAnimationSet(ani_set);
 		break;
 	}
 	case OBJECT_TYPE_ENEMY:
 	{
-		Enemy* enemy = NULL;
 		int typeEnemy = atof(tokens[4].c_str());
 		if (typeEnemy == 0)
 		{
-			enemy = new Bat();
+			obj = new Bat();
 		}
 		else if (typeEnemy == 1)
 		{
-			enemy = new Knight();
+			obj = new Knight();
 		}
 		else if (typeEnemy == 2)
 		{
-			enemy = new Ghost();
+			obj = new Ghost();
 		}
 		else if (typeEnemy == 3)
 		{
-			enemy = new Fleaman();
+			obj = new Fleaman();
 		}
 		else if (typeEnemy == 4)
 		{
-			enemy = new Skeleton();
-			Skeleton* skeleton = dynamic_cast<Skeleton*>(enemy);
-			enemies.push_back(skeleton->GetBone());
+			obj = new Skeleton();
+			Skeleton* skeleton = dynamic_cast<Skeleton*>(obj);
 		}
-
-		enemy->SetPosition(x, y);
-		enemy->SetAnimationSet(ani_set);
-		enemies.push_back(enemy);
 		break;
 	}
 	case OBJECT_TYPE_STAIR:
@@ -205,17 +191,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		int typeStair = atof(tokens[5].c_str());
 		int Pair = atof(tokens[6].c_str());
 		obj = new Stair(x, y, DirectionX, typeStair, Pair);
-		stairs.push_back(obj);
-		obj->SetPosition(x, y);
-		obj->SetAnimationSet(ani_set);
 		break;
 	}
 	case OBJECT_TYPE_BRIDGE:
 	{
 		obj = new Bridge();
-		bricks.push_back(obj);
-		obj->SetPosition(x, y);
-		obj->SetAnimationSet(ani_set);
 		break;
 	}
 
@@ -223,7 +203,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
 		return;
 	}
-
+	obj->SetAnimationSet(ani_set);
+	obj->SetPosition(x, y);
+	allObject.push_back(obj);
+	
 }
 
 void CPlayScene::_ParseSection_TILEMAP(string line)
@@ -242,6 +225,10 @@ void CPlayScene::_ParseSection_TILEMAP(string line)
 	int tileset_width = atoi(tokens[7].c_str());
 	int tileset_height = atoi(tokens[8].c_str());
 	boardscore = new BoardScore();
+	grid = new Grid();
+	//1590	500
+	grid->Resize(1590, 500);
+	grid->PushGrid(allObject);
 	tilemap = new TileMap(ID, filePath_texture.c_str(), filePath_data.c_str(), num_row_on_texture, num_col_on_textture, num_row_on_tilemap, num_col_on_tilemap, tileset_width, tileset_height);
 }
 
@@ -250,14 +237,45 @@ void CPlayScene::SimonRevival()
 	player = NULL;
 	CGame::GetInstance()->SetCamPos(0, 0.0f);
 	CGame::GetInstance()->SwitchScene(id);
+	grid->PushGrid(allObject);
 
+}
+
+void CPlayScene::GetObjectGrid()
+{
+	ObjectInScreen.clear();
+	//allObject.clear();
+	portal.clear();
+	bricks.clear();
+	secretObj.clear();
+	enemies.clear();
+	stairs.clear();
+	grid->GetGrid(ObjectInScreen);
 }
 
 void CPlayScene::Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
-
+	GetObjectGrid();
+	int sizeVector = ObjectInScreen.size();
+	for (size_t i = 1; i < sizeVector; i++)
+	{
+		LPGAMEOBJECT obj = ObjectInScreen[i];
+		if (dynamic_cast<CPortal*>(obj))
+			portal.push_back(obj);
+		else if (dynamic_cast<Brick*>(obj))
+			bricks.push_back(obj);
+		else if (dynamic_cast<Candle*>(obj) || dynamic_cast<Torch*>(obj))
+			secretObj.push_back(obj);
+		else if (dynamic_cast<Enemy*>(obj))
+		{
+			LPENEMY enemy = (LPENEMY)obj;
+			enemies.push_back(enemy);
+		}
+		else if (dynamic_cast<Stair*>(obj))
+			stairs.push_back(obj);
+	}
 
 
 	vector<LPGAMEOBJECT> coObjects;
@@ -273,6 +291,14 @@ void CPlayScene::Update(DWORD dt)
 	}
 
 	player->Update(dt);
+
+	for (int i = 0; i < player->weapon.size(); i++)
+	{
+		if (player->weapon[i]->isSubWeaponExist && player->subWeaponIsON)
+		{
+			player->weapon[i]->Update(dt, &bricks);
+		}
+	}
 
 	player->CollodeWhitBirck(&bricks);
 
@@ -309,6 +335,7 @@ void CPlayScene::Update(DWORD dt)
 		if (player->weapon[i]->isSubWeaponExist) //kiểm tra subweapon va chạm với torch va candle
 		{
 			player->weapon[i]->SubWeaponCollideWithSecretObj(&secretObj);
+			player->weapon[i]->SubWeaponCollideWithEnemy(&enemies);
 		}
 	}
 	
@@ -317,6 +344,7 @@ void CPlayScene::Update(DWORD dt)
 	for (size_t i = 0; i < secretObj.size(); i++)
 	{
 		LPGAMEOBJECT obj = secretObj[i];
+		secretObj[i]->Update(dt);
 		if (dynamic_cast<Torch*>(obj))
 		{
 			Torch* torch = dynamic_cast<Torch*>(obj);
@@ -328,8 +356,6 @@ void CPlayScene::Update(DWORD dt)
 				it += i;
 				secretObj.erase(it);
 			}
-			else
-				secretObj[i]->Update(dt);
 		}
 		else if (dynamic_cast<Candle*>(obj))
 		{
@@ -408,6 +434,8 @@ void CPlayScene::Update(DWORD dt)
 		CGame::GetInstance()->SetCamPos(0, 0.0f);
 		CGame::GetInstance()->SwitchScene(idScene, player);
 	}
+
+	grid->ResetGrid(allObject);
 
 	if (player->revival)
 	{

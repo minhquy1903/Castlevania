@@ -6,6 +6,7 @@
 #include "TileMap.h"
 #include "BoardScore.h"
 #include "Enemy.h"
+#include "Grid.h"
 
 class CPlayScene : public CScene
 {
@@ -13,12 +14,15 @@ protected:
 	Simon *player;					// A play scene has to have player, right? 
 	TileMap *tilemap; 
 	BoardScore * boardscore;
+	Grid* grid;
 	vector<LPGAMEOBJECT> bricks;
 	vector<LPGAMEOBJECT> secretObj;
 	vector<LPGAMEOBJECT> listItem;
 	vector<LPGAMEOBJECT> portal;
 	vector<LPGAMEOBJECT> stairs;
+	vector<LPGAMEOBJECT> allObject;
 	vector<LPENEMY> enemies;
+	vector<LPGAMEOBJECT> ObjectInScreen;
 	
 	void _ParseSection_OBJECTS(string line);
 	void _ParseSection_TILEMAP(string line);
@@ -31,6 +35,7 @@ public:
 	virtual void Unload();
 	void SimonRevival();
 	virtual void SetPlayer(Simon* player) { this->player = player; }
+	void GetObjectGrid();
 	Simon * GetPlayer() { return player; }
 
 	//friend class CPlayScenceKeyHandler;

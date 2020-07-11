@@ -134,6 +134,8 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fleaman.h" />
     <ClInclude Include="Ghost.h" />
+    <ClInclude Include="Grid.h" />
+    <ClInclude Include="HolyWater.h" />
     <ClInclude Include="Knight.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Torch.h" />
@@ -168,6 +170,8 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Fleaman.cpp" />
     <ClCompile Include="Ghost.cpp" />
+    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="HolyWater.cpp" />
     <ClCompile Include="Knight.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="Torch.cpp" />

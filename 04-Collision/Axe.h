@@ -6,7 +6,7 @@
 #define VY_AXE	0.55
 #define AXE_BBOX_WIDTH_WIDTH	32
 #define AXE_ANIMATION_SET		17
-
+#define SIZE_AXE				450
 class Axe : public SubWeapon
 {
 

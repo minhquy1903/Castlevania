@@ -14,6 +14,7 @@ void Torch::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	if (state == BREAK_TORCH && animation_set->at(state)->IsRenderOver(400)) 
 	{
+		isDead = true;
 		DropItem();
 		renderFireDone = true;
 	}

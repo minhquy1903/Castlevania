@@ -213,13 +213,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		whip->SetPosition(x - SIMON_BOX_WIDTH * 2, y + SIMON_BOX_WIDTH / 3);
 	}
 	//
-	for (int i = 0; i < weapon.size(); i++)
-	{
-		if (weapon[i]->isSubWeaponExist && subWeaponIsON)
-		{
-			weapon[i]->Update(dt);
-		}
-	}
+	
 	//simon hurt
 	if (!isDead)
 		if (GetTickCount() - recoveryTime < TIME_HURT)
@@ -255,8 +249,6 @@ void Simon::Render()
 	}*/
 	for (int i = 0; i < weapon.size(); i++)
 	{
-		/*if (weapon[i]->isHittingSubWeapon)
-			break;*/
 		if (weapon[i]->active || normalHit)
 		{
 			if ((ani == SIMON_STAND_HIT ||
@@ -374,12 +366,14 @@ void Simon::SetState(int state)
 		animation_set->at(ani)->SetCurrentFrame();
 		animation_set->at(ani)->StartRenderAnimation();
 		vx = 0;
+		vy = 0;
 		break;
 	case SIMON_STAIR_UP_HIT:
 		ani = SIMON_STAIR_UP_HIT;
 		animation_set->at(ani)->SetCurrentFrame();
 		animation_set->at(ani)->StartRenderAnimation();
 		vx = 0;
+		vy = 0;
 		break;
 	case SIMON_DEAD:
 		ani = SIMON_DEAD;

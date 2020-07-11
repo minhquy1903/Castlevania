@@ -14,7 +14,7 @@ void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
 	if (hp <= 0 && isDead == false)
 	{
-		isDead = true;
+		
 		state = DEAD;
 		vx = 0;
 		vy = 0;
@@ -23,10 +23,11 @@ void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 
 	if (state == DEAD && animation_set->at(state)->IsRenderOver(400))
 	{
+		isDead = true;
 		renderFireDone = true;
 	}
 
-	if (isDead)
+	if (hp <= 0)
 		return;
 	if (abs(x - simon->x) < 210 && abs(y - simon->y) < 80)
 		isWakeUp = true;

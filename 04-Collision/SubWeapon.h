@@ -1,7 +1,8 @@
 ﻿#pragma once
 #include"GameObject.h"
-
+#include "Enemy.h"
 #define KNIFE 0
+#define DAME_SUBWEAPON	2
 class SubWeapon :public CGameObject
 {
 	int id;
@@ -19,6 +20,7 @@ public:
 	virtual void SetDirectionSubWeapon(int nx) = 0;
 	virtual void TimeStart() = 0;
 	void SubWeaponCollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects);
+	void SubWeaponCollideWithEnemy(vector<LPENEMY>* coObjects);
 	int GetIDSubWeapon() { return id; }
 	int SetIDSubWeapon(int _id) { id = _id; }
 	SubWeapon();

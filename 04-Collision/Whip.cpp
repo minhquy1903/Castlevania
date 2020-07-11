@@ -51,6 +51,7 @@ void Whip::CollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects)
 			else if (dynamic_cast<Candle*>(obj))
 			{
 				Candle *candle = dynamic_cast<Candle*>(obj);
+				candle->isDead = true;
 				candle->SetIsBreak(true);
 			}
 		}

@@ -2,7 +2,7 @@
 
 void Axe::Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects)
 {
-	if (y > 450 && isSubWeaponExist)
+	if (y > SIZE_AXE && isSubWeaponExist)
 	{
 		isSubWeaponExist = false;
 		active = false;

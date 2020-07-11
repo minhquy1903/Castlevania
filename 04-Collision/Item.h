@@ -7,6 +7,7 @@
 #define ITEM_AXE			4
 #define ITEM_DOUBLE			5
 #define ITEM_TRIPLE			6
+#define ITEM_HOLYWATER		7
 
 #define TIME_FLICKER		1500
 #define LIFE_TIME			3000

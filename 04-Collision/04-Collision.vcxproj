@@ -137,6 +137,7 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="HolyWater.h" />
     <ClInclude Include="Knight.h" />
+    <ClInclude Include="Raven.h" />
     <ClInclude Include="Skeleton.h" />
     <ClInclude Include="Torch.h" />
     <ClInclude Include="CKeyEventHandler.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="HolyWater.cpp" />
     <ClCompile Include="Knight.cpp" />
+    <ClCompile Include="Raven.cpp" />
     <ClCompile Include="Skeleton.cpp" />
     <ClCompile Include="Torch.cpp" />
     <ClCompile Include="Brick.cpp" />

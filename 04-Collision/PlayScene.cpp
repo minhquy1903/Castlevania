@@ -16,7 +16,7 @@
 #include "Bridge.h"
 #include "Fleaman.h"
 #include "Skeleton.h"
-
+#include "Raven.h"
 using namespace std;
 
 #define SCENE_SECTION_UNKNOWN -1
@@ -124,13 +124,19 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_SIMON:
 		if (player != NULL)
 		{
-			DebugOut(L"[ERROR] SIMON object was created before!\n");
+			/*obj->SetAnimationSet(ani_set);
+			play->SetPosition(x, y);*/
 			return;
+			DebugOut(L"[ERROR] SIMON object was created before!\n");
+			break;
 		}
 		else
 		{
 			obj = new Simon();
 			player = (Simon*)obj;
+			player->SetAnimationSet(ani_set);
+			player->SetPosition(x, y);
+			return;
 			DebugOut(L"[INFO] Player object created!\n");
 			
 		}
@@ -183,13 +189,18 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			obj = new Skeleton();
 			Skeleton* skeleton = dynamic_cast<Skeleton*>(obj);
 		}
+		else if (typeEnemy == 5)
+		{
+			obj = new Raven();
+		}
+
 		break;
 	}
 	case OBJECT_TYPE_STAIR:
 	{
-		int DirectionX = atof(tokens[4].c_str());
-		int typeStair = atof(tokens[5].c_str());
-		int Pair = atof(tokens[6].c_str());
+		int DirectionX = atof(tokens[4].c_str()); // chiều X cầu thang
+		int typeStair = atof(tokens[5].c_str());// loại cầu thang đi lên hay xuống
+		int Pair = atof(tokens[6].c_str());// cặp cầu thang <cùng cặp mới tương tác với nhau>
 		obj = new Stair(x, y, DirectionX, typeStair, Pair);
 		break;
 	}
@@ -428,18 +439,19 @@ void CPlayScene::Update(DWORD dt)
 
 
 
-	if (int idScene = player->CollideWithPortal(&portal)) //kiểm tra simon đi vào cổng
-	{
-		//portal.at(0).idscene();
-		CGame::GetInstance()->SetCamPos(0, 0.0f);
-		CGame::GetInstance()->SwitchScene(idScene, player);
-	}
+	
 
 	grid->ResetGrid(allObject);
 
 	if (player->revival)
 	{
 		SimonRevival();
+	}
+	if (int idScene = player->CollideWithPortal(&portal)) //kiểm tra simon đi vào cổng
+	{
+		//portal.at(0).idscene();
+		CGame::GetInstance()->SetCamPos(0, 0.0f);
+		CGame::GetInstance()->SwitchScene(idScene, player);
 	}
 }
 
@@ -470,17 +482,14 @@ void CPlayScene::Render()
 */
 void CPlayScene::Unload()
 {
-	for (int i = 0; i < bricks.size(); i++)
-		delete bricks[i];
-	for (int i = 0; i < enemies.size(); i++)
-		delete enemies[i];
+	for (int i = 0; i < allObject.size(); i++)
+		delete allObject[i];
 	/*for (int i = 0; i < listItem.size(); i++)
 		delete listItem[i];*/
 	for (auto item : listItem)
 		delete item;
 	listItem.clear();
-	enemies.clear();
-	bricks.clear();
+	allObject.clear();
 	//player = NULL;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);

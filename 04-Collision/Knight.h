@@ -14,7 +14,7 @@
 #define HEALTH				3
 #define DAME				2
 #define VY					0.1f
-#define GRAVITY				0.0002
+#define GRAVITY				0.002
 class Knight : public Enemy
 {
 	bool isTurning;

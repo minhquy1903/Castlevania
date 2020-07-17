@@ -12,7 +12,6 @@
 #define RANGE			80
 #define DAME			2
 #define HEALTH			1
-#define BAT_SPEED		0.6f
 
 class Bat : public Enemy
 {

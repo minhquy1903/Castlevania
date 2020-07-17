@@ -238,7 +238,6 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 }
 
-int countHit = 0;
 
 void Simon::Render()
 {

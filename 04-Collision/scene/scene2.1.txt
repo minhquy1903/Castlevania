@@ -93,7 +93,7 @@
 #bat
 5	68	100	8	0
 #knight
-5	258	170	9	1	
+5	200	170	9	1	
 
 # --- SCENE PORTAL ----
 # type	x	y	ani_set_id	r	b	scene_id	x	     y

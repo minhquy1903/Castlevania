@@ -130,7 +130,7 @@ void CGameObject::RenderBoundingBox()
 	rect.right = (int)r - (int)l;
 	rect.bottom = (int)b - (int)t;
 
-	CGame::GetInstance()->Draw(nx, l, t, bbox, rect.left, rect.top, rect.right, rect.bottom, 120);
+	CGame::GetInstance()->Draw(nx, l, t, bbox, rect.left, rect.top, rect.right, rect.bottom, 255);
 }
 
 bool CGameObject::AABBCollision(LPGAMEOBJECT b)

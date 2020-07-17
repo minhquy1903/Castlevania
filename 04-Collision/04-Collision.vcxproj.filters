@@ -135,11 +135,14 @@
     <ClInclude Include="Axe.h">
       <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClInclude>
-    <ClInclude Include="HolyWater.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Grid.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Raven.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HolyWater.h">
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -239,11 +242,14 @@
     <ClCompile Include="Axe.cpp">
       <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClCompile>
-    <ClCompile Include="HolyWater.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Grid.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Raven.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HolyWater.cpp">
+      <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

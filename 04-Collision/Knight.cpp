@@ -12,18 +12,19 @@ void Knight::GetBoundingBox(float & left, float & top, float & right, float & bo
 
 void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
-	if (hp <= 0 && isDead == false)
+	if (hp <= 0 && state != DEAD)
 	{
-		isDead = true;
+		
 		SetState(DEAD);
 	}
 
 	if (ani == DEAD && animation_set->at(DEAD)->IsRenderOver(400))
 	{
+		isDead = true;
 		renderFireDone = true;
 	}
 
-	if (isDead)
+	if (state == DEAD)
 		return;
 
 	if (GetTickCount() - timeDelay >= DELAY_TIME)
@@ -36,11 +37,6 @@ void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simo
 	vector<LPCOLLISIONEVENT> coEventsResult;
 	
 	coEvents.clear();
-
-
-	/*int turning = rand() % 100;
-	if (turning == 1)
-		nx = -nx;*/
 
 	CalcPotentialCollisions(coObjects, coEvents);
 	

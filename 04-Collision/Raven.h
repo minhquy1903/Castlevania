@@ -15,7 +15,7 @@
 #define RANGE_ACTIVE	230
 #define RANGE_STOP		150
 #define TIME_STOP1		75
-#define TIME_STOP2		230
+#define TIME_STOP2		190
 class Raven : public Enemy
 {
 public:

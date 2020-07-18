@@ -142,7 +142,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		break;
 	case OBJECT_TYPE_BRICK:
-		obj = new Brick();
+	{
+		int nWidth = atoi(tokens[4].c_str());
+		int nHeight = atoi(tokens[5].c_str());
+		obj = new Brick(nWidth, nHeight);
+	}
+		
 		break;
 	case OBJECT_TYPE_SECRETOBJ:
 	{
@@ -272,7 +277,7 @@ void CPlayScene::Update(DWORD dt)
 	// TO-DO: This is a "dirty" way, need a more organized way 
 	GetObjectGrid();
 	int sizeVector = ObjectInScreen.size();
-	for (size_t i = 1; i < sizeVector; i++)
+	for (size_t i = 0; i < sizeVector; i++)
 	{
 		LPGAMEOBJECT obj = ObjectInScreen[i];
 		if (dynamic_cast<CPortal*>(obj))

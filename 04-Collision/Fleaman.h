@@ -26,7 +26,7 @@
 class Fleaman : public Enemy
 {
 	bool firstJump,
-		 isGround;
+		 isGrounded;
 	
 public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);

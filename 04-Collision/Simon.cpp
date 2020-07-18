@@ -12,7 +12,7 @@
 #include "Ghost.h"
 #include "Bridge.h"
 #include "Axe.h"
-
+#include "Raven.h"
 Simon::Simon()
 {
 	untouchable = 0;
@@ -714,6 +714,11 @@ void Simon::CollideWithEnemy(vector<LPENEMY>* enemies)
 				{
 					Bat* bat = dynamic_cast<Bat*>(obj);
 					bat->hp = 0;
+				}
+				else if (dynamic_cast<Raven*>(obj))
+				{
+					Raven* raven = dynamic_cast<Raven*>(obj);
+					raven->hp = 0;
 				}
 
 				if (isFlicker != true)

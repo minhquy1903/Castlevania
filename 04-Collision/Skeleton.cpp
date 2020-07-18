@@ -83,6 +83,11 @@ void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT si
 		delete coEvents[i];
 }
 
+void ResetBone()
+{
+
+}
+
 void Skeleton::Render()
 {
 	animation_set->at(ani)->Render(nx, x, y);

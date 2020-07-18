@@ -14,7 +14,7 @@
 
 #define ANI_SKELETON			0
 
-#define AREA_ACTIVE				190
+#define AREA_ACTIVE				240
 #define AREA_TURNING1			180
 #define AREA_TURNING2			30
 #define AREA_TURNING3			210

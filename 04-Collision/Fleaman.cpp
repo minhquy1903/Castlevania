@@ -1,7 +1,7 @@
 #include "Fleaman.h"
 #include "Simon.h"
 #include "Utils.h"
-
+#include "Brick.h"
 void Fleaman::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 	left = x;
@@ -51,13 +51,30 @@ void Fleaman::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT sim
 		x += min_tx * dx + nx * 0.4f;
 		y += min_ty * dy + ny * 0.4f;
 		
+		for (UINT i = 0; i < coEventsResult.size(); i++)
+		{
+			LPCOLLISIONEVENT e = coEventsResult[i];
 
-		isGround = true;
+			if (dynamic_cast<Brick*>(e->obj)) // if e->obj is Goomba 
+			{
+				if (e->ny != 0)
+				{
+					/*isGrounded = true;*/
+					if (e->ny == -1)
+					{
+						isGrounded = true;
+						vy = 0;
+					}
+					else
+						y += dy;
+				}
+			}
+		}
 	}
 	if(firstJump)
 		if (simon->GetState() == SIMON_SIT_HIT || simon->GetState() == SIMON_STAND_HIT)
 		{
-			if (rand() % 3 == 2 && isGround)
+			if (rand() % 3 == 2 && isGrounded)
 				SetState(JUMP_HIGH);
 		}
 		
@@ -91,11 +108,11 @@ void Fleaman::SetState(int state)
 	{
 	case JUMP_HIGH:
 		vy = FLEAMAN_SPPED_Y_HIGH;
-		isGround = false;
+		isGrounded = false;
 		break;
 	case JUMP_LOW:
 		vy = FLEAMAN_SPEED_Y_LOW;
-		isGround = false;
+		isGrounded = false;
 		break;
 	case DEAD:
 		ani = ANI_DEAD;
@@ -124,7 +141,7 @@ void Fleaman::ChasingSimon(double xs, double ys)
 
 	if ((rand() % JUMP_RATE_MAX < JUMP_RATE))
 	{
-		if (!isGround)
+		if (!isGrounded)
 			return;
 		if (rand() % 4 == 3)
 			SetState(JUMP_HIGH);
@@ -137,7 +154,7 @@ void Fleaman::ChasingSimon(double xs, double ys)
 Fleaman::Fleaman()
 {
 	firstJump = false;
-	isGround = true;
+	isGrounded = true;
 	hp = FLEAMAN_HP;
 	dame = FLEAMAN_DAME;
 }

@@ -188,6 +188,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		{
 			obj = new Skeleton();
 			Skeleton* skeleton = dynamic_cast<Skeleton*>(obj);
+			
+			allObject.push_back(skeleton->GetBone());
 		}
 		else if (typeEnemy == 5)
 		{
@@ -551,7 +553,7 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 			CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
 			break;*/
 	case DIK_H:
-		simon->heart = 1000;
+		simon->health = 2;
 		break;
 	}
 }

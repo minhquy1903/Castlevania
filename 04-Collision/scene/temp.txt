@@ -12,8 +12,6 @@
 9	textures\healthbar.png	255	0	255
 10	textures\letter.png	255	0	255
 11	textures\enemies.png	116	116	116
-12	textures\bridge.png	116	116	116
-13	textures\Boss.png	255	0	255
 # id	left	top	right	bottom	texture_id
 
 [SPRITES]
@@ -103,14 +101,10 @@
 205	30	32	62	64	4
 #double_shot
 206	94	32	122	60	4
+
 #triple_shot
 207	122	32	158	74	4
-#item_invisibility
-208	286	0	312	32	4
-#item_clock
-209	194	0	224	32	4
-#Item smallheart
-210	0	0	16	16	4
+
 #WEAPONS	250-300
 #knife
 250	204	0	238	18	5
@@ -175,35 +169,6 @@
 551	832	56	864	120	11
 552	866	58	898	120	11
 
-#ZOMBIE
-600	2	56	34	120	11
-601	36	58	68	120	11
-
-#GHOST
-650	2	150	34	182	11
-651	36	150	68	182	11
-
-#FLEAMAN
-700	400	150	432	182	11
-701	434	150	466	182	11
-#SKELETON
-750	698	150	730	215	11
-751	732	150	764	215	11
-
-#BONE
-752	766	150	782	182	11
-753	784	150	816	182	11
-754	818	150	850	182	11
-
-#RAVEN
-800	554	150	586	182	11
-801	588	150	620	182	11
-802	622	150	654	182	11
-803	656	150	688	182	11
-#BOSS
-1000	0	0	96	46	13
-1001	96	0	192	46	13
-1002	192	0	288	46	13
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
 
@@ -217,9 +182,9 @@
 #simon_jump
 3	6	100
 #simon_sit_hit
-4	7	100	8	100	9	100
+4	7	100	8	100	9	200
 #simon_stand_hit
-5	10	100	11	100	12	100
+5	10	100	11	100	12	200
 #simon_shock
 6	13	100	14	100	15	100
 #simon_stairup
@@ -227,9 +192,9 @@
 #simon_stairdown
 8	18	100	19	100
 #simon_stairup_hit
-9	20	100	21	100	22	100
+9	20	100	21	100	22	200
 #simon_stairdown	_hit
-10	23	100	24	100	25	100
+10	23	100	24	100	25	200
 #simon_hurt
 11	26	100
 #simon dead
@@ -267,14 +232,9 @@
 205	205	100
 #double_shot
 206	206	200
+
 #triple_shot
 207	207	200
-#invisibility
-208	208	100
-#clock
-209	209	100
-#smallheart
-210	210	100
 #====WEAPONS====
 #knife
 250	250	100
@@ -288,7 +248,7 @@
 #holywater
 253	258	100
 #holywaterfire
-254	259	100	260	100	259	100	260	100	259	100	260	100
+254	259	100	260	100
 
 
 #====EFFECT FIRE====
@@ -306,28 +266,7 @@
 #====KNIGHT====
 550	550	200	551	200	552	200	551	200
 
-#====ZOMBIE====
-600	600	170	601	170
 
-#====GHOST====
-650	650	100	651	100
-
-#====FLEAMAN====
-700	700	100	701	100
-
-#====SKELETON====
-750	750	200	751	200
-
-#BONE
-751	752	200	753	200	754	200
-
-#====RAVEN====
-800	800	100
-801	801	100	802	100	803	100
-
-#====BOSS====
-1000	1000	100
-1001	1001	250	1002	250
 # id	ani1	ani2	ani3
 #
 [ANIMATION_SETS]
@@ -344,7 +283,7 @@
 3	150	300
 
 #ITEM
-4	200	201	202	203	204	205	206	207	208	209	210
+4	200	201	202	203	204	206	207
 #WEAPON
 
 #knife
@@ -370,62 +309,3 @@
 
 #KNIGHT
 9	550	300
-
-#ZOMBIE
-11	600	300
-
-#GHOST
-12	650	300
-
-#BRIDGE
-13	51
-
-#FLEAMAN
-14	700	300
-
-#SKELETON
-15	750	300
-
-#BONE
-16	751	300
-
-#RAVEN
-19	800	801	300
-
-#BOSS
-20	1000	1001
-[OBJECTS]
-# type	x	y	ani_set_id	extra_settings per object type
-# type: 0 = Simon , 1 = Ground 
-# Simon
-0	10	144	0
-# Brick
-1	0	400	1	10	1
-1	320	400	1	10	1
-1	640	400	1	10	1
-1	960	400	1	10	1
-1	1280	400	1	10	1
-1	0	208	1	7	1
-1	256	272	1	11	1
-1	1344	336	1	2	1
-1	1440	272	1	3	1
-#zombie
-5	400	206	11	6	-1
-5	100	334	11	6	1
-5	250	334	11	6	1
-5	450	334	11	6	-1
-5	1040	334	11	6	-1
-5	950	334	11	6	-1
-#stair
-4	272	272	1	-1	-1	-1
-4	208	144	1	1	1	-1
-
-4	592	208	1	1	1	-1
-4	720	400	1	-1	-1	-1
-
-4	1360	336	1	1	-1	1
-4	1424	208	1	-1	1	1
-
-[TILEMAP]
-#tile id	file_texture	file_path		tile_width		tile_height		num_col		num_row
-8000	TileMap\\tilesets_scene4.png	TileMap\\tilemap_scene4.txt	6	17	11	48	32	32	0	0	1590	500

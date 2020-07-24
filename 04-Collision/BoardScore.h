@@ -20,7 +20,6 @@ class BoardScore
 	int heart;
 	int life;
 	int time;
-	int second;
 	void DrawHealth();
 	void DrawBoard();
 	void DrawNumber(int x, int y, string a);

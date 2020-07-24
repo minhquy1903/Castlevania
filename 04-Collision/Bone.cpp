@@ -4,7 +4,7 @@
 
 void Bone::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
-	CGameObject::Update(dt);
+	Enemy::Update(dt);
 	x += dx;
 	y += dy;
 	vy += GRAVITY * dt;

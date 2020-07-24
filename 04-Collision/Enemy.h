@@ -13,6 +13,7 @@ public:
 	int hp;
 	int dame;
 	Item*item;
+	static bool clockOn;
 public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL, LPGAMEOBJECT simon = NULL);
 	void Render() = 0;
@@ -21,6 +22,7 @@ public:
 	Item* GetItem() { return item; }
 	int GetHP() { return hp; }
 	void SetHP(int HP) { hp = HP; }
+	bool CheckOutCamera();
 	Enemy();
 	~Enemy();
 };

@@ -11,8 +11,8 @@ void Item::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 		case ITEM_UPGRADE_WHIP:
 			left = x;
 			top = y;
-			right = left + UPGRADE_WHIP_BBOX;
-			bottom = top + UPGRADE_WHIP_BBOX;
+			right = left + BBOX_32;
+			bottom = top + BBOX_32;
 			break;
 		case ITEM_HEART:
 			left = x;
@@ -29,24 +29,51 @@ void Item::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 		case ITEM_BOOMERANG:
 			left = x;
 			top = y;
-			right = left + BOOMERANG_BBOX;
-			bottom = top + BOOMERANG_BBOX;
+			right = left + BBOX_32;
+			bottom = top + BBOX_32;
 			break;
 		case ITEM_AXE:
 			left = x;
 			top = y;
-			right = left + AXE_BBOX;
-			bottom = top + AXE_BBOX;
+			right = left + BBOX_32;
+			bottom = top + BBOX_32;
+			break;
 		case ITEM_DOUBLE:
 			left = x;
 			top = y;
-			right = left + ITEM_DOUBLE_TRIPLE_BBOX;
-			bottom = top + ITEM_DOUBLE_TRIPLE_BBOX;
+			right = left + BBOX_32;
+			bottom = top + BBOX_32;
+			break;
 		case ITEM_TRIPLE:
 			left = x;
 			top = y;
-			right = left + ITEM_DOUBLE_TRIPLE_BBOX;
-			bottom = top + ITEM_DOUBLE_TRIPLE_BBOX;
+			right = left + BBOX_32;
+			bottom = top + BBOX_32;
+			break;
+		case ITEM_HOLYWATER:
+			left = x;
+			top = y;
+			right = left + BBOX_32;
+			bottom = top + BBOX_32;
+			break;
+		case ITEM_CLOCK:
+			left = x;
+			top = y;
+			right = left + BBOX_32;
+			bottom = top + BBOX_32;
+			break;
+		case ITEM_INVISIBILITY:
+			left = x;
+			top = y;
+			right = left + BBOX_32;
+			bottom = top + BBOX_32;
+			break;
+		case ITEM_SMALLHEART:
+			left = x;
+			top = y;
+			right = left + HEART_BBOX / 2;
+			bottom = top + HEART_BBOX / 2;
+			break;
 		}
 	}
 }
@@ -54,9 +81,10 @@ void Item::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 void Item::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	CGameObject::Update(dt);
-	if (GetTickCount() - lifeTimeStart > timeFlicker)
+	int timenow = GetTickCount();
+	if (timenow - lifeTimeStart > TIME_FLICKER)
 		isFlicker = true;
-	if (GetTickCount() - lifeTimeStart > lifeTime)
+	if (timenow - lifeTimeStart > LIFE_TIME)
 	{
 		isTimeOut = true;
 		return;
@@ -80,13 +108,11 @@ void Item::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 		FilterCollision(coEvents, coEventsResult, min_tx, min_ty, nx, ny);
 
-		y += min_ty * dy + ny * 0.1f;
+		y += min_ty * dy + ny * 0.4f;
 
 		if (nx != 0) vx = 0;
 		if (ny != 0) vy = 0;
 	}
-
-
 	// clean up collision events
 	for (int i = 0; i < coEvents.size(); i++) delete coEvents[i];
 }
@@ -98,7 +124,7 @@ void Item::Render()
 	int alpha = 255;
 	if (isFlicker)
 		alpha = rand() % 255 + 100;
-	//RenderBoundingBox();
+	RenderBoundingBox();
 	animation_set->at(state)->Render(0, x, y, alpha);
 }
 
@@ -108,8 +134,6 @@ Item::Item()
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(ANIMATIONSET_ITEM));
 	lifeTimeStart = GetTickCount();
 	isTimeOut = false;
-	timeFlicker = TIME_FLICKER;
-	lifeTime = LIFE_TIME;
 	isFlicker = false;
 	vy = VY_ITEM;
 }

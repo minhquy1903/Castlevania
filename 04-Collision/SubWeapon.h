@@ -14,11 +14,11 @@ public:
 	bool active;
 public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *colliable_objects = NULL);
+	virtual void SubWeaponCollideWithSimon(LPGAMEOBJECT simon);
 	void Render();
-	virtual void SetPosSubWeapon(D3DXVECTOR3 pos, bool isStanding);
+	virtual void SetPosSubWeapon(D3DXVECTOR3 pos, bool isStanding, int nx);
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	virtual void SetDirectionSubWeapon(int nx) = 0;
-	virtual void TimeStart() = 0;
 	void SubWeaponCollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects);
 	void SubWeaponCollideWithEnemy(vector<LPENEMY>* coObjects);
 	int GetIDSubWeapon() { return id; }

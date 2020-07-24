@@ -28,7 +28,7 @@ void Fleaman::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT sim
 
 	vy += GRAVITY * dt;
 	
-	CGameObject::Update(dt);
+	Enemy::Update(dt);
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 

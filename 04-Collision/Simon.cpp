@@ -12,6 +12,7 @@
 #include "Ghost.h"
 #include "Bridge.h"
 #include "Axe.h"
+#include "HolyWater.h"
 #include "Raven.h"
 Simon::Simon()
 {
@@ -28,6 +29,8 @@ Simon::Simon()
 	alpha = RGB_255;
 	timeLife = TIME_LIFE;
 	pairStair = 0;
+	whipLvl = 0;
+	second = 1;
 }
 
 void Simon::WalkLeft()
@@ -155,6 +158,57 @@ void Simon::UseSubweapon()
 				break;
 		}
 		break;
+	case ITEM_BOOMERANG:
+		if (!subWeaponIsON || heart < 1)
+		{
+			normalHit = true;
+			Hit();
+			return;
+		}
+
+		for (int i = 0; i < weapon.size(); i++)
+		{
+			if (!weapon[i]->isSubWeaponExist)
+			{
+				Hit();
+				heart--;
+				weapon[i]->SetNx(nx);
+				weapon[i]->isHittingSubWeapon = true;
+				weapon[i]->SetDirectionSubWeapon(nx);
+			}
+			if (weapon[i]->isHittingSubWeapon)
+				break;
+		}
+		break;
+	case ITEM_HOLYWATER:
+		if (!subWeaponIsON || heart < 1)
+		{
+			normalHit = true;
+			Hit();
+			return;
+		}
+
+		for (int i = 0; i < weapon.size(); i++)
+		{
+			if (!weapon[i]->isSubWeaponExist)
+			{
+				Hit();
+				heart--;
+				weapon[i]->SetNx(nx);
+				weapon[i]->vy = -VY_HOLYWATER;
+				weapon[i]->isHittingSubWeapon = true;
+				weapon[i]->SetDirectionSubWeapon(nx);
+			}
+			if (weapon[i]->isHittingSubWeapon)
+				break;
+		}
+		break;
+	case ITEM_CLOCK:
+		if (!subWeaponIsON || heart < 5)
+			return;
+		heart -= 5;
+		clockOn = true;
+		timeClock = GetTickCount();
 	}
 }
 
@@ -184,6 +238,7 @@ void Simon::GoDownStair()
 
 void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	
 
 	if (health <= 0 && !isDead)
 	{
@@ -200,7 +255,9 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	}
 	// Calculate dx, dy 
 	CGameObject::Update(dt);
+	TimeLife();
 
+	KeepSimonIntoScreen();
 	// Simple fall down
 
 	//whip
@@ -241,11 +298,18 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void Simon::Render()
 {
-	animation_set->at(ani)->Render(nx, x, y, alpha);
-	/*if (normalHit)
+	if (invisibility)
 	{
-		whip->Render(animation_set->at(ani)->GetCurrentFrame());
-	}*/
+		alpha = 100;
+		if (GetTickCount() - invisibilityTime > INVISIBILYTY_TIME)
+		{
+			alpha = RGB_255;
+			invisibility = false;
+		}
+
+	}
+	animation_set->at(ani)->Render(nx, x, y, alpha);
+	
 	for (int i = 0; i < weapon.size(); i++)
 	{
 		if (weapon[i]->active || normalHit)
@@ -261,7 +325,6 @@ void Simon::Render()
 			}
 			weapon[i]->active = false;
 		}
-		
 	}
 	//RenderBoundingBox();
 	if (subWeaponIsON)
@@ -408,6 +471,8 @@ bool Simon::AutoWalk(int toX)
 
 void Simon::CollideWithItem(vector<LPGAMEOBJECT>* listItems)
 {
+	if (isDead)
+		return;
 	if (listItems->size() == 0)
 		return;
 	for (int i = 0; i < listItems->size(); i++)
@@ -420,9 +485,16 @@ void Simon::CollideWithItem(vector<LPGAMEOBJECT>* listItems)
 			{
 				SetState(SIMON_SHOCK);
 				if (whip->GetState() == WHIP_LVL_1)
+				{
 					whip->SetState(WHIP_LVL_2);
+					whipLvl = WHIP_LVL_2;
+				}
+
 				else if (whip->GetState() == WHIP_LVL_2)
+				{
 					whip->SetState(WHIP_LVL_3);
+					whipLvl = WHIP_LVL_3;
+				}
 			}
 			else if (e->GetState() == ITEM_HEART)
 			{
@@ -449,13 +521,15 @@ void Simon::CollideWithItem(vector<LPGAMEOBJECT>* listItems)
 				}
 				currentSubweapon = ITEM_KNIFE;
 			}
-			/*else if (e->GetState() == ITEM_BOOMERANG)
+			else if (e->GetState() == ITEM_BOOMERANG)
 			{
+				ResetSubweapon();
 				typeSubWeapon = ITEM_BOOMERANG;
 				subWeaponIsON = true;
-				weapon = new Boomerang();
-				currentSubweapon = 1;
-			}*/
+				SubWeapon* e = new Boomerang();
+				weapon.push_back(e);
+				currentSubweapon = ITEM_BOOMERANG;
+			}
 			else if (e->state == ITEM_AXE)
 			{
 				ResetSubweapon();
@@ -521,6 +595,46 @@ void Simon::CollideWithItem(vector<LPGAMEOBJECT>* listItems)
 				}
 				isDouble = false;
 				isTriple = true;
+
+			}
+			else if (e->state == ITEM_HOLYWATER)
+			{
+				ResetSubweapon();
+				SubWeapon* e = new HolyWater();
+				typeSubWeapon = ITEM_HOLYWATER;
+				subWeaponIsON = true;
+				currentSubweapon = ITEM_HOLYWATER;
+				weapon.push_back(e);
+				if (isDouble)
+				{
+					SubWeapon* e1 = new HolyWater();
+					weapon.push_back(e1);
+				}
+				else if (isTriple)
+				{
+					SubWeapon* e1 = new HolyWater();
+					SubWeapon* e2 = new HolyWater();
+					weapon.push_back(e1);
+					weapon.push_back(e2);
+				}
+			}
+			else if (e->state == ITEM_CLOCK)
+			{
+				ResetSubweapon();
+				typeSubWeapon = ITEM_CLOCK;
+				SubWeapon* e1 = new HolyWater();
+				subWeaponIsON = true;
+				weapon.push_back(e1);
+				currentSubweapon = ITEM_CLOCK;
+			}
+			else if (e->state == ITEM_INVISIBILITY)
+			{
+				invisibility = true;
+				invisibilityTime = GetTickCount();
+			}
+			else if (e->state == ITEM_SMALLHEART)
+			{
+			heart += SMALL_HEART;
 			}
 			vector<LPGAMEOBJECT>::iterator it;
 			it = listItems->begin();
@@ -528,6 +642,7 @@ void Simon::CollideWithItem(vector<LPGAMEOBJECT>* listItems)
 		}
 	}
 }
+
 
 void Simon::ResetSubweapon()
 {
@@ -700,9 +815,11 @@ void Simon::SimonTouchStair(vector<LPGAMEOBJECT>* stair)
 
 void Simon::CollideWithEnemy(vector<LPENEMY>* enemies)
 {
+	if (isDead)
+		return;
 	if (enemies->size() == 0)
 		return;
-	if (isDead)
+	if (invisibility)
 		return;
 	for (int i = 0; i < enemies->size(); i++)
 	{
@@ -744,5 +861,25 @@ void Simon::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 		top = y + SIMON_BOX_WIDTH / 3;
 	right = x + SIMON_BOX_WIDTH;
 	bottom = y + SIMON_BOX_HEIGHT;
+}
+
+void Simon::KeepSimonIntoScreen()
+{
+	if (x < POS_LEFT) //để cài không cho simon đi ngược màn hình
+		x = POS_LEFT;
+	if (x > POS_RIGHT)
+		x = POS_RIGHT;
+}
+
+void Simon::TimeLife()
+{
+	second++;
+	if (second == A_MINUTE)
+	{
+		timeLife--;
+		second = 1;
+	}
+	if (timeLife <= 0)
+		isDead = true;
 }
 

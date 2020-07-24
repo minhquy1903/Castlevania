@@ -32,7 +32,7 @@ void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simo
 		SetState(WALK);
 	
 	
-	CGameObject::Update(dt);
+	Enemy::Update(dt);
 	vy += GRAVITY * dt;
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;

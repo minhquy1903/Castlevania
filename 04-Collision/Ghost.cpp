@@ -27,7 +27,7 @@ void Ghost::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon
 		return;
 
 	ChasingSimon(simon->x, simon->y);
-	CGameObject::Update(dt);
+	Enemy::Update(dt);
 	x += dx;
 	y += dy;
 }

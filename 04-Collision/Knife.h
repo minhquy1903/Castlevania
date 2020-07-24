@@ -18,6 +18,5 @@ public:
 	void Render();
 	void SetDirectionSubWeapon(int nx);
 	bool CheckExistKnife(float a);
-	void TimeStart();
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 };

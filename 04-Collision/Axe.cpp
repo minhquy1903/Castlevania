@@ -24,9 +24,6 @@ void Axe::SetDirectionSubWeapon(int nx)
 {
 	vx = VX_AXE * nx;
 }
-void Axe::TimeStart()
-{
-}
 void Axe::GetBoundingBox(float& left, float& top, float& right, float& bottom)
 {
 	left = x;

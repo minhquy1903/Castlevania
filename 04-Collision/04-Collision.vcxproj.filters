@@ -144,6 +144,9 @@
     <ClInclude Include="HolyWater.h">
       <Filter>Header Files\GameObject\SubWeapon</Filter>
     </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -250,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="HolyWater.cpp">
       <Filter>Header Files\GameObject\SubWeapon</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

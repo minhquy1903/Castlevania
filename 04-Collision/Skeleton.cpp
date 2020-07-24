@@ -11,6 +11,7 @@ void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT si
 		return;
 	if (hp <= 0 && isDead == false)
 	{
+		bone->isDead = true;
 		isDead = true;
 		SetState(DEAD);
 	}
@@ -36,7 +37,7 @@ void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT si
 
 	vy += GRAVITY * dt;
 
-	CGameObject::Update(dt);
+	Enemy::Update(dt);
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
 
@@ -153,7 +154,7 @@ void Skeleton::SetState(int state)
 	}
 }
 
-Skeleton::Skeleton()
+Skeleton::Skeleton(int nx)
 {
 	ani = ANI_SKELETON;
 	isDead = false;
@@ -163,6 +164,12 @@ Skeleton::Skeleton()
 	bone->x = x;
 	bone->y = y;
 	dame = DAME;
+	this->nx = nx;
+}
+
+Skeleton::Skeleton()
+{
+	
 }
 
 

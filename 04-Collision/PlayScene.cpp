@@ -17,9 +17,11 @@
 #include "Fleaman.h"
 #include "Skeleton.h"
 #include "Raven.h"
+#include "Zombie.h"
 using namespace std;
 
 #define SCENE_SECTION_UNKNOWN -1
+#define SCENE_SECTION_RESOURCE	0
 #define SCENE_SECTION_OBJECTS	6
 #define SCENE_SECTION_TILEMAP 7
 #define OBJECT_TYPE_SIMON	0
@@ -31,6 +33,13 @@ using namespace std;
 #define OBJECT_TYPE_BRIDGE	6
 #define OBJECT_TYPE_PORTAL	50
 #define MAX_SCENE_LINE		1024
+
+#define SCENE_SECTION_UNKNOWN -1
+#define SCENE_SECTION_TEXTURES 2
+#define SCENE_SECTION_SPRITES 3
+#define SCENE_SECTION_ANIMATIONS 4
+#define SCENE_SECTION_ANIMATION_SETS	5
+#define MAX_SCENE_LINE 1024
 CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	CScene(id, filePath)
 {
@@ -43,7 +52,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 	See scene1.txt, scene2.txt for detail format specification
 */
 
-
+bool ignoreRender = false;
 
 void CPlayScene::Load()
 {
@@ -61,6 +70,26 @@ void CPlayScene::Load()
 		string line(str);
 
 		if (line[0] == '#') continue;	// skip comment lines	
+		if (line == "[TEXTURES]")
+		{
+			section = SCENE_SECTION_TEXTURES;
+			continue;
+		}
+		if (line == "[SPRITES]")
+		{
+			section = SCENE_SECTION_SPRITES;
+			continue;
+		}
+		if (line == "[ANIMATIONS]")
+		{
+			section = SCENE_SECTION_ANIMATIONS;
+			continue;
+		}
+		if (line == "[ANIMATION_SETS]")
+		{
+			section = SCENE_SECTION_ANIMATION_SETS;
+			continue;
+		}
 
 		if (line == "[OBJECTS]")
 		{
@@ -82,6 +111,18 @@ void CPlayScene::Load()
 		//
 		switch (section)
 		{
+		case SCENE_SECTION_TEXTURES:
+			_ParseSection_TEXTURES(line);
+			break;
+		case SCENE_SECTION_SPRITES:
+			_ParseSection_SPRITES(line);
+			break;
+		case SCENE_SECTION_ANIMATIONS:
+			_ParseSection_ANIMATIONS(line);
+			break;
+		case SCENE_SECTION_ANIMATION_SETS:
+			_ParseSection_ANIMATION_SETS(line);
+			break;
 		case SCENE_SECTION_OBJECTS:
 			_ParseSection_OBJECTS(line);
 			break;
@@ -96,7 +137,6 @@ void CPlayScene::Load()
 
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
-
 
 /*
 	Parse a line in section [OBJECTS]
@@ -124,8 +164,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_SIMON:
 		if (player != NULL)
 		{
-			/*obj->SetAnimationSet(ani_set);
-			play->SetPosition(x, y);*/
+			player->SetAnimationSet(ani_set);
+			player->NewWhip();
+			player->whip->state = player->whipLvl;
 			return;
 			DebugOut(L"[ERROR] SIMON object was created before!\n");
 			break;
@@ -191,16 +232,23 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		else if (typeEnemy == 4)
 		{
-			obj = new Skeleton();
+			int nx = atoi(tokens[5].c_str());
+			obj = new Skeleton(nx);
 			Skeleton* skeleton = dynamic_cast<Skeleton*>(obj);
-			
+			skeleton->GetBone()->SetPosition(x, y);
 			allObject.push_back(skeleton->GetBone());
 		}
 		else if (typeEnemy == 5)
 		{
 			obj = new Raven();
 		}
+		else if (typeEnemy == 6)
+		{
 
+			int nx = atoi(tokens[5].c_str());
+			obj = new Zombie(nx);
+		}
+			
 		break;
 	}
 	case OBJECT_TYPE_STAIR:
@@ -227,11 +275,94 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	
 }
 
+
+void CPlayScene::_ParseSection_TEXTURES(string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 5) return; // skip invalid lines
+
+	int texID = atoi(tokens[0].c_str());
+	wstring path = ToWSTR(tokens[1]);
+	int R = atoi(tokens[2].c_str());
+	int G = atoi(tokens[3].c_str());
+	int B = atoi(tokens[4].c_str());
+
+	CTextures::GetInstance()->Add(texID, path.c_str(), D3DCOLOR_XRGB(R, G, B));
+}
+
+void CPlayScene::_ParseSection_SPRITES(string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 6) return; // skip invalid lines
+
+	int ID = atoi(tokens[0].c_str());
+	int l = atoi(tokens[1].c_str());
+	int t = atoi(tokens[2].c_str());
+	int r = atoi(tokens[3].c_str());
+	int b = atoi(tokens[4].c_str());
+	int texID = atoi(tokens[5].c_str());
+
+	LPDIRECT3DTEXTURE9 tex = CTextures::GetInstance()->Get(texID);
+	if (tex == NULL)
+	{
+		DebugOut(L"[ERROR] Texture ID %d not found!\n", texID);
+		return;
+	}
+
+	CSprites::GetInstance()->Add(ID, l, t, r, b, tex);
+}
+
+void CPlayScene::_ParseSection_ANIMATIONS(string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 3) return; // skip invalid lines - an animation must at least has 1 frame and 1 frame time
+
+	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+
+	LPANIMATION ani = new CAnimation();
+
+	int ani_id = atoi(tokens[0].c_str());
+	for (int i = 1; i < tokens.size(); i += 2)	// why i+=2 ?  sprite_id | frame_time  
+	{
+		int sprite_id = atoi(tokens[i].c_str());
+		int frame_time = atoi(tokens[i + 1].c_str());
+		ani->Add(sprite_id, frame_time);
+	}
+
+	CAnimations::GetInstance()->Add(ani_id, ani);
+}
+
+void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
+{
+	vector<string> tokens = split(line);
+
+	if (tokens.size() < 2) return; // skip invalid lines - an animation set must at least id and one animation id
+
+	int ani_set_id = atoi(tokens[0].c_str());
+
+	LPANIMATION_SET s = new CAnimationSet();
+
+	CAnimations* animations = CAnimations::GetInstance();
+
+	for (int i = 1; i < tokens.size(); i++)
+	{
+		int ani_id = atoi(tokens[i].c_str());
+
+		LPANIMATION ani = animations->Get(ani_id);
+		s->push_back(ani);
+	}
+
+	CAnimationSets::GetInstance()->Add(ani_set_id, s);
+}
+
 void CPlayScene::_ParseSection_TILEMAP(string line)
 {
 	vector<string> tokens = split(line);
 
-	if (tokens.size() < 7) return; // skip invalid lines
+	if (tokens.size() < 13) return; // skip invalid lines
 
 	int ID = atoi(tokens[0].c_str());
 	wstring filePath_texture = ToWSTR(tokens[1]);
@@ -242,21 +373,36 @@ void CPlayScene::_ParseSection_TILEMAP(string line)
 	int num_col_on_tilemap = atoi(tokens[6].c_str());
 	int tileset_width = atoi(tokens[7].c_str());
 	int tileset_height = atoi(tokens[8].c_str());
+	int xCam = atoi(tokens[9].c_str());
+	int yCam = atoi(tokens[10].c_str());
+	int widthGrid = atoi(tokens[11].c_str());
+	int heightGrid = atoi(tokens[12].c_str());
 	boardscore = new BoardScore();
 	grid = new Grid();
 	//1590	500
-	grid->Resize(1590, 500);
+	CGame::GetInstance()->SetCamPos(xCam, yCam);
+	grid->Resize(widthGrid, heightGrid);
 	grid->PushGrid(allObject);
 	tilemap = new TileMap(ID, filePath_texture.c_str(), filePath_data.c_str(), num_row_on_texture, num_col_on_textture, num_row_on_tilemap, num_col_on_tilemap, tileset_width, tileset_height);
 }
 
 void CPlayScene::SimonRevival()
 {
+	ignoreRender = true;
+	if (player->life == 0)
+	{
+		player = NULL;
+		CGame::GetInstance()->SetCamPos(0, 0.0f);
+		CGame::GetInstance()->SwitchScene(1);
+		grid->PushGrid(allObject);
+		return;
+	}
+	int currentLife = player->life;
 	player = NULL;
 	CGame::GetInstance()->SetCamPos(0, 0.0f);
 	CGame::GetInstance()->SwitchScene(id);
 	grid->PushGrid(allObject);
-
+	player->life = currentLife - 1;
 }
 
 void CPlayScene::GetObjectGrid()
@@ -295,7 +441,6 @@ void CPlayScene::Update(DWORD dt)
 			stairs.push_back(obj);
 	}
 
-
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 1; i < bricks.size(); i++)
 	{
@@ -333,9 +478,9 @@ void CPlayScene::Update(DWORD dt)
 			{
 				player->weapon[i]->isSubWeaponExist = true;//subweapon đc update và render
 				if (player->GetState() == SIMON_SIT_HIT)
-					player->weapon[i]->SetPosSubWeapon(D3DXVECTOR3(player->x, player->y, 0), false);
+					player->weapon[i]->SetPosSubWeapon(D3DXVECTOR3(player->x, player->y, 0), false, player->nx);
 				else
-					player->weapon[i]->SetPosSubWeapon(D3DXVECTOR3(player->x, player->y, 0), true);
+					player->weapon[i]->SetPosSubWeapon(D3DXVECTOR3(player->x, player->y, 0), true, player->nx);
 
 			}
 			else
@@ -345,7 +490,6 @@ void CPlayScene::Update(DWORD dt)
 				player->GetWhip()->CollideWithSecretEnemies(&enemies);
 			}
 		}
-		
 	}
 
 	for (int i = 0; i < player->weapon.size(); i++)
@@ -354,6 +498,7 @@ void CPlayScene::Update(DWORD dt)
 		{
 			player->weapon[i]->SubWeaponCollideWithSecretObj(&secretObj);
 			player->weapon[i]->SubWeaponCollideWithEnemy(&enemies);
+			player->weapon[i]->SubWeaponCollideWithSimon(player);
 		}
 	}
 	
@@ -390,6 +535,15 @@ void CPlayScene::Update(DWORD dt)
 		}
 	}
 
+	if (GetTickCount() - player->timeClock > TIME_CLOCK)// xử lí clock
+	{
+		player->clockOn = false;
+	}
+	if (player->clockOn)
+		Enemy::clockOn = true;
+	else
+		Enemy::clockOn = false;
+
 	for (int i = 0; i < enemies.size(); i++)//quái update
 	{
 		enemies[i]->Update(dt, &bricks, player);
@@ -397,10 +551,6 @@ void CPlayScene::Update(DWORD dt)
 		{
 			enemies[i]->DropItem();
 			listItem.push_back(enemies[i]->GetItem());
-			vector<LPENEMY>::iterator it;
-			it = enemies.begin();
-			it += i;
-			enemies.erase(it);
 		}
 	}
 
@@ -418,7 +568,7 @@ void CPlayScene::Update(DWORD dt)
 			listItem.erase(it);
 		}
 		else
-			listItem[i]->Update(dt, &coObjects);
+			listItem[i]->Update(dt, &bricks);
 	}
 
 	player->CollideWithItem(&listItem); //kiểm tra simon nhặt item
@@ -442,33 +592,36 @@ void CPlayScene::Update(DWORD dt)
 		CGame::GetInstance()->SetCamPos(cx, 0.0f);
 	}
 	//DebugOut(L"tileWidth: %d\n", tilemap->GetWidthTileMap());
+
 	boardscore->Update(dt, CGame::GetInstance()->GetCamPosX(), 0, player);
-
-
-
-	
 
 	grid->ResetGrid(allObject);
 
-	if (player->revival)
-	{
-		SimonRevival();
-	}
+	
 	if (int idScene = player->CollideWithPortal(&portal)) //kiểm tra simon đi vào cổng
 	{
 		//portal.at(0).idscene();
 		CGame::GetInstance()->SetCamPos(0, 0.0f);
 		CGame::GetInstance()->SwitchScene(idScene, player);
+		ignoreRender = true;
+	}
+	if (player->revival)
+	{
+		SimonRevival();
 	}
 }
 
 void CPlayScene::Render()
 {
+	if (ignoreRender)
+	{
+		ignoreRender = false;
+		return;
+	}
 	tilemap->Draw();
 	boardscore->Render();
 	for (int i = 0; i < bricks.size(); i++)
 		bricks[i]->Render();
-
 	for (size_t i = 0; i < secretObj.size(); i++)
 		secretObj[i]->Render();
 	for (int i = 0; i < listItem.size(); i++)
@@ -495,6 +648,11 @@ void CPlayScene::Unload()
 		delete listItem[i];*/
 	for (auto item : listItem)
 		delete item;
+
+	CTextures::GetInstance()->Clear();
+	CSprites::GetInstance()->Clear();
+	CAnimations::GetInstance()->Clear();
+
 	listItem.clear();
 	allObject.clear();
 	//player = NULL;
@@ -513,8 +671,8 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 	DebugOut(L"[INFO] KeyDown: %d\n", KeyCode);
 	if (simon->GetState() == SIMON_SHOCK)
 		return;
-	if ((simon->GetState() == SIMON_STAIR_UP_HIT && !(simon->animation_set->at(SIMON_STAIR_UP_HIT)->IsRenderOver(400))) ||
-		(simon->GetState() == SIMON_STAIR_DOWN_HIT && !simon->animation_set->at(SIMON_STAIR_DOWN_HIT)->IsRenderOver(400)))
+	if ((simon->GetState() == SIMON_STAIR_UP_HIT && !(simon->animation_set->at(SIMON_STAIR_UP_HIT)->IsRenderOver(300))) ||
+		(simon->GetState() == SIMON_STAIR_DOWN_HIT && !simon->animation_set->at(SIMON_STAIR_DOWN_HIT)->IsRenderOver(300)))
 		return;
 
 	switch (KeyCode)
@@ -552,13 +710,16 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		simon->SetPosition(80, 0);
 		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
 		break;
-		/*case DIK_6:
-			CGame::GetInstance()->SwitchScene(6, simon);
-			simon->SetPosition(80, 0);
-			CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
-			break;*/
+	case DIK_6:
+		CGame::GetInstance()->SwitchScene(6, simon);
+		simon->SetPosition(80, 0);
+		CGame::GetInstance()->SetCamPos(0.0f, 0.0f);
+		break;
 	case DIK_H:
 		simon->health = 2;
+		break;
+	case DIK_K:
+		simon->life = 0;
 		break;
 	}
 }
@@ -581,17 +742,17 @@ void CPlayScenceKeyHandler::KeyState(BYTE* states)
 		return;
 	if ((simon->GetState() == SIMON_STAIR_UP && !simon->animation_set->at(SIMON_STAIR_UP)->IsRenderOver(200)) || (simon->GetState() == SIMON_STAIR_DOWN && !simon->animation_set->at(SIMON_STAIR_DOWN)->IsRenderOver(200)))
 		return;
-	if ((simon->GetState() == SIMON_STAND_HIT && !(simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(400))) ||
-		(simon->GetState() == SIMON_SIT_HIT && !simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(400)))
+	if ((simon->GetState() == SIMON_STAND_HIT && !(simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(300))) ||
+		(simon->GetState() == SIMON_SIT_HIT && !simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(300)))
 		return;
 
-	if ((simon->GetState() == SIMON_STAIR_UP_HIT && !(simon->animation_set->at(SIMON_STAIR_UP_HIT)->IsRenderOver(400))) || (simon->GetState() == SIMON_STAIR_DOWN_HIT && !simon->animation_set->at(SIMON_STAIR_DOWN_HIT)->IsRenderOver(400)))
+	if ((simon->GetState() == SIMON_STAIR_UP_HIT && !(simon->animation_set->at(SIMON_STAIR_UP_HIT)->IsRenderOver(300))) || (simon->GetState() == SIMON_STAIR_DOWN_HIT && !simon->animation_set->at(SIMON_STAIR_DOWN_HIT)->IsRenderOver(300)))
 		return;
 
 	for (int i = 0; i < simon->weapon.size(); i++)
 	{
-		if ((simon->GetState() == SIMON_STAND_HIT && (simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(400))) ||
-			(simon->GetState() == SIMON_SIT_HIT && simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(400)))
+		if ((simon->GetState() == SIMON_STAND_HIT && (simon->animation_set->at(SIMON_STAND_HIT)->IsRenderOver(300))) ||
+			(simon->GetState() == SIMON_SIT_HIT && simon->animation_set->at(SIMON_SIT_HIT)->IsRenderOver(300)))
 		{
 			simon->weapon[i]->isHittingSubWeapon = false;
 			simon->normalHit = false;

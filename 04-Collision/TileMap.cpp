@@ -101,3 +101,13 @@ TileMap::~TileMap()
 {
 }
 
+int TileMap::GetWidthTileMap()
+{
+	if (id == 2000 || id == 4000 || id == 6000 || id == 8000 || id == 10000)
+		return num_col_on_tilemap * tileset_width + 16;
+	else
+		return num_col_on_tilemap * tileset_width;
+
+	
+}
+

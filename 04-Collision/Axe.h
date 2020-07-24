@@ -14,8 +14,6 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	void Render();
 	void SetDirectionSubWeapon(int nx);
-	//bool CheckExistKnife(float a);
-	void TimeStart();
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	Axe();
 	~Axe();

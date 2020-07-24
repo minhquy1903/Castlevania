@@ -9,17 +9,25 @@ void SubWeapon::Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects)
 	x += dx;
 }
 
+void SubWeapon::SubWeaponCollideWithSimon(LPGAMEOBJECT simon)
+{
+}
+
 void SubWeapon::Render()
 {
 	
 }
 
-void SubWeapon::SetPosSubWeapon(D3DXVECTOR3 pos, bool isStanding)
+void SubWeapon::SetPosSubWeapon(D3DXVECTOR3 pos, bool isStanding, int nx)
 {
 	if (isStanding)
-		pos.y += 10;
+		pos.y += 5;
 	else
 		pos.y += 35;
+	if (nx == 1)
+		pos.x += 60;
+	else
+		pos.x -= 20;
 	SetPosition(pos.x, pos.y);
 	posX = pos.x;
 }

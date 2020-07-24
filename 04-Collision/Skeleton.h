@@ -22,7 +22,7 @@
 
 #define SKELETON_HP				1
 #define DAME					3
-#define SIZE_BONE				450
+#define SIZE_BONE				430
 
 class Skeleton : public Enemy
 {
@@ -36,6 +36,7 @@ public:
 	void ChasingSimon(double x, double y);
 	void SetState(int state);
 	Bone* GetBone() { return bone; }
+	Skeleton(int nx);
 	Skeleton();
 	~Skeleton();
 };

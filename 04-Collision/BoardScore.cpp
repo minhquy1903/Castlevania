@@ -45,17 +45,13 @@ void BoardScore::Update(DWORD dt, int camX, int camY, LPGAMEOBJECT _simon, LPGAM
 {
 	posX = camX;
 	posY = camY;
-	second++;
-	if (second == A_MINUTE)
-	{
-		time--;
-		second = 1;
-	}
+	
 	Simon * simon = dynamic_cast<Simon*>(_simon);
-	healthSimon = simon->GetHealth();
-	life = simon->GetLife();
-	heart = simon->GetHeart();
-	idSubWeapon = simon->GetCurrentSubweapon();
+	time = simon->timeLife;
+	healthSimon = simon->health;
+	life = simon->life;
+	heart = simon->heart;
+	idSubWeapon = simon->currentSubweapon;
 	healthSimonLost = HP_SIMON_AND_BOSS - healthSimon;
 	if (healthSimon < 0)
 		healthSimon = 0;
@@ -101,7 +97,6 @@ BoardScore::BoardScore()
 	healthbar.push_back(CSprites::GetInstance()->Get(401));
 	healthbar.push_back(CSprites::GetInstance()->Get(402));
 	time = LIFE_TIME;
-	second = 1;
 }
 
 

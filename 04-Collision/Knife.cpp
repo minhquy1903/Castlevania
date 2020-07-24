@@ -56,15 +56,10 @@ bool Knife::CheckExistKnife(float a)
 	return false;
 }
 
-void Knife::TimeStart()
-{
-	timeExist = GetTickCount();
-}
-
 void Knife::GetBoundingBox(float & left, float & top, float & right, float & bottom)
 {
 		left = x;
 		top = y;
-		right = left + 34;
-		bottom = top + 18;
+		right = left + KNIFE_BBOX_WIDTH;
+		bottom = top + KNIFE_BBOX_HEIGHT;
 }

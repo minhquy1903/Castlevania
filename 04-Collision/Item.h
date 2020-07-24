@@ -5,28 +5,27 @@
 #define ITEM_KNIFE			2
 #define ITEM_BOOMERANG		3
 #define ITEM_AXE			4
-#define ITEM_DOUBLE			5
-#define ITEM_TRIPLE			6
-#define ITEM_HOLYWATER		7
+#define ITEM_HOLYWATER		5
+#define ITEM_DOUBLE			6
+#define ITEM_TRIPLE			7
+#define	ITEM_INVISIBILITY	8
+#define ITEM_CLOCK			9
+#define ITEM_SMALLHEART		10
 
 #define TIME_FLICKER		1500
 #define LIFE_TIME			3000
 
-#define UPGRADE_WHIP_BBOX	32
 #define HEART_BBOX			24
 #define	KNIFE_BBOX_WIDTH	32
 #define KNIFE_BBOX_HEIGHT	16
-#define BOOMERANG_BBOX		32
-#define	AXE_BBOX			32
-#define ITEM_DOUBLE_TRIPLE_BBOX	32
+#define	BBOX_32			32
 
 #define VY_ITEM				0.15f
 #define ANIMATIONSET_ITEM	4
+#define TIME_CLOCK			2500
 class Item : public CGameObject
 {
 	DWORD lifeTimeStart;
-	DWORD lifeTime;
-	DWORD timeFlicker;//chớp
 	bool isTimeOut;
 	bool isFlicker;
 public:

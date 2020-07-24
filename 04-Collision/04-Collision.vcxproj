@@ -129,6 +129,7 @@
     <ClInclude Include="BoardScore.h" />
     <ClInclude Include="Bone.h" />
     <ClInclude Include="Boomerang.h" />
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="Bridge.h" />
     <ClInclude Include="Candle.h" />
     <ClInclude Include="Enemy.h" />
@@ -166,6 +167,7 @@
     <ClCompile Include="BoardScore.cpp" />
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="Boomerang.cpp" />
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Bridge.cpp" />
     <ClCompile Include="Candle.cpp" />
     <ClCompile Include="Enemy.cpp" />

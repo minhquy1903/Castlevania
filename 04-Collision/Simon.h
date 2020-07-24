@@ -39,6 +39,12 @@
 #define TIME_HURT		2500
 
 #define BIG_HEART		5
+#define SMALL_HEART		1
+#define INVISIBILYTY_TIME	4000
+
+#define POS_RIGHT	1460
+#define POS_LEFT	-10
+#define A_MINUTE	60
 class Simon : public CGameObject
 {
 public:
@@ -46,7 +52,8 @@ public:
 	int untouchable;
 	int directionOnStair;
 	bool subWeaponIsON;
-
+	int timeLife;
+	int second;
 	int posXStair;
 	int health;
 	int life;
@@ -58,7 +65,6 @@ public:
 	bool revival;
 	bool isDead;
 	int currentScene;
-	int timeLife;
 	int nxStairTop;
 	int nxStairBottom;
 	int pairStair;
@@ -69,6 +75,11 @@ public:
 	bool isTouchStairBottom;
 	bool checkTouchStairBottom;
 	bool checkTouchStairTop;
+	int whipLvl;
+	bool invisibility;
+	bool clockOn;
+	DWORD timeClock;
+	DWORD invisibilityTime;
 	DWORD untouchable_start;
 	DWORD recoveryTime;
 	Whip* whip;
@@ -99,11 +110,10 @@ public:
 	void CollideWithEnemy(vector<LPENEMY>* enemy = NULL);
 	void ResetSubweapon();
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
-	int GetHealth() { return health; }
-	int GetHeart() { return heart; }
-	int GetLife() { return life; }
 	int GetPosXStair() { return posXStair; }
-	int GetCurrentSubweapon() { return currentSubweapon; }
+	void KeepSimonIntoScreen();
+	void TimeLife();
+	void NewWhip() { whip = NULL; whip = new Whip(); }
 	Whip* GetWhip() { return whip; }
 	vector<SubWeapon*> GetWeapon() { return weapon; }
 

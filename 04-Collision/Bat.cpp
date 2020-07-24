@@ -34,7 +34,7 @@ void Bat::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 
 	if (isWakeUp)
 	{
-		CGameObject::Update(dt);
+		Enemy::Update(dt);
 		state = BAT_FLY;
 		x += dx;
 		r += dy;

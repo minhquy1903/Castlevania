@@ -31,6 +31,7 @@ using namespace std;
 #define OBJECT_TYPE_STAIR	4
 #define OBJECT_TYPE_ENEMY	5
 #define OBJECT_TYPE_BRIDGE	6
+#define OBJECT_TYPE_BOSS	7
 #define OBJECT_TYPE_PORTAL	50
 #define MAX_SCENE_LINE		1024
 
@@ -138,144 +139,6 @@ void CPlayScene::Load()
 	DebugOut(L"[INFO] Done loading scene resources %s\n", sceneFilePath);
 }
 
-/*
-	Parse a line in section [OBJECTS]
-*/
-void CPlayScene::_ParseSection_OBJECTS(string line)
-{
-	vector<string> tokens = split(line);
-
-	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
-
-	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
-
-	int object_type = atoi(tokens[0].c_str());
-	float x = atof(tokens[1].c_str());
-	float y = atof(tokens[2].c_str());
-
-	int ani_set_id = atoi(tokens[3].c_str());
-
-	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
-	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-	CGameObject* obj = NULL;
-
-	switch (object_type)
-	{
-	case OBJECT_TYPE_SIMON:
-		if (player != NULL)
-		{
-			player->SetAnimationSet(ani_set);
-			player->NewWhip();
-			player->whip->state = player->whipLvl;
-			return;
-			DebugOut(L"[ERROR] SIMON object was created before!\n");
-			break;
-		}
-		else
-		{
-			obj = new Simon();
-			player = (Simon*)obj;
-			player->SetAnimationSet(ani_set);
-			player->SetPosition(x, y);
-			return;
-			DebugOut(L"[INFO] Player object created!\n");
-			
-		}
-		break;
-	case OBJECT_TYPE_BRICK:
-	{
-		int nWidth = atoi(tokens[4].c_str());
-		int nHeight = atoi(tokens[5].c_str());
-		obj = new Brick(nWidth, nHeight);
-	}
-		
-		break;
-	case OBJECT_TYPE_SECRETOBJ:
-	{
-		int iditem = atof(tokens[4].c_str());
-		int typeObj = atof(tokens[5].c_str());
-		if (typeObj == 0)
-			obj = new Torch(iditem);
-		else
-			obj = new Candle(iditem);
-		break;
-	}
-	case OBJECT_TYPE_PORTAL:
-	{
-		float width = atof(tokens[4].c_str());
-		float height = atof(tokens[5].c_str());
-		int scene_id = atoi(tokens[6].c_str());
-		int xNext = atoi(tokens[7].c_str());
-		int yNext = atoi(tokens[8].c_str());
-		obj = new CPortal(x, y, width, height, scene_id, xNext, yNext);
-		portal.push_back(obj);
-		break;
-	}
-	case OBJECT_TYPE_ENEMY:
-	{
-		int typeEnemy = atof(tokens[4].c_str());
-		if (typeEnemy == 0)
-		{
-			obj = new Bat();
-		}
-		else if (typeEnemy == 1)
-		{
-			obj = new Knight();
-		}
-		else if (typeEnemy == 2)
-		{
-			obj = new Ghost();
-		}
-		else if (typeEnemy == 3)
-		{
-			obj = new Fleaman();
-		}
-		else if (typeEnemy == 4)
-		{
-			int nx = atoi(tokens[5].c_str());
-			obj = new Skeleton(nx);
-			Skeleton* skeleton = dynamic_cast<Skeleton*>(obj);
-			skeleton->GetBone()->SetPosition(x, y);
-			allObject.push_back(skeleton->GetBone());
-		}
-		else if (typeEnemy == 5)
-		{
-			obj = new Raven();
-		}
-		else if (typeEnemy == 6)
-		{
-
-			int nx = atoi(tokens[5].c_str());
-			obj = new Zombie(nx);
-		}
-			
-		break;
-	}
-	case OBJECT_TYPE_STAIR:
-	{
-		int DirectionX = atof(tokens[4].c_str()); // chiều X cầu thang
-		int typeStair = atof(tokens[5].c_str());// loại cầu thang đi lên hay xuống
-		int Pair = atof(tokens[6].c_str());// cặp cầu thang <cùng cặp mới tương tác với nhau>
-		obj = new Stair(x, y, DirectionX, typeStair, Pair);
-		break;
-	}
-	case OBJECT_TYPE_BRIDGE:
-	{
-		obj = new Bridge();
-		break;
-	}
-
-	default:
-		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
-		return;
-	}
-	obj->SetAnimationSet(ani_set);
-	obj->SetPosition(x, y);
-	allObject.push_back(obj);
-	
-}
-
-
 void CPlayScene::_ParseSection_TEXTURES(string line)
 {
 	vector<string> tokens = split(line);
@@ -358,11 +221,153 @@ void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
 	CAnimationSets::GetInstance()->Add(ani_set_id, s);
 }
 
+/*
+	Parse a line in section [OBJECTS]
+*/
+void CPlayScene::_ParseSection_OBJECTS(string line)
+{
+	vector<string> tokens = split(line);
+
+	//DebugOut(L"--> %s\n",ToWSTR(line).c_str());
+
+	if (tokens.size() < 3) return; // skip invalid lines - an object set must have at least id, x, y
+
+	int object_type = atoi(tokens[0].c_str());
+	float x = atof(tokens[1].c_str());
+	float y = atof(tokens[2].c_str());
+
+	int ani_set_id = atoi(tokens[3].c_str());
+
+	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+	CGameObject* obj = NULL;
+
+	switch (object_type)
+	{
+	case OBJECT_TYPE_SIMON:
+		if (player != NULL)
+		{
+			player->SetAnimationSet(ani_set);
+			player->NewWhip();
+			player->whip->state = player->whipLvl;
+			return;
+			DebugOut(L"[ERROR] SIMON object was created before!\n");
+			break;
+		}
+		else
+		{
+			obj = new Simon();
+			player = (Simon*)obj;
+			player->SetAnimationSet(ani_set);
+			player->SetPosition(x, y);
+			return;
+			DebugOut(L"[INFO] Player object created!\n");
+			
+		}
+		break;
+	case OBJECT_TYPE_BRICK:
+	{
+		int nWidth = atoi(tokens[4].c_str());
+		int nHeight = atoi(tokens[5].c_str());
+		obj = new Brick(nWidth, nHeight);
+	}
+		
+		break;
+	case OBJECT_TYPE_SECRETOBJ:
+	{
+		int iditem = atof(tokens[4].c_str());
+		int typeObj = atof(tokens[5].c_str());
+		if (typeObj == 0)
+			obj = new Torch(iditem);
+		else
+			obj = new Candle(iditem);
+		break;
+	}
+	case OBJECT_TYPE_PORTAL:
+	{
+		float width = atof(tokens[4].c_str());
+		float height = atof(tokens[5].c_str());
+		int scene_id = atoi(tokens[6].c_str());
+		int xNext = atoi(tokens[7].c_str());
+		int yNext = atoi(tokens[8].c_str());
+		int xCam = atoi(tokens[9].c_str());
+		obj = new CPortal(x, y, width, height, scene_id, xNext, yNext, xCam);
+		portal.push_back(obj);
+		break;
+	}
+	case OBJECT_TYPE_ENEMY:
+	{
+		int typeEnemy = atof(tokens[4].c_str());
+		if (typeEnemy == 0)
+		{
+			obj = new Bat();
+		}
+		else if (typeEnemy == 1)
+		{
+			obj = new Knight();
+		}
+		else if (typeEnemy == 2)
+		{
+			obj = new Ghost();
+		}
+		else if (typeEnemy == 3)
+		{
+			obj = new Fleaman();
+		}
+		else if (typeEnemy == 4)
+		{
+			int nx = atoi(tokens[5].c_str());
+			obj = new Skeleton(nx);
+		}
+		else if (typeEnemy == 5)
+		{
+			obj = new Raven();
+		}
+		else if (typeEnemy == 6)
+		{
+
+			int nx = atoi(tokens[5].c_str());
+			obj = new Zombie(nx);
+		}
+		break;
+	}
+	case OBJECT_TYPE_STAIR:
+	{
+		int DirectionX = atof(tokens[4].c_str()); // chiều X cầu thang
+		int typeStair = atof(tokens[5].c_str());// loại cầu thang đi lên hay xuống
+		int Pair = atof(tokens[6].c_str());// cặp cầu thang <cùng cặp mới tương tác với nhau>
+		obj = new Stair(x, y, DirectionX, typeStair, Pair);
+		break;
+	}
+	case OBJECT_TYPE_BRIDGE:
+	{
+		obj = new Bridge();
+		break;
+	}
+	case OBJECT_TYPE_BOSS:
+	{
+		boss = new Boss();
+		boss->SetAnimationSet(ani_set);
+		boss->SetPosition(x, y);
+		allObject.push_back(boss);
+		return;
+		break;
+	}
+	default:
+		DebugOut(L"[ERR] Invalid object type: %d\n", object_type);
+		return;
+	}
+	obj->SetAnimationSet(ani_set);
+	obj->SetPosition(x, y);
+	allObject.push_back(obj);
+	
+}
+
 void CPlayScene::_ParseSection_TILEMAP(string line)
 {
 	vector<string> tokens = split(line);
 
-	if (tokens.size() < 13) return; // skip invalid lines
+	if (tokens.size() < 10) return; // skip invalid lines
 
 	int ID = atoi(tokens[0].c_str());
 	wstring filePath_texture = ToWSTR(tokens[1]);
@@ -373,18 +378,15 @@ void CPlayScene::_ParseSection_TILEMAP(string line)
 	int num_col_on_tilemap = atoi(tokens[6].c_str());
 	int tileset_width = atoi(tokens[7].c_str());
 	int tileset_height = atoi(tokens[8].c_str());
-	int xCam = atoi(tokens[9].c_str());
-	int yCam = atoi(tokens[10].c_str());
-	int widthGrid = atoi(tokens[11].c_str());
-	int heightGrid = atoi(tokens[12].c_str());
+	int widthGrid = atoi(tokens[9].c_str());
+	int heightGrid = atoi(tokens[10].c_str());
 	boardscore = new BoardScore();
 	grid = new Grid();
-	//1590	500
-	CGame::GetInstance()->SetCamPos(xCam, yCam);
 	grid->Resize(widthGrid, heightGrid);
 	grid->PushGrid(allObject);
 	tilemap = new TileMap(ID, filePath_texture.c_str(), filePath_data.c_str(), num_row_on_texture, num_col_on_textture, num_row_on_tilemap, num_col_on_tilemap, tileset_width, tileset_height);
 }
+
 
 void CPlayScene::SimonRevival()
 {
@@ -419,8 +421,11 @@ void CPlayScene::GetObjectGrid()
 
 void CPlayScene::Update(DWORD dt)
 {
+
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
+
+	grid->CheckCamGrid(allObject);
 	GetObjectGrid();
 	int sizeVector = ObjectInScreen.size();
 	for (size_t i = 0; i < sizeVector; i++)
@@ -428,7 +433,7 @@ void CPlayScene::Update(DWORD dt)
 		LPGAMEOBJECT obj = ObjectInScreen[i];
 		if (dynamic_cast<CPortal*>(obj))
 			portal.push_back(obj);
-		else if (dynamic_cast<Brick*>(obj))
+		else if (dynamic_cast<Brick*>(obj) || dynamic_cast<Bridge*>(obj))
 			bricks.push_back(obj);
 		else if (dynamic_cast<Candle*>(obj) || dynamic_cast<Torch*>(obj))
 			secretObj.push_back(obj);
@@ -439,14 +444,9 @@ void CPlayScene::Update(DWORD dt)
 		}
 		else if (dynamic_cast<Stair*>(obj))
 			stairs.push_back(obj);
+		else if (dynamic_cast<Boss*>(obj))
+			boss = (Boss*)obj;
 	}
-
-	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < bricks.size(); i++)
-	{
-		coObjects.push_back(bricks[i]);
-	}
-	coObjects.push_back(player);
 
 	for (size_t i = 1; i < bricks.size(); i++)
 	{
@@ -454,7 +454,7 @@ void CPlayScene::Update(DWORD dt)
 	}
 
 	player->Update(dt);
-
+	
 	for (int i = 0; i < player->weapon.size(); i++)
 	{
 		if (player->weapon[i]->isSubWeaponExist && player->subWeaponIsON)
@@ -534,6 +534,12 @@ void CPlayScene::Update(DWORD dt)
 			}
 		}
 	}
+	
+	for (int i = 0; i < player->whip->hitEffect.size(); i++)
+	{
+		if (player->whip->hitEffect[i]->EffectTime())
+			player->whip->hitEffect.erase(player->whip->hitEffect.begin() + i);
+	}
 
 	if (GetTickCount() - player->timeClock > TIME_CLOCK)// xử lí clock
 	{
@@ -581,27 +587,41 @@ void CPlayScene::Update(DWORD dt)
 	player->GetPosition(cx, cy);
 
 	CGame* game = CGame::GetInstance();
-	cx += game->GetScreenWidth() / 2;
-	cy -= game->GetScreenHeight() / 2;
+	/*cx += game->GetScreenWidth() / 2;
+	cy -= game->GetScreenHeight() / 2;*/
 
-
-
-	if (player->x > (SCREEN_WIDTH / 2) && player->x + (SCREEN_WIDTH / 2) < tilemap->GetWidthTileMap())
+	if (boss == nullptr)
 	{
-		cx = player->x - (SCREEN_WIDTH / 2);
-		CGame::GetInstance()->SetCamPos(cx, 0.0f);
+		if (player->x > (SCREEN_WIDTH / 2) && player->x + (SCREEN_WIDTH / 2) < tilemap->GetWidthTileMap())
+		{
+			cx = player->x - (SCREEN_WIDTH / 2);
+			CGame::GetInstance()->SetCamPos(cx, 0.0f);
+		}
+	}
+	else
+	{
+		if (player->x > (SCREEN_WIDTH / 2) && player->x + (SCREEN_WIDTH / 2) < tilemap->GetWidthTileMap() && !boss->active)
+		{
+			cx = player->x - (SCREEN_WIDTH / 2);
+			CGame::GetInstance()->SetCamPos(cx, 0.0f);
+		}
+		if (boss->active)
+			if (player->x < CGame::GetInstance()->GetCamPosX() -10)
+				player->x = CGame::GetInstance()->GetCamPosX() - 10;
 	}
 	//DebugOut(L"tileWidth: %d\n", tilemap->GetWidthTileMap());
-
-	boardscore->Update(dt, CGame::GetInstance()->GetCamPosX(), 0, player);
+	if(boss == NULL)
+		boardscore->Update(dt, CGame::GetInstance()->GetCamPosX(), 0, player);
+	else
+		boardscore->Update(dt, CGame::GetInstance()->GetCamPosX(), 0, player, boss);
 
 	grid->ResetGrid(allObject);
 
 	
 	if (int idScene = player->CollideWithPortal(&portal)) //kiểm tra simon đi vào cổng
 	{
-		//portal.at(0).idscene();
-		CGame::GetInstance()->SetCamPos(0, 0.0f);
+		
+		CGame::GetInstance()->SetCamPos(player->xCam, 0.0f);
 		CGame::GetInstance()->SwitchScene(idScene, player);
 		ignoreRender = true;
 	}
@@ -648,13 +668,13 @@ void CPlayScene::Unload()
 		delete listItem[i];*/
 	for (auto item : listItem)
 		delete item;
-
-	CTextures::GetInstance()->Clear();
-	CSprites::GetInstance()->Clear();
-	CAnimations::GetInstance()->Clear();
-
 	listItem.clear();
 	allObject.clear();
+	/*CTextures::GetInstance()->Clear();
+	CSprites::GetInstance()->Clear();
+	CAnimations::GetInstance()->Clear();*/
+
+	
 	//player = NULL;
 
 	DebugOut(L"[INFO] Scene %s unloaded! \n", sceneFilePath);
@@ -720,6 +740,9 @@ void CPlayScenceKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	case DIK_K:
 		simon->life = 0;
+		break;
+	case DIK_T:
+		simon->heart = 1000;
 		break;
 	}
 }

@@ -124,7 +124,7 @@ void Item::Render()
 	int alpha = 255;
 	if (isFlicker)
 		alpha = rand() % 255 + 100;
-	RenderBoundingBox();
+	//RenderBoundingBox();
 	animation_set->at(state)->Render(0, x, y, alpha);
 }
 

@@ -132,6 +132,7 @@
     <ClInclude Include="Boss.h" />
     <ClInclude Include="Bridge.h" />
     <ClInclude Include="Candle.h" />
+    <ClInclude Include="HitEffect.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Fleaman.h" />
     <ClInclude Include="Ghost.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Bridge.cpp" />
     <ClCompile Include="Candle.cpp" />
+    <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Fleaman.cpp" />
     <ClCompile Include="Ghost.cpp" />

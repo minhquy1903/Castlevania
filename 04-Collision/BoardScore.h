@@ -7,6 +7,12 @@
 #define LIFE_TIME 300
 #define HP_SIMON_AND_BOSS	16
 #define A_MINUTE	60
+#define BOARD 351
+#define ITEM_KNIFE_SPRITE	202
+#define ITEM_BOOMERANG_SPRITE	203
+#define ITEM_AXE_SPRITE		204
+#define ITEM_HOLY_SPRITE	205
+#define ITEM_CLOCK_SPRITE	209
 class BoardScore
 {
 	vector<LPSPRITE> healthbar;

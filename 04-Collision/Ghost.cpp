@@ -12,20 +12,27 @@ void Ghost::GetBoundingBox(float & left, float & top, float & right, float & bot
 
 void Ghost::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
-	if (hp <= 0 && isDead == false)
+	if (hp <= 0 && state != DEAD)
 	{
-		isDead = true;
 		SetState(DEAD);
+		vx = 0;
+		vy = 0;
+		animation_set->at(state)->StartRenderAnimation();
 	}
 
 	if (state == DEAD && animation_set->at(ani)->IsRenderOver(400))
 	{
+		isDead = true;
 		renderFireDone = true;
 	}
 
-	if (isDead)
+	if (hp <= 0)
 		return;
 
+	if (abs(x - simon->x) > RANGE_ACTIVE)
+		active = true;
+	if (!active)
+		return;
 	ChasingSimon(simon->x, simon->y);
 	Enemy::Update(dt);
 	x += dx;
@@ -35,7 +42,8 @@ void Ghost::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon
 
 void Ghost::Render()
 {
-	animation_set->at(0)->Render(nx, x, y);
+	if(active)
+		animation_set->at(0)->Render(nx, x, y);
 }
 
 void Ghost::SetState(int state)

@@ -28,7 +28,6 @@ class Skeleton : public Enemy
 {
 	Bone * bone;
 	int isGrounded;
-	bool active;
 public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL, LPGAMEOBJECT simon = NULL);
 	void Render();

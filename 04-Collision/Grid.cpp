@@ -14,17 +14,17 @@ void Grid::Resize(int map_width, int map_height)
 	int totalCol = this->map_width / this->cell_width;
 	int totalRow = this->map_height / this->cell_height;
 
-	allcells.resize(totalRow);
-	for (int i = 0; i < totalRow; i++)
-		allcells[i].resize(totalCol);
+	allcells.resize(totalRow + 1);
+	for (int i = 0; i < totalRow + 1; i++)
+		allcells[i].resize(totalCol + 1);
 
 	ClearGrid(totalRow, totalCol);
 }
 
 void Grid::ClearGrid(int nums_row, int nums_col)
 {
-	for (int i = 0; i < nums_row; i++)
-		for (int j = 0; j < nums_col; j++)
+	for (int i = 0; i < nums_row + 1; i++)
+		for (int j = 0; j < nums_col + 1; j++)
 			allcells[i][j].clear();
 }
 
@@ -32,12 +32,23 @@ void Grid::PushGrid(vector<LPGAMEOBJECT> list)
 {
 	for (int i = 0; i < list.size(); i++)
 	{
-		int row = (int)(list[i]->y / cell_height);
-		int col = (int)(list[i]->x / cell_width);
+		float l, t, r, b;
+		list[i]->GetBoundingBox(l, t, r, b);
+		int top = int(t / cell_height);
+		int bottom = ceil(b / cell_height);
+		int left = int(l / cell_width);
+		int right = ceil(r / cell_width);
 
 		if (!list[i]->isDead)
- 			allcells[row][col].push_back(list[i]);
+			for (int row = top; row < bottom; row++)
+				for (int col = left; col < right; col++)
+					allcells[row][col].push_back(list[i]);
 	}
+}
+
+void Grid::PushGridStart(LPGAMEOBJECT obj, int row, int col)
+{
+	allcells[row][col].push_back(obj);
 }
 
 void Grid::ResetGrid(vector<LPGAMEOBJECT> list)
@@ -45,6 +56,12 @@ void Grid::ResetGrid(vector<LPGAMEOBJECT> list)
 	ClearGrid((int)this->map_height / cell_height, (int)this->map_width / cell_width);
 
 	PushGrid(list);
+}
+
+void Grid::CheckCamGrid(vector<LPGAMEOBJECT>& list)
+{
+	for (int i = 0; i < list.size(); i++)
+		list[i]->isInCamera= false;
 }
 
 
@@ -55,9 +72,19 @@ void Grid::GetGrid(vector<LPGAMEOBJECT>& list)
 	int totalRow = this->map_height / cell_height;
 
 	for (int i = 0; i < totalRow; i++)
+	{
 		for (int j = firstCol; j < lastCol; j++)
+		{
 			for (int k = 0; k < allcells[i][j].size(); k++)
-				list.push_back(allcells[i][j][k]);
+			{
+				if (!allcells[i][j][k]->isInCamera && !allcells[i][j][k]->isDead)
+				{
+					allcells[i][j][k]->isInCamera = true;
+					list.push_back(allcells[i][j][k]);
+				}
+			}
+		}
+	}
 }
 
 Grid::~Grid()

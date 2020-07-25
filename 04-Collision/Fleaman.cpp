@@ -12,22 +12,29 @@ void Fleaman::GetBoundingBox(float & left, float & top, float & right, float & b
 
 void Fleaman::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
-	if (hp <= 0 && isDead == false)
+	if (hp <= 0 && state != DEAD)
 	{
-		isDead = true;
 		SetState(DEAD);
+		vx = 0;
+		vy = 0;
 	}
 	
 	if (state == DEAD && animation_set->at(ani)->IsRenderOver(400))
 	{
+		isDead = true;
 		renderFireDone = true;
 	}
 
-	if (isDead)
+	if (hp <= 0)
 		return;
 
 	vy += GRAVITY * dt;
 	
+	if (abs(x - simon->x) < AREA_ACTIVE)
+		active = true;
+	if (!active)
+		return;
+
 	Enemy::Update(dt);
 	vector<LPCOLLISIONEVENT> coEvents;
 	vector<LPCOLLISIONEVENT> coEventsResult;
@@ -71,12 +78,7 @@ void Fleaman::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT sim
 			}
 		}
 	}
-	if(firstJump)
-		if (simon->GetState() == SIMON_SIT_HIT || simon->GetState() == SIMON_STAND_HIT)
-		{
-			if (rand() % 3 == 2 && isGrounded)
-				SetState(JUMP_HIGH);
-		}
+		
 		
 	if (simon->x - x < 150 || firstJump)
 	{

@@ -11,7 +11,7 @@ void Enemy::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon
 		dx = 0;
 		dy = 0;
 	}
-	if (!CheckOutCamera())
+	if (!CheckOutCamera() && active == true)
 		isDead = true;
 }
 

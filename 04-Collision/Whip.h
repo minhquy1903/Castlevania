@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Enemy.h"
+#include "HitEffect.h"
 
 #define WHIP_LVL_1		0
 #define WHIP_LVL_2		1
@@ -13,6 +14,8 @@
 
 class Whip : public CGameObject
 {
+public:
+	vector<LPHITEFFECT> hitEffect;
 	int dame;
 	DWORD timeResetHit;
 	bool isResetHit;

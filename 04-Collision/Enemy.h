@@ -12,6 +12,7 @@ public:
 	int score;
 	int hp;
 	int dame;
+	bool active;
 	Item*item;
 	static bool clockOn;
 public:

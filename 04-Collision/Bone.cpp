@@ -4,7 +4,7 @@
 
 void Bone::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
-	Enemy::Update(dt);
+	CGameObject::Update(dt);
 	x += dx;
 	y += dy;
 	vy += GRAVITY * dt;
@@ -28,6 +28,8 @@ Bone::Bone()
 	SetAnimationSet(CAnimationSets::GetInstance()->Get(16));
 	vx = BONE_SPEED_X;
 	dame = DAME_BONE;
+	x = -99;
+	y = 0;
 }
 
 

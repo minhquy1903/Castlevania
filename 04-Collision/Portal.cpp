@@ -1,7 +1,7 @@
 #include "Portal.h"
 
 
-CPortal::CPortal(float x, float y, float width, float height, int scene_id, int xNextPortal, int yNextPortal)
+CPortal::CPortal(float x, float y, float width, float height, int scene_id, int xNextPortal, int yNextPortal, int xCam)
 {
 	this->scene_id = scene_id;
 	this->x = x;
@@ -10,6 +10,7 @@ CPortal::CPortal(float x, float y, float width, float height, int scene_id, int 
 	this->height = height;
 	this->xNextPortal = xNextPortal;
 	this->yNextPortal = yNextPortal;
+	this->xCam = xCam;
 }
 
 void CPortal::Render()

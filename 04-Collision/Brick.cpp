@@ -13,7 +13,7 @@ Brick::Brick(int nw, int nh)
 void Brick::Render()
 {
 	animation_set->at(0)->Render(0, x, y, 0);
-	RenderBoundingBox();
+	//RenderBoundingBox();
 }
 
 void Brick::GetBoundingBox(float &l, float &t, float &r, float &b)

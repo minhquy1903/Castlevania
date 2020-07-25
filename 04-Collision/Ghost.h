@@ -4,10 +4,9 @@
 #define GHOST_SPEED 0.085f
 #define VY_GHOST	0.022f;
 #define DEAD		1	
-
+#define RANGE_ACTIVE	200
 class Ghost : public Enemy
 {
-	
 public:
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects = NULL, LPGAMEOBJECT simon = NULL);

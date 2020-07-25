@@ -42,6 +42,7 @@ public:
 	int ny;
 	int state;
 	bool isDead;
+	bool isInCamera;
 	bool renderFireDone;
 	DWORD dt; 
 	

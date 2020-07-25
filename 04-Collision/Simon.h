@@ -68,6 +68,7 @@ public:
 	int nxStairTop;
 	int nxStairBottom;
 	int pairStair;
+	int xCam;
 	bool isDouble;
 	bool isTriple;
 	bool normalHit;

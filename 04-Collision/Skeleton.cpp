@@ -1,6 +1,7 @@
 #include "Skeleton.h"
 #include "Utils.h"
 #include "Brick.h"
+#include "Simon.h"
 
 void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
@@ -9,20 +10,34 @@ void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT si
 
 	if (!active)
 		return;
-	if (hp <= 0 && isDead == false)
+	if (hp <= 0 && state != DEAD)
 	{
-		bone->isDead = true;
-		isDead = true;
+		vx = 0;
+		vy = 0;
 		SetState(DEAD);
+		animation_set->at(state)->StartRenderAnimation();
 	}
 
 	if (state == DEAD && animation_set->at(ani)->IsRenderOver(400))
 	{
+		bone->isDead = true;
+		isDead = true;
 		renderFireDone = true;
 	}
 
-	if (isDead)
+	if (hp <= 0)
 		return;
+	Simon* e = dynamic_cast<Simon*>(simon);
+
+	bone->Update(dt);
+	if(bone->AABBCollision(simon))
+		if (e->isFlicker != true)
+		{
+			if (!e->isOnStair)
+				e->SetState(SIMON_HURT);
+			e->health -= bone->dame;
+			e->recoveryTime = GetTickCount();
+		}
 
 	if (bone->y > SIZE_BONE)
 	{
@@ -34,6 +49,8 @@ void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT si
 		else
 			bone->vx = -BONE_SPEED_X;
 	}
+
+	
 
 	vy += GRAVITY * dt;
 
@@ -84,15 +101,10 @@ void Skeleton::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT si
 		delete coEvents[i];
 }
 
-void ResetBone()
-{
-
-}
-
 void Skeleton::Render()
 {
 	animation_set->at(ani)->Render(nx, x, y);
-	//bone->Render();
+	bone->Render();
 	//RenderBoundingBox();
 }
 
@@ -161,8 +173,6 @@ Skeleton::Skeleton(int nx)
 	hp = SKELETON_HP;
 	bone = new Bone();
 	active = false;
-	bone->x = x;
-	bone->y = y;
 	dame = DAME;
 	this->nx = nx;
 }

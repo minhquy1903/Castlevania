@@ -19,7 +19,6 @@
 class Raven : public Enemy
 {
 public:
-	bool active;
 	int stop;
 public:
 	Raven();

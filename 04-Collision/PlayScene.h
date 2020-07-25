@@ -7,6 +7,7 @@
 #include "BoardScore.h"
 #include "Enemy.h"
 #include "Grid.h"
+#include "Boss.h"
 
 class CPlayScene : public CScene
 {
@@ -15,6 +16,7 @@ protected:
 	TileMap *tilemap; 
 	BoardScore * boardscore;
 	Grid* grid;
+	Boss* boss;
 	vector<LPGAMEOBJECT> bricks;
 	vector<LPGAMEOBJECT> secretObj;
 	vector<LPGAMEOBJECT> listItem;

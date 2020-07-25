@@ -12,7 +12,6 @@ void Knight::GetBoundingBox(float & left, float & top, float & right, float & bo
 
 void Knight::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 {
-	return;
 	if (hp <= 0 && state != DEAD)
 	{
 		

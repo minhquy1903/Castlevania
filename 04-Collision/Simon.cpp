@@ -570,6 +570,20 @@ void Simon::CollideWithItem(vector<LPGAMEOBJECT>* listItems)
 					weapon.push_back(e1);
 					weapon.push_back(e2);
 				}
+				else if (currentSubweapon == ITEM_BOOMERANG)
+				{
+					SubWeapon* e1 = new Boomerang();
+					SubWeapon* e2 = new Boomerang();
+					weapon.push_back(e1);
+					weapon.push_back(e2);
+				}
+				else if (currentSubweapon == ITEM_HOLYWATER)
+				{
+					SubWeapon* e1 = new HolyWater();
+					SubWeapon* e2 = new HolyWater();
+					weapon.push_back(e1);
+					weapon.push_back(e2);
+				}
 				isDouble = true;
 			}
 			else if (e->state == ITEM_TRIPLE)
@@ -589,6 +603,24 @@ void Simon::CollideWithItem(vector<LPGAMEOBJECT>* listItems)
 					SubWeapon* e1 = new Axe();
 					SubWeapon* e2 = new Axe();
 					SubWeapon* e3 = new Axe();
+					weapon.push_back(e1);
+					weapon.push_back(e2);
+					weapon.push_back(e3);
+				}
+				else if (currentSubweapon == ITEM_HOLYWATER)
+				{
+					SubWeapon* e1 = new HolyWater();
+					SubWeapon* e2 = new HolyWater();
+					SubWeapon* e3 = new HolyWater();
+					weapon.push_back(e1);
+					weapon.push_back(e2);
+					weapon.push_back(e3);
+				}
+				else if (currentSubweapon == ITEM_BOOMERANG)
+				{
+					SubWeapon* e1 = new Boomerang();
+					SubWeapon* e2 = new Boomerang();
+					SubWeapon* e3 = new Boomerang();
 					weapon.push_back(e1);
 					weapon.push_back(e2);
 					weapon.push_back(e3);
@@ -746,6 +778,7 @@ int Simon::CollideWithPortal(vector<LPGAMEOBJECT>* portal)
 		CPortal* e = dynamic_cast<CPortal*>(obj);
 		if (AABBCollision(obj))
 		{
+			xCam = e->xCam;
 			SetPosition(e->GetXNextPortal(), e->GetYNextPortal());
 			return e->GetSceneID();
 		}

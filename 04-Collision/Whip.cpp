@@ -7,6 +7,9 @@
 #include "Ghost.h"
 #include "Fleaman.h"
 #include "Skeleton.h"
+#include "Raven.h"
+#include "Zombie.h"
+#include "Boss.h"
 
 void Whip::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -31,6 +34,11 @@ void Whip::Render(int currentID)
 	animation_set->at(state)->RenderWhip(currentID, nx, x, y);
 	CurrentFrame = currentID;
 	}
+	for (int i = 0; i < hitEffect.size(); i++)
+	{
+		hitEffect[i]->Render();
+	}
+		
 	//RenderBoundingBox();
 	
 }
@@ -54,6 +62,7 @@ void Whip::CollideWithSecretObj(vector<LPGAMEOBJECT>* coObjects)
 				candle->isDead = true;
 				candle->SetIsBreak(true);
 			}
+			hitEffect.push_back(new HitEffect(obj->x, obj->y + 10));
 		}
 	}
 }
@@ -62,6 +71,7 @@ void Whip::CollideWithSecretEnemies(vector<LPENEMY>* coObjects)
 {
 	if (isResetHit == false)
 		return;
+	//HitEffect* hitEffect = new HitEffect();
 	for (int i = 0; i < coObjects->size(); i++)
 	{
 		LPENEMY obj = coObjects->at(i);
@@ -94,8 +104,25 @@ void Whip::CollideWithSecretEnemies(vector<LPENEMY>* coObjects)
 				Skeleton * skeleton = dynamic_cast<Skeleton*>(obj);
 				skeleton->SetHP(skeleton->GetHP() - dame);
 			}
+			else if (dynamic_cast<Raven*>(obj))
+			{
+				Raven* raven = dynamic_cast<Raven*>(obj);
+				raven->SetHP(raven->GetHP() - dame);
+			}
+			else if (dynamic_cast<Zombie*>(obj))
+			{
+				Zombie* zombie = dynamic_cast<Zombie*>(obj);
+				zombie->SetHP(zombie->GetHP() - dame);
+			}
+			else if (dynamic_cast<Boss*>(obj))
+			{
+				Boss* boss = dynamic_cast<Boss*>(obj);
+				boss->SetHP(boss->GetHP() - dame);/*
+				boss->SetState(BOSS_IS_HIT);*/
+			}
 			timeResetHit = GetTickCount();
 			isResetHit = false;
+			hitEffect.push_back(new HitEffect(obj->x, obj->y + 10));
 		}
 	}
 }

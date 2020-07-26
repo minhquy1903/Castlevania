@@ -82,7 +82,7 @@ void Zombie::SetState(int state)
 
 Zombie::Zombie(int nx)
 {
-	
+	active = true;
 	vy = VY_ZOMBIE;
 	hp = HEALTH;
 	dame = DAME;

@@ -45,6 +45,7 @@
 #define POS_RIGHT	1460
 #define POS_LEFT	-10
 #define A_MINUTE	60
+#define OUT_CAM		500
 class Simon : public CGameObject
 {
 public:

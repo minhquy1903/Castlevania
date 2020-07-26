@@ -238,8 +238,8 @@ void Simon::GoDownStair()
 
 void Simon::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
-	
-
+	if (y > OUT_CAM)
+		health = 0;
 	if (health <= 0 && !isDead)
 	{
 		SetState(SIMON_DEAD);

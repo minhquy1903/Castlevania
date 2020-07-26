@@ -29,7 +29,7 @@ void Boss::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 		active = true;
 	}
 
-	if (active && state != 2)
+	if (active && state != DEAD)
 	{
 
 		if (x > simon->x)
@@ -107,7 +107,6 @@ void Boss::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects, LPGAMEOBJECT simon)
 		}
 		else if (y > CGame::GetInstance()->GetCamPosY() + SCREEN_BOX_DOWN)
 		{
-			//timer1->Stop();
 			target = true;
 			vy = -VY_DOWN;
 			if (abs(y - simon->y) > MAX_DISTANCE_UP_DOWN)
@@ -144,7 +143,7 @@ void Boss::SetState(int state)
 
 Boss::Boss()
 {
-	hp = 2;
+	hp = HP_BOSS;
 	dame = BOSS_DAME;
 	state = BOSS_SLEEP;
 }
